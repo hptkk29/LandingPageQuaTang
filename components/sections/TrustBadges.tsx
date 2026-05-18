@@ -2,7 +2,7 @@ import { Container } from "@/components/shared/Container";
 
 const BADGES = [
   { icon: "🏆", label: "Đối tác tổ chức", value: "Cuộc thi Robotics TW Đoàn" },
-  { icon: "🌏", label: "Đại diện Việt Nam", value: "World Robot Conference" },
+  { icon: "🌏", label: "Cơ hội lớn tham gia", value: "World Robot Conference" },
   { icon: "📜", label: "Bám sát", value: "NQ57 & GDPT 2018" },
   { icon: "👨‍🎓", label: "Đã đào tạo", value: "500+ học viên" },
 ];
