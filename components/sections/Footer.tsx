@@ -46,7 +46,7 @@ export function Footer() {
               alt="Sata Robo"
               width={140}
               height={40}
-              className="h-10 md:h-12 w-auto mb-4 brightness-0 invert"
+              className="h-10 md:h-12 w-auto mb-4 rounded-md"
             />
             <p className="text-sm leading-relaxed mb-4 text-gray-400">
               Trung tâm đào tạo STEM – Lập trình Robotics & AI
