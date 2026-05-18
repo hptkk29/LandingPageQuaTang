@@ -29,6 +29,8 @@ import { Label } from "@/components/ui/label";
 import { leadSchema, type LeadInput, LOP_OPTIONS } from "@/lib/schemas/lead";
 import { CAMPAIGN } from "@/lib/constants/campaign";
 import { submitLead } from "@/lib/api/submit-lead";
+import { trackMetaEvent } from "@/components/analytics/MetaPixel";
+import { trackGAEvent } from "@/components/analytics/GoogleAnalytics";
 
 export function LeadForm() {
   const router = useRouter();
@@ -52,6 +54,19 @@ export function LeadForm() {
     try {
       const res = await submitLead(data);
       if (res.ok) {
+        // Track conversion BEFORE redirect so events fire reliably
+        trackMetaEvent("Lead", {
+          content_name: "5 buổi RoboSim MIỄN PHÍ",
+          content_category: "Robotics Education",
+          value: 0,
+          currency: "VND",
+        });
+        trackGAEvent("generate_lead", {
+          form_name: "quatang-robosim",
+          co_so: data.co_so,
+          lop: data.lop,
+        });
+
         toast.success(res.message);
         router.push("/thank-you");
       } else {

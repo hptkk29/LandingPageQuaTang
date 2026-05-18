@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Be_Vietnam_Pro } from "next/font/google";
 import { Toaster } from "sonner";
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -16,35 +17,65 @@ const beVietnamPro = Be_Vietnam_Pro({
   variable: "--font-display",
 });
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://quatang.edu.vn";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://quatang.edu.vn"
-  ),
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "🎁 Tặng 5 Buổi RoboSim MIỄN PHÍ — Sata Robo",
+    default: "🎁 Tặng 5 Buổi RoboSim MIỄN PHÍ — Sata Robo Đà Nẵng",
     template: "%s | Sata Robo",
   },
   description:
-    "Tặng phụ huynh 5 buổi đào tạo Robotics cơ bản trên phần mềm RoboSim cho học sinh lớp 1-8. 12 suất miễn phí mỗi cơ sở. Khai giảng 23/5 & 25/5 tại Đà Nẵng.",
+    "Tặng phụ huynh 5 buổi đào tạo Robotics cơ bản trên phần mềm RoboSim cho học sinh lớp 1-8. 12 suất MIỄN PHÍ mỗi cơ sở. Khai giảng 23/5 & 25/5 tại 211 Nguyễn Hữu Thọ và 114 Hoàng Diệu, Đà Nẵng.",
   keywords: [
-    "Robotics trẻ em",
+    "Robotics trẻ em Đà Nẵng",
     "RoboSim",
     "STEM tiểu học",
-    "Sata Robo Đà Nẵng",
+    "Sata Robo",
     "học robot miễn phí",
     "Sáng tạo Robotics 2026",
+    "lớp robot lớp 1-8",
+    "học robot Đà Nẵng",
   ],
   authors: [{ name: "Sata Robo" }],
-  icons: { icon: "/favicon.png", apple: "/favicon.png" },
+  creator: "Sata Robo",
+  publisher: "Sata Robo",
   openGraph: {
-    title: "🎁 Tặng 5 Buổi RoboSim MIỄN PHÍ — Sata Robo",
+    title: "🎁 Tặng 5 Buổi RoboSim MIỄN PHÍ — Sata Robo Đà Nẵng",
     description:
-      "5 buổi học Robotics đại cương miễn phí cho con — chỉ 12 suất/cơ sở.",
-    type: "website",
-    locale: "vi_VN",
+      "5 buổi học Robotics đại cương MIỄN PHÍ cho con — chỉ 12 suất/cơ sở. Khai giảng 23/5 & 25/5 tại Đà Nẵng.",
+    url: SITE_URL,
     siteName: "Sata Robo",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Tặng 5 buổi RoboSim MIỄN PHÍ — Sata Robo Đà Nẵng",
+      },
+    ],
+    locale: "vi_VN",
+    type: "website",
   },
-  robots: { index: true, follow: true },
+  twitter: {
+    card: "summary_large_image",
+    title: "🎁 Tặng 5 Buổi RoboSim MIỄN PHÍ — Sata Robo",
+    description: "5 buổi MIỄN PHÍ cho con lớp 1-8. Chỉ 12 suất/cơ sở.",
+    images: ["/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  alternates: {
+    canonical: SITE_URL,
+  },
 };
 
 export default function RootLayout({
@@ -55,6 +86,7 @@ export default function RootLayout({
       <body className="font-body antialiased bg-white text-gray-900">
         {children}
         <Toaster position="top-center" richColors />
+        <AnalyticsProvider />
       </body>
     </html>
   );
