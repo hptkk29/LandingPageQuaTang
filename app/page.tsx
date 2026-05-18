@@ -4,6 +4,12 @@ import { TrustBadges } from "@/components/sections/TrustBadges";
 import { CourseInfo } from "@/components/sections/CourseInfo";
 import { Problem } from "@/components/sections/Problem";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
+import { Testimonials } from "@/components/sections/Testimonials";
+import { FAQ } from "@/components/sections/FAQ";
+import { FinalCTA } from "@/components/sections/FinalCTA";
+import { Footer } from "@/components/sections/Footer";
+import { FloatingZalo } from "@/components/sections/FloatingZalo";
+import { ExitIntent } from "@/components/sections/ExitIntent";
 
 export default function HomePage() {
   return (
@@ -15,14 +21,13 @@ export default function HomePage() {
         <CourseInfo />
         <Problem />
         <WhyChooseUs />
-
-        <section className="py-12 bg-brand-50 text-center">
-          <p className="text-brand-700 font-display font-semibold text-sm md:text-base">
-            🚧 Phase 3.2 done — Phase 3.3 sẽ build: Testimonials + FAQ + Final
-            CTA + Footer + Floating Zalo + Exit popup
-          </p>
-        </section>
+        <Testimonials />
+        <FAQ />
+        <FinalCTA />
       </main>
+      <Footer />
+      <FloatingZalo />
+      <ExitIntent />
     </>
   );
 }

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Container } from "@/components/shared/Container";
 import { CAMPAIGN } from "@/lib/constants/campaign";
+import { VideoReview } from "./VideoReview";
 
 const BENEFITS = [
   {
@@ -122,8 +123,40 @@ export function CourseInfo() {
             🎓 Học sinh sẽ được trang bị:
           </h3>
 
+          {/* Row 1: 2 benefits đầu */}
+          <div className="grid md:grid-cols-2 gap-4 md:gap-5 mb-2">
+            {BENEFITS.slice(0, 2).map((benefit, idx) => (
+              <motion.div
+                key={benefit.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.4, delay: idx * 0.1 }}
+                className="bg-white rounded-card p-5 md:p-6 shadow-soft border-2 border-brand-100 hover:border-cta-300 transition-all tilt-card group"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="shrink-0 w-12 h-12 rounded-card bg-gradient-to-br from-cta-400 to-cta-600 text-white flex items-center justify-center text-2xl shadow-md group-hover:scale-110 transition-transform">
+                    {benefit.icon}
+                  </div>
+                  <div>
+                    <h4 className="font-display font-bold text-gray-900 text-base md:text-lg mb-1.5 leading-tight">
+                      {benefit.title}
+                    </h4>
+                    <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+                      {benefit.description}
+                    </p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Video chèn giữa */}
+          <VideoReview />
+
+          {/* Row 2: 2 benefits sau */}
           <div className="grid md:grid-cols-2 gap-4 md:gap-5 mb-8">
-            {BENEFITS.map((benefit, idx) => (
+            {BENEFITS.slice(2, 4).map((benefit, idx) => (
               <motion.div
                 key={benefit.title}
                 initial={{ opacity: 0, y: 20 }}
