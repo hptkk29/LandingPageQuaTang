@@ -1,5 +1,6 @@
-﻿"use client";
+"use client";
 
+import { motion } from "framer-motion";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { Container } from "@/components/shared/Container";
 import { Countdown } from "@/components/shared/Countdown";
@@ -10,50 +11,104 @@ export function Hero() {
     CAMPAIGN.totalSlotsPerLocation * CAMPAIGN.locations.length;
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 py-6 md:py-10">
+    <section className="relative overflow-hidden bg-gradient-to-b from-surface-50 via-white to-surface-50 pt-8 md:pt-12 pb-16 md:pb-24">
+      {/* === DECORATIVE BACKGROUND === */}
       <div
         aria-hidden="true"
-        className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `radial-gradient(circle at 20% 30%, white 1px, transparent 1px),
-                            radial-gradient(circle at 80% 70%, white 1px, transparent 1px),
-                            radial-gradient(circle at 50% 50%, white 1px, transparent 1px)`,
-          backgroundSize: "60px 60px, 80px 80px, 100px 100px",
-        }}
+        className="absolute top-0 left-0 w-[500px] h-[500px] bg-brand-200/40 rounded-full mix-blend-multiply filter blur-3xl animate-blob"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute top-20 right-0 w-[400px] h-[400px] bg-cta-200/50 rounded-full mix-blend-multiply filter blur-3xl animate-blob-delayed"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-1/3 w-[450px] h-[450px] bg-accent-300/30 rounded-full mix-blend-multiply filter blur-3xl animate-blob-slow"
       />
 
+      {/* Sparkles */}
+      <div aria-hidden="true" className="absolute inset-0 pointer-events-none">
+        {[
+          { top: "10%", left: "5%", delay: "0s", size: 8 },
+          { top: "25%", left: "92%", delay: "1s", size: 6 },
+          { top: "60%", left: "8%", delay: "2s", size: 10 },
+          { top: "75%", left: "85%", delay: "0.5s", size: 7 },
+          { top: "40%", left: "50%", delay: "1.5s", size: 5 },
+          { top: "15%", left: "70%", delay: "2.5s", size: 9 },
+        ].map((s, i) => (
+          <svg
+            key={i}
+            className="absolute animate-sparkle"
+            style={{
+              top: s.top,
+              left: s.left,
+              width: s.size,
+              height: s.size,
+              animationDelay: s.delay,
+            }}
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"
+              className={i % 2 === 0 ? "text-cta-400" : "text-brand-400"}
+            />
+          </svg>
+        ))}
+      </div>
+
       <Container size="xl" className="relative">
-        {/* Top ribbon */}
-        <div className="flex justify-center mb-6 md:mb-8">
-          <div className="inline-block bg-white border-2 border-brand-200 rounded-pill px-6 md:px-10 py-2.5 md:py-3 shadow-card">
-            <h1 className="font-display text-base md:text-xl lg:text-2xl font-bold text-brand-700 text-center">
-              🎁 Đăng ký tham gia trải nghiệm sáng tạo công nghệ
+        {/* === TOP RIBBON === */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="flex justify-center mb-8 md:mb-10"
+        >
+          <div className="inline-flex items-center gap-2 bg-white border-2 border-cta-200 rounded-pill px-5 md:px-8 py-2.5 md:py-3 shadow-soft">
+            <span
+              className="text-xl md:text-2xl animate-bounce-in"
+              style={{ animationDelay: "0.3s" }}
+            >
+              🎁
+            </span>
+            <h1 className="font-display text-sm md:text-lg lg:text-xl font-bold text-gray-900">
+              Đăng ký tham gia trải nghiệm sáng tạo công nghệ
             </h1>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="grid lg:grid-cols-[1.1fr_1fr] gap-6 lg:gap-10 items-start">
-          {/* LEFT — headline + benefits + countdown */}
-          <div className="text-white relative">
+        {/* === MAIN 2-COLUMN === */}
+        <div className="grid lg:grid-cols-[1.1fr_1fr] gap-8 lg:gap-12 items-start">
+          {/* === LEFT === */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="relative"
+          >
             {/* Star burst */}
-            <div
-              className="absolute -top-2 right-0 md:-right-4 lg:right-8 z-10 animate-pulse-star"
-              style={{ transformOrigin: "center" }}
-            >
-              <div className="relative w-28 h-28 md:w-36 md:h-36 flex items-center justify-center">
+            <div className="absolute -top-4 right-0 md:-right-4 lg:right-8 z-10 animate-star">
+              <div className="relative w-24 h-24 md:w-32 md:h-32 flex items-center justify-center">
                 <svg
                   viewBox="0 0 100 100"
-                  className="absolute inset-0 w-full h-full drop-shadow-lg"
+                  className="absolute inset-0 w-full h-full filter drop-shadow-lg"
                   aria-hidden="true"
                 >
+                  <defs>
+                    <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#FCD34D" />
+                      <stop offset="100%" stopColor="#F59E0B" />
+                    </linearGradient>
+                  </defs>
                   <polygon
                     points="50,2 58,28 88,18 70,42 96,52 70,62 88,86 58,76 50,98 42,76 12,86 30,62 4,52 30,42 12,18 42,28"
-                    fill="#FBBF24"
-                    stroke="#F59E0B"
-                    strokeWidth="2"
+                    fill="url(#starGrad)"
+                    stroke="#D97706"
+                    strokeWidth="1.5"
                   />
                 </svg>
-                <div className="relative font-display font-extrabold text-center text-brand-900 text-[10px] md:text-xs leading-tight px-2">
+                <div className="relative font-display font-extrabold text-center text-amber-900 text-[9px] md:text-[10px] leading-tight px-2">
                   DÀNH CHO
                   <br />
                   HỌC SINH
@@ -64,85 +119,135 @@ export function Hero() {
               </div>
             </div>
 
-            <div className="mb-6 pr-32 md:pr-40 lg:pr-44">
-              <p className="font-display text-2xl md:text-4xl lg:text-5xl font-extrabold leading-tight mb-1 drop-shadow-md">
+            {/* Headline */}
+            <div className="mb-7 pr-28 md:pr-36">
+              <p className="font-display text-2xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight mb-1">
                 DUY NHẤT
               </p>
-              <p className="font-display text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight drop-shadow-md">
-                <span className="text-accent-400">{`${totalSlots} SUẤT`}</span>{" "}
+              <p className="font-display text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
+                <span className="text-gradient-warm">{`${totalSlots} SUẤT`}</span>
+              </p>
+              <p className="font-display text-3xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight">
                 MIỄN PHÍ:
               </p>
-              <p className="text-sm md:text-base text-white/90 mt-2">
+              <p className="text-sm md:text-base text-gray-600 mt-2 italic">
                 ({CAMPAIGN.totalSlotsPerLocation} suất/cơ sở ×{" "}
                 {CAMPAIGN.locations.length} cơ sở)
               </p>
             </div>
 
-            <ul className="space-y-3 md:space-y-4 mb-6 md:mb-8">
+            {/* Benefits */}
+            <ul className="space-y-3 md:space-y-4 mb-7 md:mb-8">
               {[
                 "Học phần mềm RoboSim chuẩn quốc tế",
                 "Lắp ráp & lập trình robot tự hành",
                 "Đọc sa bàn, phân tích chiến thuật thi đấu",
                 "Chuyên gia đánh giá năng khiếu công nghệ",
-              ].map((benefit) => (
-                <li key={benefit} className="flex items-start gap-3">
-                  <span className="shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-white text-brand-700 font-bold flex items-center justify-center text-base md:text-lg shadow-md">
+              ].map((benefit, idx) => (
+                <motion.li
+                  key={benefit}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: 0.3 + idx * 0.1 }}
+                  className="flex items-start gap-3"
+                >
+                  <span className="shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-gradient-to-br from-cta-400 to-cta-600 text-white font-bold flex items-center justify-center text-base shadow-md">
                     ✓
                   </span>
-                  <span className="font-display font-semibold text-base md:text-lg lg:text-xl leading-snug drop-shadow-md">
+                  <span className="font-display font-semibold text-base md:text-lg text-gray-800 leading-snug pt-0.5">
                     {benefit}
                   </span>
-                </li>
+                </motion.li>
               ))}
             </ul>
 
-            <div className="mb-6 md:mb-8 inline-block relative">
-              <div className="bg-accent-400 text-brand-900 font-display font-extrabold text-lg md:text-2xl px-6 md:px-8 py-3 md:py-4 rounded-button shadow-cta border-2 border-white">
-                💯 MIỄN PHÍ 100% cho 5 buổi học đầu tiên
+            {/* Highlight badge */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.6 }}
+              className="mb-7 md:mb-8"
+            >
+              <div className="inline-block relative animate-shimmer">
+                <div className="bg-gradient-to-r from-cta-500 to-cta-600 text-white font-display font-extrabold text-base md:text-xl px-6 md:px-8 py-3 md:py-4 rounded-button shadow-cta-glow">
+                  💯 MIỄN PHÍ 100% cho 5 buổi học đầu tiên
+                </div>
               </div>
-            </div>
+            </motion.div>
 
-            <div className="mb-2">
-              <p className="text-white font-display font-semibold text-sm md:text-base mb-3 flex items-center gap-2">
-                <span className="text-accent-400 text-lg">⏰</span>
+            {/* Countdown */}
+            <div className="mb-6">
+              <p className="text-gray-700 font-display font-semibold text-sm md:text-base mb-3 flex items-center gap-2">
+                <span className="text-cta-500 text-lg">⏰</span>
                 Hết hạn đăng ký sau:
               </p>
               <Countdown targetDate={CAMPAIGN.registrationDeadline} />
             </div>
 
-            <div className="mt-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-button p-4 md:p-5">
-              <p className="font-display font-bold text-white text-sm md:text-base mb-2">
-                📅 LỊCH KHAI GIẢNG:
+            {/* Schedule */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.8 }}
+              className="bg-white border-2 border-brand-100 rounded-card p-4 md:p-5 shadow-soft tilt-card"
+            >
+              <p className="font-display font-bold text-gray-900 text-sm md:text-base mb-3 flex items-center gap-2">
+                <span className="text-xl">📅</span>
+                LỊCH KHAI GIẢNG:
               </p>
-              <ul className="space-y-1 text-sm md:text-base">
+              <ul className="space-y-2 text-sm md:text-base">
                 {CAMPAIGN.locations.map((loc) => (
                   <li
                     key={loc.key}
-                    className="text-white/95 flex flex-wrap gap-x-2"
+                    className="flex flex-wrap gap-x-2 items-center"
                   >
-                    <span className="font-semibold">{loc.address}:</span>
-                    <span>{loc.khaiGiangLabel}</span>
+                    <span className="inline-block w-2 h-2 rounded-full bg-cta-500" />
+                    <span className="font-semibold text-gray-900">
+                      {loc.address}:
+                    </span>
+                    <span className="text-gray-700">{loc.khaiGiangLabel}</span>
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          {/* RIGHT — form card */}
-          <div id="dang-ky" className="scroll-mt-20">
-            <div className="bg-white rounded-card shadow-card p-5 md:p-7 lg:p-8">
-              <div className="text-center mb-5">
+          {/* === RIGHT: Form === */}
+          <motion.div
+            id="dang-ky"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="scroll-mt-20"
+          >
+            <div className="bg-white rounded-card shadow-card p-5 md:p-7 lg:p-8 border-2 border-brand-100 tilt-card relative overflow-hidden">
+              <div
+                aria-hidden="true"
+                className="absolute -top-12 -right-12 w-32 h-32 bg-cta-100 rounded-full opacity-50"
+              />
+              <div
+                aria-hidden="true"
+                className="absolute -bottom-12 -left-12 w-28 h-28 bg-brand-100 rounded-full opacity-50"
+              />
+
+              <div className="relative text-center mb-5">
+                <div className="inline-flex items-center gap-1.5 bg-success-50 text-success-600 text-xs font-semibold px-3 py-1.5 rounded-pill mb-3 border border-success-500/20">
+                  <span>✓</span>
+                  <span>Miễn phí — Không thu phí ẩn</span>
+                </div>
                 <h2 className="font-display text-xl md:text-2xl font-extrabold text-gray-900 mb-1">
                   ĐĂNG KÝ THAM GIA LỚP HỌC THỬ
                 </h2>
-                <p className="font-display text-lg md:text-xl font-extrabold text-brand-700">
+                <p className="font-display text-lg md:text-xl font-extrabold text-gradient-warm">
                   NHẬN ƯU ĐÃI KHỦNG
                 </p>
               </div>
 
-              <LeadForm />
+              <div className="relative">
+                <LeadForm />
+              </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </Container>
     </section>

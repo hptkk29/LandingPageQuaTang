@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 
@@ -35,9 +35,7 @@ export function Countdown({ targetDate, className = "" }: Props) {
   useEffect(() => {
     const target = new Date(targetDate);
     setTimeLeft(calculateTimeLeft(target));
-    const timer = setInterval(() => {
-      setTimeLeft(calculateTimeLeft(target));
-    }, 1000);
+    const timer = setInterval(() => setTimeLeft(calculateTimeLeft(target)), 1000);
     return () => clearInterval(timer);
   }, [targetDate]);
 
@@ -47,12 +45,12 @@ export function Countdown({ targetDate, className = "" }: Props) {
         {["Ngày", "Giờ", "Phút", "Giây"].map((label) => (
           <div
             key={label}
-            className="aspect-square bg-brand-800 rounded-button shadow-lg flex flex-col items-center justify-center text-white ring-2 ring-white/20"
+            className="aspect-square bg-gradient-to-br from-cta-500 to-cta-600 rounded-card shadow-cta flex flex-col items-center justify-center text-white"
           >
-            <span className="font-display font-extrabold text-2xl md:text-3xl lg:text-4xl tabular-nums">
+            <span className="font-display font-extrabold text-2xl md:text-3xl tabular-nums">
               --
             </span>
-            <span className="text-[10px] md:text-xs opacity-80 uppercase tracking-wider mt-1">
+            <span className="text-[10px] md:text-xs opacity-90 uppercase tracking-wider mt-0.5 font-semibold">
               {label}
             </span>
           </div>
@@ -64,9 +62,9 @@ export function Countdown({ targetDate, className = "" }: Props) {
   if (timeLeft.expired) {
     return (
       <div
-        className={`text-center bg-white/10 border-2 border-white/30 rounded-card p-4 ${className}`}
+        className={`text-center bg-gray-100 border-2 border-gray-300 rounded-card p-4 ${className}`}
       >
-        <p className="text-white font-display font-bold text-lg">
+        <p className="text-gray-700 font-display font-bold text-lg">
           ⏰ Đã hết hạn đăng ký
         </p>
       </div>
@@ -82,15 +80,20 @@ export function Countdown({ targetDate, className = "" }: Props) {
 
   return (
     <div className={`grid grid-cols-4 gap-2 md:gap-3 ${className}`}>
-      {blocks.map((block) => (
+      {blocks.map((block, idx) => (
         <div
           key={block.label}
-          className="aspect-square bg-brand-800 rounded-button shadow-lg flex flex-col items-center justify-center text-white ring-2 ring-white/20"
+          className="relative aspect-square bg-gradient-to-br from-cta-500 to-cta-600 rounded-card shadow-cta flex flex-col items-center justify-center text-white overflow-hidden group hover:shadow-cta-glow transition-shadow"
+          style={{ animationDelay: `${idx * 0.1}s` }}
         >
-          <span className="font-display font-extrabold text-2xl md:text-3xl lg:text-4xl tabular-nums">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
+          />
+          <span className="relative font-display font-extrabold text-2xl md:text-3xl lg:text-4xl tabular-nums">
             {String(block.value).padStart(2, "0")}
           </span>
-          <span className="text-[10px] md:text-xs opacity-80 uppercase tracking-wider mt-1">
+          <span className="relative text-[10px] md:text-xs opacity-90 uppercase tracking-wider mt-1 font-semibold">
             {block.label}
           </span>
         </div>

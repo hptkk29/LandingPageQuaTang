@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { motion } from "framer-motion";
 import { Container } from "@/components/shared/Container";
@@ -47,9 +47,18 @@ export function WhyChooseUs() {
   return (
     <section
       id="vi-sao"
-      className="py-12 md:py-20 bg-gradient-to-b from-brand-50 to-white scroll-mt-20"
+      className="relative py-14 md:py-24 bg-surface-50 overflow-hidden scroll-mt-20"
     >
-      <Container size="xl">
+      <div
+        aria-hidden="true"
+        className="absolute bottom-0 left-0 w-96 h-96 bg-cta-100/50 rounded-full filter blur-3xl animate-blob-delayed"
+      />
+      <div
+        aria-hidden="true"
+        className="absolute top-0 right-0 w-80 h-80 bg-brand-100/50 rounded-full filter blur-3xl animate-blob-slow"
+      />
+
+      <Container size="xl" className="relative">
         <SectionHeading
           eyebrow="Vì sao chọn Sata Robo"
           title="6 lý do hơn 500 ba mẹ Đà Nẵng đã chọn Sata Robo"
@@ -63,15 +72,23 @@ export function WhyChooseUs() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.4, delay: (idx % 3) * 0.1 }}
-              className="bg-white rounded-card p-6 md:p-7 border-2 border-brand-100 hover:border-brand-400 hover:shadow-card transition-all"
+              className="bg-white rounded-card p-6 md:p-7 border-2 border-brand-100 hover:border-cta-300 hover:shadow-card-hover transition-all tilt-card group relative overflow-hidden"
             >
-              <div className="text-4xl mb-4">{reason.icon}</div>
-              <h3 className="font-display text-lg md:text-xl font-bold text-brand-900 mb-3 leading-tight">
-                {reason.title}
-              </h3>
-              <p className="text-gray-700 text-sm md:text-base leading-relaxed">
-                {reason.description}
-              </p>
+              <div
+                aria-hidden="true"
+                className="absolute -top-8 -right-8 w-24 h-24 bg-cta-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              />
+              <div className="relative">
+                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform inline-block">
+                  {reason.icon}
+                </div>
+                <h3 className="font-display text-lg md:text-xl font-bold text-gray-900 mb-3 leading-tight">
+                  {reason.title}
+                </h3>
+                <p className="text-gray-700 text-sm md:text-base leading-relaxed">
+                  {reason.description}
+                </p>
+              </div>
             </motion.div>
           ))}
         </div>
@@ -79,7 +96,7 @@ export function WhyChooseUs() {
         <div className="text-center mt-10">
           <a
             href="#dang-ky"
-            className="inline-flex items-center justify-center gap-2 bg-brand-700 hover:bg-brand-800 text-white font-display font-extrabold text-base md:text-lg px-8 py-4 rounded-button shadow-cta transition-all hover:scale-105"
+            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-cta-500 to-cta-600 hover:from-cta-600 hover:to-cta-700 text-white font-display font-extrabold text-base md:text-lg px-8 py-4 rounded-button shadow-cta hover:shadow-cta-glow transition-all hover:-translate-y-0.5"
           >
             🎁 Đăng ký ngay cho con →
           </a>

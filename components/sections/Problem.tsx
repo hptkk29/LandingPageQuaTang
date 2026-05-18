@@ -33,8 +33,13 @@ const PROBLEMS = [
 
 export function Problem() {
   return (
-    <section className="py-12 md:py-20 bg-white">
-      <Container>
+    <section className="relative py-14 md:py-24 bg-white overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="absolute top-0 right-0 w-96 h-96 bg-brand-100/40 rounded-full filter blur-3xl animate-blob"
+      />
+
+      <Container className="relative">
         <SectionHeading
           eyebrow="Vấn đề của ba mẹ"
           title={"Có phải ba mẹ đang gặp\n1 trong 4 vấn đề này?"}
@@ -49,10 +54,12 @@ export function Problem() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.4, delay: idx * 0.1 }}
-              className="bg-white rounded-card p-6 md:p-7 shadow-soft border-2 border-brand-100 hover:border-brand-400 hover:shadow-card transition"
+              className="bg-white rounded-card p-6 md:p-7 shadow-soft border-2 border-brand-100 hover:border-cta-300 hover:shadow-card transition-all tilt-card group"
             >
-              <div className="text-4xl mb-3">{problem.icon}</div>
-              <h3 className="font-display text-lg md:text-xl font-bold text-brand-900 mb-2 leading-tight">
+              <div className="text-4xl mb-3 group-hover:scale-110 transition-transform inline-block">
+                {problem.icon}
+              </div>
+              <h3 className="font-display text-lg md:text-xl font-bold text-gray-900 mb-2 leading-tight">
                 {problem.title}
               </h3>
               <p className="text-gray-700 text-sm md:text-base leading-relaxed">
@@ -62,10 +69,15 @@ export function Problem() {
           ))}
         </div>
 
-        <p className="text-center mt-10 text-lg md:text-xl font-display font-semibold text-brand-700">
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mt-10 text-lg md:text-xl font-display font-semibold text-gradient-brand"
+        >
           → 5 buổi RoboSim MIỄN PHÍ của Sata Robo có giải pháp dành riêng cho ba
           mẹ ↓
-        </p>
+        </motion.p>
       </Container>
     </section>
   );

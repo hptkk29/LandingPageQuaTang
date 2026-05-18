@@ -237,7 +237,7 @@ export function LeadForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-brand-700 hover:bg-brand-800 text-white font-display font-extrabold py-6 md:py-7 text-base md:text-lg rounded-button shadow-cta animate-pulse-cta disabled:animate-none"
+          className="relative w-full bg-gradient-to-r from-cta-500 to-cta-600 hover:from-cta-600 hover:to-cta-700 text-white font-display font-extrabold py-6 md:py-7 text-base md:text-lg rounded-button shadow-cta animate-pulse-glow animate-shimmer disabled:animate-none disabled:opacity-70 transition-all hover:-translate-y-0.5"
         >
           {isSubmitting ? "⏳ Đang gửi..." : "ĐĂNG KÝ NGAY →"}
         </Button>
