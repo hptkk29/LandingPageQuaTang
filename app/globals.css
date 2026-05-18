@@ -1,26 +1,94 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* === BRAND PRIMARY (Tím Sata Robo) === */
+  --color-brand-50: #FAF5FF;
+  --color-brand-100: #F3E8FF;
+  --color-brand-200: #E9D5FF;
+  --color-brand-300: #D8B4FE;
+  --color-brand-400: #C084FC;
+  --color-brand-500: #A855F7;
+  --color-brand-600: #9333EA;
+  --color-brand-700: #7E22CE;
+  --color-brand-800: #6B21A8;
+  --color-brand-900: #581C87;
+  --color-brand-950: #3B0764;
+
+  /* === URGENCY (Đỏ — CTA, Hero bg, countdown) === */
+  --color-urgency-50: #FEF2F2;
+  --color-urgency-100: #FEE2E2;
+  --color-urgency-200: #FECACA;
+  --color-urgency-400: #F87171;
+  --color-urgency-500: #EF4444;
+  --color-urgency-600: #DC2626;
+  --color-urgency-700: #B91C1C;
+  --color-urgency-800: #991B1B;
+  --color-urgency-900: #7F1D1D;
+
+  /* === ACCENT (Vàng — Star burst, highlight) === */
+  --color-accent-300: #FCD34D;
+  --color-accent-400: #FBBF24;
+  --color-accent-500: #F59E0B;
+
+  /* === SUCCESS === */
+  --color-success-500: #10B981;
+
+  /* === FONTS === */
+  --font-display: var(--font-display, "Inter"), system-ui, sans-serif;
+  --font-body: var(--font-body, "Inter"), system-ui, sans-serif;
+
+  /* === RADIUS === */
+  --radius-card: 1.5rem;
+  --radius-button: 0.75rem;
+  --radius-pill: 9999px;
+
+  /* === SHADOWS === */
+  --shadow-soft: 0 4px 16px -2px rgb(0 0 0 / 0.08);
+  --shadow-card: 0 12px 32px -8px rgb(0 0 0 / 0.15);
+  --shadow-cta-red: 0 8px 24px -4px rgb(220 38 38 / 0.4);
+  --shadow-cta-purple: 0 8px 24px -4px rgb(107 33 168 / 0.35);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html {
+  scroll-behavior: smooth;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@keyframes pulse-star {
+  0%,
+  100% {
+    transform: rotate(-12deg) scale(1);
+  }
+  50% {
+    transform: rotate(-12deg) scale(1.05);
+  }
+}
+.animate-pulse-star {
+  animation: pulse-star 2s ease-in-out infinite;
+}
+
+@keyframes pulse-cta {
+  0%,
+  100% {
+    box-shadow: 0 8px 24px -4px rgb(220 38 38 / 0.4);
+  }
+  50% {
+    box-shadow: 0 12px 32px -4px rgb(220 38 38 / 0.6);
+  }
+}
+.animate-pulse-cta {
+  animation: pulse-cta 2s ease-in-out infinite;
 }

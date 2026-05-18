@@ -20,8 +20,7 @@ export default function ThankYouPage() {
           Sata Robo đã nhận được đăng ký của ba mẹ.
           <br />
           Đội ngũ tư vấn sẽ <strong>gọi điện hoặc nhắn Zalo</strong> cho ba mẹ
-          trong vòng <strong>24 giờ</strong> để sắp xếp lịch học 5 buổi miễn
-          phí.
+          sớm nhất để sắp xếp lịch học 5 buổi miễn phí.
         </p>
 
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border-2 border-purple-100">
@@ -38,7 +37,7 @@ export default function ThankYouPage() {
             </a>
           </p>
           <p className="text-gray-700 text-sm">
-            Giờ làm việc: 8:00 – 21:00 (T2 – CN)
+            Giờ làm việc: 8:00 – 17:30 (T2 – T7)
           </p>
         </div>
 
