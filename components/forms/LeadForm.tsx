@@ -188,7 +188,9 @@ export function LeadForm() {
           name="truong"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Trường con đang học (không bắt buộc)</FormLabel>
+              <FormLabel>
+                Trường con đang học <span className="text-red-500">*</span>
+              </FormLabel>
               <FormControl>
                 <Input
                   placeholder="VD: Trường Tiểu học Hoàng Văn Thụ"
@@ -217,15 +219,15 @@ export function LeadForm() {
                   className="flex flex-col gap-2"
                 >
                   {CO_SO_OPTIONS.map((coSo) => (
-                    <div key={coSo} className="flex items-center space-x-2">
-                      <RadioGroupItem value={coSo} id={coSo} />
-                      <Label
-                        htmlFor={coSo}
-                        className="font-normal cursor-pointer"
-                      >
+                    <label
+                      key={coSo}
+                      className="flex items-center gap-3 cursor-pointer rounded-md border border-gray-200 hover:border-cta-300 hover:bg-cta-50 p-3 transition-colors has-[[data-checked]]:border-cta-500 has-[[data-checked]]:bg-cta-50"
+                    >
+                      <RadioGroupItem value={coSo} />
+                      <span className="font-normal text-sm md:text-base text-gray-800">
                         {coSo}
-                      </Label>
-                    </div>
+                      </span>
+                    </label>
                   ))}
                 </RadioGroup>
               </FormControl>

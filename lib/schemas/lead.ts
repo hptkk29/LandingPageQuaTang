@@ -51,9 +51,8 @@ export const leadSchema = z.object({
   truong: z
     .string()
     .trim()
-    .max(200, "Tên trường tối đa 200 ký tự")
-    .optional()
-    .or(z.literal("")),
+    .min(2, "Vui lòng nhập tên trường của con")
+    .max(200, "Tên trường tối đa 200 ký tự"),
 
   co_so: z.enum(CO_SO_OPTIONS, { message: "Vui lòng chọn cơ sở" }),
 
