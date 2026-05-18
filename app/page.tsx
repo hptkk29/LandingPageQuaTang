@@ -1,27 +1,31 @@
+import { LeadForm } from "@/components/forms/LeadForm";
+
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-br from-purple-50 via-white to-amber-50 px-6">
-      <div className="max-w-2xl text-center py-16">
-        <div className="text-7xl mb-6">🎁</div>
-        <h1 className="text-4xl md:text-5xl font-bold text-purple-900 mb-4">
-          Landing Page Quà Tặng
-        </h1>
-        <p className="text-xl text-purple-700 mb-8">
-          5 Buổi Học RoboSim MIỄN PHÍ — Sata Robo
-        </p>
-        <div className="inline-block bg-white rounded-2xl shadow-lg px-8 py-6 border-2 border-purple-200">
-          <p className="text-gray-700 mb-2">
-            ✅ <strong>Phase 1 setup complete</strong>
+    <main className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-amber-50 py-12 px-6">
+      <div className="max-w-4xl mx-auto">
+        <div className="text-center mb-8">
+          <div className="text-6xl mb-4">🎁</div>
+          <h1 className="text-4xl md:text-5xl font-bold text-purple-900 mb-3">
+            Tặng 5 Buổi Học RoboSim MIỄN PHÍ
+          </h1>
+          <p className="text-lg text-gray-700">
+            Dành cho học sinh lớp 1 – 8 | 2 cơ sở Sata Robo Đà Nẵng
           </p>
-          <p className="text-sm text-gray-500">
-            Next.js 15 + Tailwind v4 + shadcn/ui + UI/UX Pro Max skill ready.
-            <br />
-            Landing page sẽ được build ở Phase 3.
+          <p className="mt-2 text-sm text-purple-700 font-medium">
+            🚧 [Phase 3.1 — Test form] Full landing page sẽ build ở Phase 3.2/3.3
           </p>
         </div>
-        <p className="mt-8 text-xs text-gray-400">
-          Repo: github.com/hptkk29/LandingPageQuaTang
-        </p>
+
+        <div className="bg-white rounded-2xl shadow-xl p-6 md:p-8 max-w-md mx-auto border-2 border-purple-100">
+          <h2 className="text-2xl font-bold text-purple-900 mb-1">
+            🎯 Đăng ký nhận quà
+          </h2>
+          <p className="text-sm text-gray-600 mb-6">
+            Sata Robo sẽ liên hệ ba mẹ trong 24 giờ.
+          </p>
+          <LeadForm />
+        </div>
       </div>
     </main>
   );
