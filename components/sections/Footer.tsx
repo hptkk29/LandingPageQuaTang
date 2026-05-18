@@ -132,7 +132,7 @@ export function Footer() {
                   <span>
                     <strong className="text-gray-300">{loc.address}</strong>
                     <br />
-                    {loc.city}
+                    {loc.district}, {loc.city}
                   </span>
                 </li>
               ))}

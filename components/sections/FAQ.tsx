@@ -21,8 +21,8 @@ const FAQS = [
     a: "MIỄN PHÍ 100%. Không thu bất kỳ khoản phí ẩn nào. Không bắt buộc đăng ký khoá học tiếp theo. Ba mẹ chỉ cần đăng ký để giữ chỗ — có thể huỷ bất cứ lúc nào trước buổi học.",
   },
   {
-    q: "Cơ sở học ở đâu?",
-    a: `Sata Robo có 2 cơ sở tại Đà Nẵng:\n• ${CAMPAIGN.locations[0].address} (khai giảng ${CAMPAIGN.locations[0].khaiGiangLabel})\n• ${CAMPAIGN.locations[1].address} (khai giảng ${CAMPAIGN.locations[1].khaiGiangLabel})\nKhi đăng ký, ba mẹ chọn 1 trong 2 cơ sở thuận tiện.`,
+    q: "Cơ sở học ở đâu? Có mấy đợt khai giảng?",
+    a: `Sata Robo có 2 cơ sở tại Đà Nẵng:\n• ${CAMPAIGN.locations[0].fullAddress}\n• ${CAMPAIGN.locations[1].fullAddress}\n\nMỗi cơ sở mở 2 đợt khai giảng:\n• ${CAMPAIGN.batches[0].shortLabel}\n• ${CAMPAIGN.batches[1].shortLabel}\n\nKhi đăng ký, ba mẹ chọn cơ sở thuận tiện — Sata Robo sẽ liên hệ tư vấn đợt phù hợp với lịch của con.`,
   },
   {
     q: "Đăng ký rồi có bị gọi điện ép mua khoá học tiếp không?",
@@ -30,7 +30,7 @@ const FAQS = [
   },
   {
     q: "Lớp có tối đa bao nhiêu học viên? Con có được hỗ trợ riêng không?",
-    a: `Mỗi lớp tối đa ${CAMPAIGN.totalSlotsPerLocation} học viên. Giáo viên đảm bảo hỗ trợ trực tiếp từng con — không có ai bị bỏ lại phía sau. Đây là lý do số suất giới hạn nghiêm ngặt theo cơ sở.`,
+    a: `Mỗi lớp tối thiểu ${CAMPAIGN.minStudents} học viên, tối đa ${CAMPAIGN.maxStudents} học viên — 1 giáo viên chính + 1 trợ giảng kèm sát từng con. Không có ai bị bỏ lại phía sau. Đây là lý do số suất giới hạn nghiêm ngặt theo cơ sở.`,
   },
   {
     q: "Nếu con vắng 1 buổi có học bù được không?",

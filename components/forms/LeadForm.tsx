@@ -26,12 +26,8 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 
-import {
-  leadSchema,
-  type LeadInput,
-  LOP_OPTIONS,
-  CO_SO_OPTIONS,
-} from "@/lib/schemas/lead";
+import { leadSchema, type LeadInput, LOP_OPTIONS } from "@/lib/schemas/lead";
+import { CAMPAIGN } from "@/lib/constants/campaign";
 import { submitLead } from "@/lib/api/submit-lead";
 
 export function LeadForm() {
@@ -218,16 +214,26 @@ export function LeadForm() {
                   value={field.value}
                   className="flex flex-col gap-2"
                 >
-                  {CO_SO_OPTIONS.map((coSo) => (
-                    <label
-                      key={coSo}
-                      className="flex items-center gap-3 cursor-pointer rounded-md border border-gray-200 hover:border-cta-300 hover:bg-cta-50 p-3 transition-colors has-[[data-checked]]:border-cta-500 has-[[data-checked]]:bg-cta-50"
+                  {CAMPAIGN.locations.map((loc) => (
+                    <Label
+                      key={loc.key}
+                      htmlFor={loc.key}
+                      className="flex items-start gap-3 cursor-pointer p-3 rounded-button border-2 border-gray-200 hover:border-cta-300 has-[[data-checked]]:border-cta-500 has-[[data-checked]]:bg-cta-50 transition-all"
                     >
-                      <RadioGroupItem value={coSo} />
-                      <span className="font-normal text-sm md:text-base text-gray-800">
-                        {coSo}
+                      <RadioGroupItem
+                        value={loc.address}
+                        id={loc.key}
+                        className="mt-0.5"
+                      />
+                      <span className="flex flex-col text-sm leading-tight">
+                        <span className="font-semibold text-gray-900">
+                          {loc.address}
+                        </span>
+                        <span className="text-xs text-gray-600 mt-0.5">
+                          {loc.district}, {loc.city}
+                        </span>
                       </span>
-                    </label>
+                    </Label>
                   ))}
                 </RadioGroup>
               </FormControl>

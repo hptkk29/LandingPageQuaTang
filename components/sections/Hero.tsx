@@ -193,22 +193,42 @@ export function Hero() {
             >
               <p className="font-display font-bold text-gray-900 text-sm md:text-base mb-3 flex items-center gap-2">
                 <span className="text-xl">📅</span>
-                LỊCH KHAI GIẢNG:
+                2 ĐỢT KHAI GIẢNG:
               </p>
-              <ul className="space-y-2 text-sm md:text-base">
-                {CAMPAIGN.locations.map((loc) => (
-                  <li
-                    key={loc.key}
-                    className="flex flex-wrap gap-x-2 items-center"
-                  >
-                    <span className="inline-block w-2 h-2 rounded-full bg-cta-500" />
-                    <span className="font-semibold text-gray-900">
-                      {loc.address}:
-                    </span>
-                    <span className="text-gray-700">{loc.khaiGiangLabel}</span>
+              <ul className="space-y-3 text-sm">
+                {CAMPAIGN.batches.map((batch) => (
+                  <li key={batch.key} className="flex items-start gap-2">
+                    <span
+                      className={`shrink-0 mt-1 inline-block w-2 h-2 rounded-full ${
+                        batch.priority === 1 ? "bg-cta-500" : "bg-brand-400"
+                      }`}
+                    />
+                    <div>
+                      <p className="font-display font-bold text-gray-900 leading-tight">
+                        {batch.priority === 1 && (
+                          <span className="inline-block bg-cta-100 text-cta-700 text-[10px] font-bold px-2 py-0.5 rounded-pill mr-1.5 align-middle">
+                            ƯU TIÊN
+                          </span>
+                        )}
+                        Khai giảng {batch.khaiGiangLabel}
+                      </p>
+                      <p className="text-gray-600 text-xs md:text-sm mt-0.5">
+                        Lịch học: {batch.scheduleLabel}
+                      </p>
+                    </div>
                   </li>
                 ))}
               </ul>
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <p className="text-xs text-gray-500 flex items-start gap-1.5">
+                  <span className="shrink-0">📍</span>
+                  <span>
+                    Áp dụng cho cả 2 cơ sở:{" "}
+                    {CAMPAIGN.locations[0].address} &{" "}
+                    {CAMPAIGN.locations[1].address}
+                  </span>
+                </p>
+              </div>
             </motion.div>
           </motion.div>
 
