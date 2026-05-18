@@ -86,7 +86,7 @@ export function CourseInfo() {
             {
               icon: "🎯",
               label: "Đối tượng",
-              value: `${CAMPAIGN.targetAudience}\n(${CAMPAIGN.targetGrades})`,
+              value: CAMPAIGN.targetAudience,
             },
             {
               icon: "📅",
