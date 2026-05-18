@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Container } from "@/components/shared/Container";
@@ -79,7 +79,7 @@ export function WhyChooseUs() {
         <div className="text-center mt-10">
           <a
             href="#dang-ky"
-            className="inline-flex items-center justify-center gap-2 bg-urgency-600 hover:bg-urgency-700 text-white font-display font-extrabold text-base md:text-lg px-8 py-4 rounded-button shadow-cta-red transition-all hover:scale-105"
+            className="inline-flex items-center justify-center gap-2 bg-brand-700 hover:bg-brand-800 text-white font-display font-extrabold text-base md:text-lg px-8 py-4 rounded-button shadow-cta transition-all hover:scale-105"
           >
             🎁 Đăng ký ngay cho con →
           </a>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 
@@ -47,7 +47,7 @@ export function Countdown({ targetDate, className = "" }: Props) {
         {["Ngày", "Giờ", "Phút", "Giây"].map((label) => (
           <div
             key={label}
-            className="aspect-square bg-urgency-700 rounded-button shadow-lg flex flex-col items-center justify-center text-white ring-2 ring-white/20"
+            className="aspect-square bg-brand-800 rounded-button shadow-lg flex flex-col items-center justify-center text-white ring-2 ring-white/20"
           >
             <span className="font-display font-extrabold text-2xl md:text-3xl lg:text-4xl tabular-nums">
               --
@@ -85,7 +85,7 @@ export function Countdown({ targetDate, className = "" }: Props) {
       {blocks.map((block) => (
         <div
           key={block.label}
-          className="aspect-square bg-urgency-700 rounded-button shadow-lg flex flex-col items-center justify-center text-white ring-2 ring-white/20"
+          className="aspect-square bg-brand-800 rounded-button shadow-lg flex flex-col items-center justify-center text-white ring-2 ring-white/20"
         >
           <span className="font-display font-extrabold text-2xl md:text-3xl lg:text-4xl tabular-nums">
             {String(block.value).padStart(2, "0")}

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { LeadForm } from "@/components/forms/LeadForm";
 import { Container } from "@/components/shared/Container";
@@ -10,7 +10,7 @@ export function Hero() {
     CAMPAIGN.totalSlotsPerLocation * CAMPAIGN.locations.length;
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-urgency-700 via-urgency-600 to-urgency-700 py-6 md:py-10">
+    <section className="relative overflow-hidden bg-gradient-to-br from-brand-900 via-brand-800 to-brand-700 py-6 md:py-10">
       <div
         aria-hidden="true"
         className="absolute inset-0 opacity-10"
@@ -25,8 +25,8 @@ export function Hero() {
       <Container size="xl" className="relative">
         {/* Top ribbon */}
         <div className="flex justify-center mb-6 md:mb-8">
-          <div className="inline-block bg-white border-2 border-urgency-200 rounded-pill px-6 md:px-10 py-2.5 md:py-3 shadow-card">
-            <h1 className="font-display text-base md:text-xl lg:text-2xl font-bold text-urgency-600 text-center">
+          <div className="inline-block bg-white border-2 border-brand-200 rounded-pill px-6 md:px-10 py-2.5 md:py-3 shadow-card">
+            <h1 className="font-display text-base md:text-xl lg:text-2xl font-bold text-brand-700 text-center">
               🎁 Đăng ký tham gia trải nghiệm sáng tạo công nghệ
             </h1>
           </div>
@@ -86,7 +86,7 @@ export function Hero() {
                 "Chuyên gia đánh giá năng khiếu công nghệ",
               ].map((benefit) => (
                 <li key={benefit} className="flex items-start gap-3">
-                  <span className="shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-white text-urgency-600 font-bold flex items-center justify-center text-base md:text-lg shadow-md">
+                  <span className="shrink-0 w-7 h-7 md:w-8 md:h-8 rounded-full bg-white text-brand-700 font-bold flex items-center justify-center text-base md:text-lg shadow-md">
                     ✓
                   </span>
                   <span className="font-display font-semibold text-base md:text-lg lg:text-xl leading-snug drop-shadow-md">
@@ -97,7 +97,7 @@ export function Hero() {
             </ul>
 
             <div className="mb-6 md:mb-8 inline-block relative">
-              <div className="bg-accent-400 text-brand-900 font-display font-extrabold text-lg md:text-2xl px-6 md:px-8 py-3 md:py-4 rounded-button shadow-cta-red border-2 border-white">
+              <div className="bg-accent-400 text-brand-900 font-display font-extrabold text-lg md:text-2xl px-6 md:px-8 py-3 md:py-4 rounded-button shadow-cta border-2 border-white">
                 💯 MIỄN PHÍ 100% cho 5 buổi học đầu tiên
               </div>
             </div>
@@ -135,7 +135,7 @@ export function Hero() {
                 <h2 className="font-display text-xl md:text-2xl font-extrabold text-gray-900 mb-1">
                   ĐĂNG KÝ THAM GIA LỚP HỌC THỬ
                 </h2>
-                <p className="font-display text-lg md:text-xl font-extrabold text-urgency-600">
+                <p className="font-display text-lg md:text-xl font-extrabold text-brand-700">
                   NHẬN ƯU ĐÃI KHỦNG
                 </p>
               </div>

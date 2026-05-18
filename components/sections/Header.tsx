@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Link from "next/link";
 import Image from "next/image";
@@ -49,7 +49,7 @@ export function Header() {
           <button
             type="button"
             onClick={scrollToForm}
-            className="bg-urgency-600 hover:bg-urgency-700 text-white font-display font-bold text-xs md:text-sm px-4 md:px-5 py-2 md:py-2.5 rounded-button shadow-md transition cursor-pointer"
+            className="bg-brand-700 hover:bg-brand-800 text-white font-display font-bold text-xs md:text-sm px-4 md:px-5 py-2 md:py-2.5 rounded-button shadow-md transition cursor-pointer"
           >
             🎁 Đăng ký ngay
           </button>

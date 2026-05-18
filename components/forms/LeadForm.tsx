@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -237,7 +237,7 @@ export function LeadForm() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-urgency-600 hover:bg-urgency-700 text-white font-display font-extrabold py-6 md:py-7 text-base md:text-lg rounded-button shadow-cta-red animate-pulse-cta disabled:animate-none"
+          className="w-full bg-brand-700 hover:bg-brand-800 text-white font-display font-extrabold py-6 md:py-7 text-base md:text-lg rounded-button shadow-cta animate-pulse-cta disabled:animate-none"
         >
           {isSubmitting ? "⏳ Đang gửi..." : "ĐĂNG KÝ NGAY →"}
         </Button>
