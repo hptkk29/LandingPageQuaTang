@@ -205,11 +205,6 @@ export function Hero() {
                     />
                     <div>
                       <p className="font-display font-bold text-gray-900 leading-tight">
-                        {batch.priority === 1 && (
-                          <span className="inline-block bg-cta-100 text-cta-700 text-[10px] font-bold px-2 py-0.5 rounded-pill mr-1.5 align-middle">
-                            ƯU TIÊN
-                          </span>
-                        )}
                         Khai giảng {batch.khaiGiangLabel}
                       </p>
                       <p className="text-gray-600 text-xs md:text-sm mt-0.5">
@@ -220,7 +215,7 @@ export function Hero() {
                 ))}
               </ul>
               <div className="mt-3 pt-3 border-t border-gray-100">
-                <p className="text-xs text-gray-500 flex items-start gap-1.5">
+                <p className="text-xs md:text-sm text-gray-600 flex items-start gap-1.5">
                   <span className="shrink-0">📍</span>
                   <span>
                     Áp dụng cho cả 2 cơ sở:{" "}
