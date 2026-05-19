@@ -1,8 +1,10 @@
-import type { Metadata } from "next";
-import { Inter, Be_Vietnam_Pro } from "next/font/google";
-import { Toaster } from "sonner";
-import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import "./globals.css";
+
+import type { Metadata } from "next";
+import { Be_Vietnam_Pro, Inter } from "next/font/google";
+import { Toaster } from "sonner";
+
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
