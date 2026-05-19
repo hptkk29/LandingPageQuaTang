@@ -54,17 +54,33 @@ export function LeadForm() {
     try {
       const res = await submitLead(data);
       if (res.ok) {
-        // Track conversion BEFORE redirect so events fire reliably
+        // === Meta Pixel: Lead event (generic, dùng cho campaign type Leads) ===
         trackMetaEvent("Lead", {
           content_name: "5 buổi RoboSim MIỄN PHÍ",
           content_category: "Robotics Education",
           value: 0,
           currency: "VND",
         });
+
+        // === Meta Pixel: CompleteRegistration (specific cho landing tuyển sinh — CPL thường thấp hơn 15-25%) ===
+        trackMetaEvent("CompleteRegistration", {
+          content_name: "5 buổi RoboSim MIỄN PHÍ",
+          status: true,
+          value: 0,
+          currency: "VND",
+        });
+
+        // === GA4: generate_lead ===
         trackGAEvent("generate_lead", {
           form_name: "quatang-robosim",
           co_so: data.co_so,
           lop: data.lop,
+        });
+
+        // === GA4: sign_up (standard event cho landing tuyển sinh) ===
+        trackGAEvent("sign_up", {
+          method: "landing-page-form",
+          co_so: data.co_so,
         });
 
         toast.success(res.message);
