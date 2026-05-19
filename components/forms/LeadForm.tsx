@@ -84,6 +84,12 @@ export function LeadForm() {
         });
 
         toast.success(res.message);
+
+        // FIX race condition: đợi 500ms để fbq/gtag kịp flush HTTP request
+        // tới facebook.com/tr & google-analytics.com/collect trước khi
+        // router.push() unmount page (browser sẽ abort pending requests on unload).
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
         router.push("/thank-you");
       } else {
         toast.error(res.message ?? "Có lỗi xảy ra, vui lòng thử lại");
