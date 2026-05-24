@@ -2,7 +2,6 @@ export const CAMPAIGN = {
   totalSlotsPerLocation: 12,
   totalSlots: 24,
 
-  // 2 cơ sở (CS3 đã bỏ)
   locations: [
     {
       key: "co-so-1",
@@ -20,31 +19,17 @@ export const CAMPAIGN = {
     },
   ],
 
-  // 2 đợt khai giảng — áp dụng cho cả 2 cơ sở
-  batches: [
-    {
-      key: "batch-1",
-      khaiGiang: "2026-05-23T15:45:00+07:00",
-      khaiGiangLabel: "Thứ 7, 23/5/2026",
-      scheduleLabel: "T4/T7 hằng tuần — 15h45-17h15",
-      shortLabel: "Đợt 1: 23/5 (T4/T7 — 15h45)",
-      priority: 1,
-    },
-    {
-      key: "batch-2",
-      khaiGiang: "2026-05-25T17:30:00+07:00",
-      khaiGiangLabel: "Thứ 2, 25/5/2026",
-      scheduleLabel: "T2/T5 hằng tuần — 17h30-19h00",
-      shortLabel: "Đợt 2: 25/5 (T2/T5 — 17h30)",
-      priority: 2,
-    },
-  ],
-
-  // Deadline đăng ký: hết 23:59 ngày 25/5/2026
-  registrationDeadline: "2026-05-25T23:59:59+07:00",
-
-  duration: "90 phút/buổi",
+  // Lịch học: Thứ 7 hằng tuần. Date hiển thị compute dynamically từ
+  // lib/utils/schedule.ts -> getNextSaturday() (luôn là Thứ 7 sắp tới).
+  classDayLabel: "Thứ 7 hằng tuần",
+  classTime: "15h45-17h15",
+  classDuration: "90 phút/buổi",
   totalSessions: 5,
+
+  // Registration deadline = end of upcoming Saturday (computed dynamically).
+  // Countdown component sẽ tự reset vào Chủ nhật 00:00 (sau khi Thứ 7
+  // 23:59:59 kết thúc) để đếm tới Thứ 7 tuần sau.
+
   targetAudience: "Học sinh Tiểu học & THCS",
   targetGrades: "Lớp 1 – 8",
   classroom: "Phòng 201",

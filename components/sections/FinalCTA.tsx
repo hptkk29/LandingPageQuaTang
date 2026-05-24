@@ -1,26 +1,24 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { Container } from "@/components/shared/Container";
 import { CAMPAIGN } from "@/lib/constants/campaign";
+import { getNextSaturdayEnd } from "@/lib/utils/schedule";
 
-function CountdownCompact({ targetDate }: { targetDate: string }) {
+function CountdownCompact({ getTarget }: { getTarget: () => Date }) {
   const [timeLeft, setTimeLeft] = useState<{
     days: number;
     hours: number;
     minutes: number;
     seconds: number;
   } | null>(null);
+  const getTargetRef = useRef(getTarget);
+  getTargetRef.current = getTarget;
 
   useEffect(() => {
-    const target = new Date(targetDate);
     function calc() {
-      const diff = target.getTime() - Date.now();
-      if (diff <= 0) {
-        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-        return;
-      }
+      const diff = Math.max(0, getTargetRef.current().getTime() - Date.now());
       setTimeLeft({
         days: Math.floor(diff / (1000 * 60 * 60 * 24)),
         hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
@@ -31,7 +29,7 @@ function CountdownCompact({ targetDate }: { targetDate: string }) {
     calc();
     const id = setInterval(calc, 1000);
     return () => clearInterval(id);
-  }, [targetDate]);
+  }, []);
 
   const labels = ["Ngày", "Giờ", "Phút", "Giây"];
   const values = timeLeft
@@ -132,7 +130,7 @@ export function FinalCTA() {
               Hết hạn đăng ký sau:
             </p>
             <div className="grid grid-cols-4 gap-2">
-              <CountdownCompact targetDate={CAMPAIGN.registrationDeadline} />
+              <CountdownCompact getTarget={getNextSaturdayEnd} />
             </div>
           </div>
 

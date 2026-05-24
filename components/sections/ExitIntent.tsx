@@ -3,6 +3,10 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CAMPAIGN } from "@/lib/constants/campaign";
+import {
+  formatVNDate,
+  getNextSaturday,
+} from "@/lib/utils/schedule";
 
 const STORAGE_KEY = "quatang-exit-intent-shown";
 
@@ -126,7 +130,7 @@ export function ExitIntent() {
                   💯 Ưu đãi chỉ áp dụng đến
                   <br />
                   <span className="text-cta-600 font-bold">
-                    23:59 ngày 25/5/2026
+                    23:59 Thứ 7, {formatVNDate(getNextSaturday())}
                   </span>
                 </p>
               </div>

@@ -5,6 +5,11 @@ import { LeadForm } from "@/components/forms/LeadForm";
 import { Container } from "@/components/shared/Container";
 import { Countdown } from "@/components/shared/Countdown";
 import { CAMPAIGN } from "@/lib/constants/campaign";
+import {
+  formatVNSaturdayLabel,
+  getNextSaturday,
+  getNextSaturdayEnd,
+} from "@/lib/utils/schedule";
 
 export function Hero() {
   const totalSlots =
@@ -181,7 +186,7 @@ export function Hero() {
                 <span className="text-cta-500 text-lg">⏰</span>
                 Hết hạn đăng ký sau:
               </p>
-              <Countdown targetDate={CAMPAIGN.registrationDeadline} />
+              <Countdown getTarget={getNextSaturdayEnd} />
             </div>
 
             {/* Schedule */}
@@ -193,26 +198,22 @@ export function Hero() {
             >
               <p className="font-display font-bold text-gray-900 text-sm md:text-base mb-3 flex items-center gap-2">
                 <span className="text-xl">📅</span>
-                2 ĐỢT KHAI GIẢNG:
+                LỊCH KHAI GIẢNG:
               </p>
               <ul className="space-y-3 text-sm">
-                {CAMPAIGN.batches.map((batch) => (
-                  <li key={batch.key} className="flex items-start gap-2">
-                    <span
-                      className={`shrink-0 mt-1 inline-block w-2 h-2 rounded-full ${
-                        batch.priority === 1 ? "bg-cta-500" : "bg-brand-400"
-                      }`}
-                    />
-                    <div>
-                      <p className="font-display font-bold text-gray-900 leading-tight">
-                        Khai giảng {batch.khaiGiangLabel}
-                      </p>
-                      <p className="text-gray-600 text-xs md:text-sm mt-0.5">
-                        Lịch học: {batch.scheduleLabel}
-                      </p>
-                    </div>
-                  </li>
-                ))}
+                <li className="flex items-start gap-2">
+                  <span className="shrink-0 mt-1 inline-block w-2 h-2 rounded-full bg-cta-500" />
+                  <div>
+                    <p className="font-display font-bold text-gray-900 leading-tight">
+                      Khai giảng đợt tới:{" "}
+                      {formatVNSaturdayLabel(getNextSaturday())}
+                    </p>
+                    <p className="text-gray-600 text-xs md:text-sm mt-0.5">
+                      Lịch học: {CAMPAIGN.classDayLabel} —{" "}
+                      {CAMPAIGN.classTime}
+                    </p>
+                  </div>
+                </li>
               </ul>
               <div className="mt-3 pt-3 border-t border-gray-100">
                 <p className="text-xs md:text-sm text-gray-600 flex items-start gap-1.5">

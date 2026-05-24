@@ -21,8 +21,8 @@ const FAQS = [
     a: "MIỄN PHÍ 100%. Không thu bất kỳ khoản phí ẩn nào. Không bắt buộc đăng ký khoá học tiếp theo. Ba mẹ chỉ cần đăng ký để giữ chỗ — có thể huỷ bất cứ lúc nào trước buổi học.",
   },
   {
-    q: "Cơ sở học ở đâu? Có mấy đợt khai giảng?",
-    a: `Sata Robo có 2 cơ sở tại Đà Nẵng:\n• ${CAMPAIGN.locations[0].fullAddress}\n• ${CAMPAIGN.locations[1].fullAddress}\n\nMỗi cơ sở mở 2 đợt khai giảng:\n• ${CAMPAIGN.batches[0].shortLabel}\n• ${CAMPAIGN.batches[1].shortLabel}\n\nKhi đăng ký, ba mẹ chọn cơ sở thuận tiện — Sata Robo sẽ liên hệ tư vấn đợt phù hợp với lịch của con.`,
+    q: "Cơ sở học ở đâu? Lịch khai giảng thế nào?",
+    a: `Sata Robo có 2 cơ sở tại Đà Nẵng:\n• ${CAMPAIGN.locations[0].fullAddress}\n• ${CAMPAIGN.locations[1].fullAddress}\n\nLịch học: ${CAMPAIGN.classDayLabel} — khung giờ ${CAMPAIGN.classTime}.\nMỗi tuần khai giảng 1 đợt mới vào Thứ 7 — ba mẹ đăng ký giữ chỗ cho con trước.\n\nKhi đăng ký, ba mẹ chọn cơ sở thuận tiện — Sata Robo sẽ liên hệ tư vấn lịch học phù hợp.`,
   },
   {
     q: "Đăng ký rồi có bị gọi điện ép mua khoá học tiếp không?",

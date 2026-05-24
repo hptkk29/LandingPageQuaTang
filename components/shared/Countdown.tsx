@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Props = {
-  targetDate: string;
+  /** Function returning the current target Date. Called on every tick so the
+   * countdown can auto-reset (e.g. for recurring weekly deadlines). */
+  getTarget: () => Date;
   className?: string;
 };
 
@@ -12,32 +14,31 @@ type TimeLeft = {
   hours: number;
   minutes: number;
   seconds: number;
-  expired: boolean;
 };
 
 function calculateTimeLeft(target: Date): TimeLeft {
-  const diff = target.getTime() - Date.now();
-  if (diff <= 0) {
-    return { days: 0, hours: 0, minutes: 0, seconds: 0, expired: true };
-  }
+  const diff = Math.max(0, target.getTime() - Date.now());
   return {
     days: Math.floor(diff / (1000 * 60 * 60 * 24)),
     hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
     minutes: Math.floor((diff / (1000 * 60)) % 60),
     seconds: Math.floor((diff / 1000) % 60),
-    expired: false,
   };
 }
 
-export function Countdown({ targetDate, className = "" }: Props) {
+export function Countdown({ getTarget, className = "" }: Props) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
+  const getTargetRef = useRef(getTarget);
+  getTargetRef.current = getTarget;
 
   useEffect(() => {
-    const target = new Date(targetDate);
-    setTimeLeft(calculateTimeLeft(target));
-    const timer = setInterval(() => setTimeLeft(calculateTimeLeft(target)), 1000);
+    function tick() {
+      setTimeLeft(calculateTimeLeft(getTargetRef.current()));
+    }
+    tick();
+    const timer = setInterval(tick, 1000);
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, []);
 
   if (!timeLeft) {
     return (
@@ -55,18 +56,6 @@ export function Countdown({ targetDate, className = "" }: Props) {
             </span>
           </div>
         ))}
-      </div>
-    );
-  }
-
-  if (timeLeft.expired) {
-    return (
-      <div
-        className={`text-center bg-gray-100 border-2 border-gray-300 rounded-card p-4 ${className}`}
-      >
-        <p className="text-gray-700 font-display font-bold text-lg">
-          ⏰ Đã hết hạn đăng ký
-        </p>
       </div>
     );
   }

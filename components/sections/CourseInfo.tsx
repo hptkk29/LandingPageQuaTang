@@ -91,12 +91,12 @@ export function CourseInfo() {
             {
               icon: "📅",
               label: "Lịch học",
-              value: "Khai giảng\n23/5 & 25/5",
+              value: `Khai giảng\n${CAMPAIGN.classDayLabel}`,
             },
             {
               icon: "⏱️",
               label: "Thời lượng",
-              value: CAMPAIGN.duration,
+              value: CAMPAIGN.classDuration,
             },
           ].map((fact, idx) => (
             <motion.div
