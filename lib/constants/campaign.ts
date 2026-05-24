@@ -19,9 +19,9 @@ export const CAMPAIGN = {
     },
   ],
 
-  // Lịch học: Thứ 7 hằng tuần. Date hiển thị compute dynamically từ
-  // lib/utils/schedule.ts -> getNextSaturday() (luôn là Thứ 7 sắp tới).
-  classDayLabel: "Thứ 7 hằng tuần",
+  // Lịch học: Thứ 7. Date hiển thị compute dynamically — call
+  // formatVNSaturdayLabel(getNextSaturday()) ở component để ra
+  // "Thứ 7, 30/05/2026" (luôn là Thứ 7 sắp tới, tự reset mỗi tuần).
   classTime: "15h45-17h15",
   classDuration: "90 phút/buổi",
   totalSessions: 5,

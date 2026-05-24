@@ -10,6 +10,12 @@ import {
 import { Container } from "@/components/shared/Container";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { CAMPAIGN } from "@/lib/constants/campaign";
+import {
+  formatVNSaturdayLabel,
+  getNextSaturday,
+} from "@/lib/utils/schedule";
+
+const nextSatLabel = formatVNSaturdayLabel(getNextSaturday());
 
 const FAQS = [
   {
@@ -22,7 +28,7 @@ const FAQS = [
   },
   {
     q: "Cơ sở học ở đâu? Lịch khai giảng thế nào?",
-    a: `Sata Robo có 2 cơ sở tại Đà Nẵng:\n• ${CAMPAIGN.locations[0].fullAddress}\n• ${CAMPAIGN.locations[1].fullAddress}\n\nLịch học: ${CAMPAIGN.classDayLabel} — khung giờ ${CAMPAIGN.classTime}.\nMỗi tuần khai giảng 1 đợt mới vào Thứ 7 — ba mẹ đăng ký giữ chỗ cho con trước.\n\nKhi đăng ký, ba mẹ chọn cơ sở thuận tiện — Sata Robo sẽ liên hệ tư vấn lịch học phù hợp.`,
+    a: `Sata Robo có 2 cơ sở tại Đà Nẵng:\n• ${CAMPAIGN.locations[0].fullAddress}\n• ${CAMPAIGN.locations[1].fullAddress}\n\nKhai giảng đợt tới: ${nextSatLabel} — khung giờ ${CAMPAIGN.classTime}.\nMỗi tuần khai giảng 1 đợt mới vào Thứ 7 — ba mẹ đăng ký giữ chỗ cho con trước.\n\nKhi đăng ký, ba mẹ chọn cơ sở thuận tiện — Sata Robo sẽ liên hệ tư vấn lịch học phù hợp.`,
   },
   {
     q: "Đăng ký rồi có bị gọi điện ép mua khoá học tiếp không?",

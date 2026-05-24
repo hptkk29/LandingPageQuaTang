@@ -209,8 +209,7 @@ export function Hero() {
                       {formatVNSaturdayLabel(getNextSaturday())}
                     </p>
                     <p className="text-gray-600 text-xs md:text-sm mt-0.5">
-                      Lịch học: {CAMPAIGN.classDayLabel} —{" "}
-                      {CAMPAIGN.classTime}
+                      Khung giờ: {CAMPAIGN.classTime} ({CAMPAIGN.classDuration})
                     </p>
                   </div>
                 </li>

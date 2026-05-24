@@ -42,16 +42,18 @@ export function getNextSaturday(): Date {
 }
 
 /**
- * Format a Date as "Thứ 7, DD/M/YYYY" — Vietnamese day label + date.
+ * Format a Date as "Thứ 7, DD/MM/YYYY" — Vietnamese day label + zero-padded date.
  */
 export function formatVNSaturdayLabel(d: Date): string {
   const dayName = DAYS_VN[d.getDay()];
-  return `${dayName}, ${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+  return `${dayName}, ${formatVNDate(d)}`;
 }
 
 /**
- * Format a Date as DD/M/YYYY only.
+ * Format a Date as DD/MM/YYYY (zero-padded day and month).
  */
 export function formatVNDate(d: Date): string {
-  return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  return `${dd}/${mm}/${d.getFullYear()}`;
 }

@@ -3,6 +3,10 @@
 import { motion } from "framer-motion";
 import { Container } from "@/components/shared/Container";
 import { CAMPAIGN } from "@/lib/constants/campaign";
+import {
+  formatVNSaturdayLabel,
+  getNextSaturday,
+} from "@/lib/utils/schedule";
 import { VideoReview } from "./VideoReview";
 
 const BENEFITS = [
@@ -91,7 +95,7 @@ export function CourseInfo() {
             {
               icon: "📅",
               label: "Lịch học",
-              value: `Khai giảng\n${CAMPAIGN.classDayLabel}`,
+              value: `Khai giảng\n${formatVNSaturdayLabel(getNextSaturday())}`,
             },
             {
               icon: "⏱️",
