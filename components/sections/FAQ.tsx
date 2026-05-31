@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import {
   Accordion,
   AccordionContent,
@@ -10,109 +9,90 @@ import {
 import { Container } from "@/components/shared/Container";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 import { CAMPAIGN } from "@/lib/constants/campaign";
-import {
-  formatVNSaturdayLabel,
-  getNextSaturday,
-} from "@/lib/utils/schedule";
-
-const nextSatLabel = formatVNSaturdayLabel(getNextSaturday());
 
 const FAQS = [
   {
-    q: "Con bao nhiêu tuổi thì học được khoá này?",
-    a: "Khoá 5 buổi miễn phí dành cho học sinh từ Lớp 1 đến Lớp 8 (6-14 tuổi). Giáo trình được thiết kế chia theo độ tuổi: nhóm 1-3 tập trung lắp ráp và tư duy logic cơ bản, nhóm 4-8 tập trung lập trình tự hành nâng cao.",
+    q: "Con 6 tuổi học được không? Chưa biết gì về lập trình có theo kịp không?",
+    a: "Hoàn toàn được. Lộ trình cấp Cơ bản (6–9 tuổi) bắt đầu từ lập trình kéo–thả trực quan, không cần biết trước kiến thức gì. Giáo viên kèm sát từng con trong lớp tối đa 12 học viên.",
   },
   {
-    q: "5 buổi học miễn phí thật không? Có thu phí ẩn hay điều kiện gì không?",
-    a: "MIỄN PHÍ 100%. Không thu bất kỳ khoản phí ẩn nào. Không bắt buộc đăng ký khoá học tiếp theo. Ba mẹ chỉ cần đăng ký để giữ chỗ — có thể huỷ bất cứ lúc nào trước buổi học.",
+    q: "Cam kết hoàn tiền 100% áp dụng thế nào?",
+    a: "Sau buổi học đầu tiên, nếu ba mẹ thấy con không phù hợp hoặc không hài lòng, Sata Robo hoàn lại 100% học phí — không hỏi lý do, không ràng buộc.",
   },
   {
-    q: "Cơ sở học ở đâu? Lịch khai giảng thế nào?",
-    a: `Sata Robo có 2 cơ sở tại Đà Nẵng:\n• ${CAMPAIGN.locations[0].fullAddress}\n• ${CAMPAIGN.locations[1].fullAddress}\n\nKhai giảng đợt tới: ${nextSatLabel} — khung giờ ${CAMPAIGN.classTime}.\nMỗi tuần khai giảng 1 đợt mới vào Thứ 7 — ba mẹ đăng ký giữ chỗ cho con trước.\n\nKhi đăng ký, ba mẹ chọn cơ sở thuận tiện — Sata Robo sẽ liên hệ tư vấn lịch học phù hợp.`,
+    q: "RoboSim là gì? Vì sao lại quan trọng?",
+    a: "RoboSim là phần mềm mô phỏng robot chuẩn quốc tế, được dùng tại nhiều giải đấu robotics. Con học và lập trình trên RoboSim trước, nắm chắc nguyên lý rồi mới thực hành robot thật — học chắc, tiết kiệm và an toàn.",
   },
   {
-    q: "Đăng ký rồi có bị gọi điện ép mua khoá học tiếp không?",
-    a: "Không. Sata Robo cam kết KHÔNG telesale ép buộc. Sau buổi học, ba mẹ chỉ nhận tin nhắn báo cáo tiến độ học của con. Nếu muốn tìm hiểu khoá tiếp theo, ba mẹ chủ động liên hệ — Sata Robo không gọi spam.",
+    q: "Học phí bao nhiêu? Có chính sách gì không?",
+    a: "Học phí hợp lý theo từng cấp, kèm nhiều ưu đãi tuyển sinh. Đặc biệt có cam kết hoàn tiền 100% sau buổi đầu, thưởng du lịch 3–7 triệu và hỗ trợ 3 triệu cho học viên thi quốc gia. Để lại thông tin để được tư vấn mức phí cụ thể.",
   },
   {
-    q: "Lớp có tối đa bao nhiêu học viên? Con có được hỗ trợ riêng không?",
-    a: `Mỗi lớp tối thiểu ${CAMPAIGN.minStudents} học viên, tối đa ${CAMPAIGN.maxStudents} học viên — 1 giáo viên chính + 1 trợ giảng kèm sát từng con. Không có ai bị bỏ lại phía sau. Đây là lý do số suất giới hạn nghiêm ngặt theo cơ sở.`,
+    q: "Lịch học như thế nào? Có linh hoạt không?",
+    a: "Lịch học linh hoạt vào cuối tuần và các buổi tối trong tuần. Khi đăng ký, ba mẹ chọn cơ sở thuận tiện và Sata Robo sẽ sắp xếp ca học phù hợp với con.",
   },
   {
-    q: "Nếu con vắng 1 buổi có học bù được không?",
-    a: "Có. Sata Robo sắp xếp học bù miễn phí ở buổi tiếp theo trong tuần (nếu lịch trống). Vui lòng báo trước ít nhất 1 ngày qua hotline hoặc Zalo để giáo viên chuẩn bị.",
+    q: "Con chưa có nền tảng công nghệ, có bị đuối so với bạn không?",
+    a: "Không. Lớp được chia theo độ tuổi và trình độ, sĩ số tối đa 12 nên giáo viên có thể kèm riêng. Con đi từ cơ bản, tiến bộ theo tốc độ của mình — ba mẹ nhận báo cáo tiến độ sau mỗi chặng.",
+  },
+  {
+    q: "Khoá học chuẩn bị cho kỳ thi 2026 ra sao?",
+    a: "Lộ trình hướng tới giải đấu RoboSim 2026: từ nền tảng đến lập trình tự hành, chiến thuật và luyện tập theo thể lệ. Học viên được chuẩn bị toàn diện để tự tin tranh tài.",
+  },
+  {
+    q: "Thưởng du lịch và hỗ trợ thi quốc gia cụ thể thế nào?",
+    a: "Học viên có thành tích xuất sắc được thưởng chuyến du lịch trị giá 3–7 triệu. Học viên đủ điều kiện dự thi cấp quốc gia được Sata Robo hỗ trợ 3 triệu chi phí.",
   },
 ];
 
 export function FAQ() {
   return (
-    <section
-      id="cau-hoi"
-      className="relative py-14 md:py-24 bg-surface-50 scroll-mt-20 overflow-hidden"
-    >
-      <div
-        aria-hidden="true"
-        className="absolute top-1/4 -right-32 w-96 h-96 bg-brand-100/50 rounded-full filter blur-3xl animate-blob-slow"
-      />
-
-      <Container className="relative max-w-3xl">
+    <section id="cau-hoi" className="py-14 md:py-24 bg-white scroll-mt-20">
+      <Container size="md">
         <SectionHeading
           eyebrow="Câu hỏi thường gặp"
           title="Ba mẹ thường hỏi mình những câu này"
-          description="Những thắc mắc phổ biến nhất trước khi đăng ký 5 buổi miễn phí."
+          description="Những thắc mắc phổ biến nhất trước khi đăng ký cho con."
         />
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-white rounded-card border-2 border-brand-100 shadow-soft p-2 md:p-3"
-        >
+        <div className="bg-surface-50 rounded-card border border-[#F5C49A] shadow-soft p-2 md:p-3">
           <Accordion>
             {FAQS.map((faq, idx) => (
               <AccordionItem
                 key={idx}
                 value={`item-${idx}`}
-                className="border-b border-gray-100 last:border-b-0"
+                className="border-b border-gray-200 last:border-b-0"
               >
-                <AccordionTrigger className="text-left font-display font-bold text-gray-900 hover:text-cta-600 text-base md:text-lg py-4 px-3 md:px-4 transition-colors group">
+                <AccordionTrigger className="text-left font-display font-bold text-gray-900 hover:text-cta-600 text-base md:text-lg py-4 px-3 md:px-4 group">
                   <span className="flex items-start gap-3">
-                    <span className="shrink-0 w-7 h-7 rounded-full bg-cta-100 text-cta-700 flex items-center justify-center font-bold text-sm group-hover:bg-cta-500 group-hover:text-white transition-colors">
+                    <span className="shrink-0 w-7 h-7 rounded-full bg-cta-50 text-cta-700 flex items-center justify-center font-bold text-sm group-hover:bg-cta-500 group-hover:text-white transition-colors">
                       ?
                     </span>
                     <span>{faq.q}</span>
                   </span>
                 </AccordionTrigger>
-                <AccordionContent className="text-gray-700 text-sm md:text-base leading-relaxed pb-4 px-3 md:px-4 pl-12 md:pl-14 whitespace-pre-line">
+                <AccordionContent className="text-gray-600 text-sm md:text-base leading-relaxed pb-4 px-3 md:px-4 pl-12 md:pl-14">
                   {faq.a}
                 </AccordionContent>
               </AccordionItem>
             ))}
           </Accordion>
-        </motion.div>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mt-8"
-        >
-          <p className="text-gray-700 text-sm md:text-base mb-4">
+        <div className="text-center mt-8">
+          <p className="text-gray-600 text-sm md:text-base mb-4">
             Còn câu hỏi khác? <strong>Inbox Zalo</strong> — Sata Robo phản hồi
-            trong <strong>ít phút</strong>.
+            trong ít phút.
           </p>
           <a
             href={`https://zalo.me/${CAMPAIGN.hotlineDigits}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-[#0068FF] hover:bg-[#0055CC] text-white font-display font-bold text-sm md:text-base px-6 py-3 rounded-button shadow-md transition-all hover:-translate-y-0.5"
+            className="inline-flex items-center gap-2 bg-cta-500 hover:bg-cta-600 text-white font-display font-bold text-sm md:text-base px-6 py-3 rounded-button shadow-cta transition-all hover:-translate-y-0.5"
           >
-            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 2C6.486 2 2 6.486 2 12c0 1.952.567 3.773 1.539 5.317L2 22l4.683-1.539A9.953 9.953 0 0012 22c5.514 0 10-4.486 10-10S17.514 2 12 2z" />
-            </svg>
-            Chat Zalo ngay →
+            💬 Chat Zalo ngay →
           </a>
-        </motion.div>
+        </div>
       </Container>
     </section>
   );

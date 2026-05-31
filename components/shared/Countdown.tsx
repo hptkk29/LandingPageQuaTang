@@ -29,7 +29,10 @@ function calculateTimeLeft(target: Date): TimeLeft {
 export function Countdown({ getTarget, className = "" }: Props) {
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const getTargetRef = useRef(getTarget);
-  getTargetRef.current = getTarget;
+
+  useEffect(() => {
+    getTargetRef.current = getTarget;
+  }, [getTarget]);
 
   useEffect(() => {
     function tick() {

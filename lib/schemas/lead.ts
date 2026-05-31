@@ -3,14 +3,11 @@ import { z } from "zod";
 const VN_PHONE_REGEX = /^(\+84|0)\d{8,10}$/;
 
 export const LOP_OPTIONS = [
-  "Lớp 1",
-  "Lớp 2",
-  "Lớp 3",
-  "Lớp 4",
+  "Lớp 1-2",
+  "Lớp 3-4",
   "Lớp 5",
-  "Lớp 6",
-  "Lớp 7",
-  "Lớp 8",
+  "Lớp 6-7",
+  "Lớp 8-9",
 ] as const;
 
 export const CO_SO_OPTIONS = [

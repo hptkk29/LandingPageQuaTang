@@ -1,105 +1,50 @@
-"use client";
-
-import { motion } from "framer-motion";
 import { Container } from "@/components/shared/Container";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 
 const REASONS = [
   {
-    icon: "🎓",
-    title: "Giáo trình bám sát GDPT 2018",
+    icon: "🎨",
+    title: "Biến thời gian màn hình thành sáng tạo",
     description:
-      "Nội dung thiết kế phù hợp lớp 1-8, đáp ứng yêu cầu năng lực STEM của Bộ GD&ĐT.",
+      "Thay vì chỉ giải trí, con dùng máy tính để thiết kế, lập trình và tạo ra sản phẩm robot của riêng mình.",
   },
   {
-    icon: "🏅",
-    title: "GV có thành tích dẫn đội thi",
+    icon: "🧠",
+    title: "Rèn tư duy & kiên nhẫn qua thực hành thật",
     description:
-      "Giáo viên Sata Robo nhiều năm dẫn dắt học sinh đạt giải Robotics cấp thành phố và quốc gia.",
+      "Học qua dự án thực tế: thử – sai – sửa. Con rèn tư duy logic, khả năng giải quyết vấn đề và sự kiên trì.",
   },
   {
-    icon: "🤖",
-    title: "Phần mềm RoboSim 3D chuyên nghiệp",
+    icon: "🏆",
+    title: "Tự tin khi có thành quả thật",
     description:
-      "Học mô phỏng trước khi đụng linh kiện thật — con nắm chắc lý thuyết, tự tin lập trình.",
-  },
-  {
-    icon: "🏫",
-    title: "2 cơ sở tiện lợi tại Đà Nẵng",
-    description:
-      "Cơ sở 211 Nguyễn Hữu Thọ và 114 Hoàng Diệu — đầu tư đầy đủ máy tính và không gian thực hành.",
-  },
-  {
-    icon: "📊",
-    title: "Báo cáo tiến độ rõ ràng",
-    description:
-      "Sau mỗi buổi, ba mẹ nhận nhận xét chi tiết về tiến bộ của con — biết con cần hỗ trợ gì.",
-  },
-  {
-    icon: "👥",
-    title: "Cộng đồng học sinh đam mê",
-    description:
-      "Con tham gia nhóm bạn cùng đam mê — cùng học, cùng thi đấu, tạo động lực dài hạn.",
+      "Con tự tay lắp ráp, lập trình robot chạy được và thuyết trình về sản phẩm — tự tin từ thành quả cụ thể.",
   },
 ];
 
 export function WhyChooseUs() {
   return (
-    <section
-      id="vi-sao"
-      className="relative py-14 md:py-24 bg-surface-50 overflow-hidden scroll-mt-20"
-    >
-      <div
-        aria-hidden="true"
-        className="absolute bottom-0 left-0 w-96 h-96 bg-cta-100/50 rounded-full filter blur-3xl animate-blob-delayed"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute top-0 right-0 w-80 h-80 bg-brand-100/50 rounded-full filter blur-3xl animate-blob-slow"
-      />
-
-      <Container size="xl" className="relative">
+    <section id="vi-sao" className="py-14 md:py-24 bg-white scroll-mt-20">
+      <Container>
         <SectionHeading
-          eyebrow="Vì sao chọn Sata Robo"
-          title="6 lý do hơn 500 ba mẹ Đà Nẵng đã chọn Sata Robo"
+          eyebrow="Vì sao nên cho con học"
+          title="Học lập trình Robot mang lại gì cho con?"
+          description="Ba giá trị cốt lõi mà mỗi học viên Sata Robo nhận được."
         />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-          {REASONS.map((reason, idx) => (
-            <motion.div
-              key={reason.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.4, delay: (idx % 3) * 0.1 }}
-              className="bg-white rounded-card p-6 md:p-7 border-2 border-brand-100 hover:border-cta-300 hover:shadow-card-hover transition-all tilt-card group relative overflow-hidden"
+        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+          {REASONS.map((r) => (
+            <div
+              key={r.title}
+              className="bg-cta-50 rounded-card p-8 border border-[#F5C49A] text-center hover:shadow-card transition-shadow"
             >
-              <div
-                aria-hidden="true"
-                className="absolute -top-8 -right-8 w-24 h-24 bg-cta-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-              />
-              <div className="relative">
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform inline-block">
-                  {reason.icon}
-                </div>
-                <h3 className="font-display text-lg md:text-xl font-bold text-gray-900 mb-3 leading-tight">
-                  {reason.title}
-                </h3>
-                <p className="text-gray-700 text-sm md:text-base leading-relaxed">
-                  {reason.description}
-                </p>
-              </div>
-            </motion.div>
+              <div className="text-5xl md:text-6xl mb-5">{r.icon}</div>
+              <h3 className="font-display text-xl md:text-2xl font-bold text-cta-700 mb-3 leading-tight">
+                {r.title}
+              </h3>
+              <p className="text-gray-600 leading-relaxed">{r.description}</p>
+            </div>
           ))}
-        </div>
-
-        <div className="text-center mt-10">
-          <a
-            href="#dang-ky"
-            className="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-cta-500 to-cta-600 hover:from-cta-600 hover:to-cta-700 text-white font-display font-extrabold text-base md:text-lg px-8 py-4 rounded-button shadow-cta hover:shadow-cta-glow transition-all hover:-translate-y-0.5"
-          >
-            🎁 Đăng ký ngay cho con →
-          </a>
         </div>
       </Container>
     </section>

@@ -1,9 +1,13 @@
 import { Header } from "@/components/sections/Header";
 import { Hero } from "@/components/sections/Hero";
-import { TrustBadges } from "@/components/sections/TrustBadges";
-import { CourseInfo } from "@/components/sections/CourseInfo";
 import { Problem } from "@/components/sections/Problem";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
+import { Commitments } from "@/components/sections/Commitments";
+import { CourseInfo } from "@/components/sections/CourseInfo";
+import { Roadmap } from "@/components/sections/Roadmap";
+import { TrustBadges } from "@/components/sections/TrustBadges";
+import { MidCTA } from "@/components/sections/MidCTA";
+import { Locations } from "@/components/sections/Locations";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { Footer } from "@/components/sections/Footer";
@@ -19,9 +23,9 @@ export default function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",
-    name: "Khoá học miễn phí 5 buổi RoboSim — Sata Robo",
+    name: "Lập trình Robot RoboSim cơ bản cho trẻ 6–13 tuổi — Sata Robo",
     description:
-      "5 buổi học Robotics đại cương miễn phí trên phần mềm RoboSim cho học sinh lớp 1-8 tại Đà Nẵng. Hành trang chinh phục Cuộc thi Sáng tạo Robotics 2026.",
+      "Khoá học lập trình robot RoboSim cho học sinh 6–13 tuổi tại Đà Nẵng. Lộ trình 3 cấp, lớp ≤12 học viên, cam kết hoàn tiền 100%, hành trang chinh phục giải đấu RoboSim 2026.",
     provider: {
       "@type": "Organization",
       name: "Sata Robo",
@@ -49,8 +53,6 @@ export default function HomePage() {
     })),
     offers: {
       "@type": "Offer",
-      price: "0",
-      priceCurrency: "VND",
       availability: "https://schema.org/InStock",
       validThrough: nextSatEnd.toISOString(),
     },
@@ -58,7 +60,7 @@ export default function HomePage() {
     audience: {
       "@type": "EducationalAudience",
       educationalRole: "student",
-      audienceType: "Students grades 1-8",
+      audienceType: "Students aged 6-13",
     },
   };
 
@@ -71,10 +73,14 @@ export default function HomePage() {
       <Header />
       <main>
         <Hero />
-        <TrustBadges />
-        <CourseInfo />
         <Problem />
         <WhyChooseUs />
+        <Commitments />
+        <CourseInfo />
+        <Roadmap />
+        <TrustBadges />
+        <MidCTA />
+        <Locations />
         <FAQ />
         <FinalCTA />
       </main>
