@@ -4,7 +4,6 @@ import { TrustBadges } from "@/components/sections/TrustBadges";
 import { CourseInfo } from "@/components/sections/CourseInfo";
 import { Problem } from "@/components/sections/Problem";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
-import { Testimonials } from "@/components/sections/Testimonials";
 import { FAQ } from "@/components/sections/FAQ";
 import { FinalCTA } from "@/components/sections/FinalCTA";
 import { Footer } from "@/components/sections/Footer";
@@ -76,7 +75,6 @@ export default function HomePage() {
         <CourseInfo />
         <Problem />
         <WhyChooseUs />
-        <Testimonials />
         <FAQ />
         <FinalCTA />
       </main>

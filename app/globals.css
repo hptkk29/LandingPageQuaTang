@@ -1,33 +1,34 @@
 @import "tailwindcss";
 
 @theme {
-  /* === SURFACE (Trắng, off-white) === */
+  /* === SURFACE (Trắng, xám rất nhạt) === */
   --color-surface-0: #FFFFFF;
-  --color-surface-50: #FAFAF9;
-  --color-surface-100: #F5F5F4;
+  --color-surface-50: #FAFAFA;
+  --color-surface-100: #F5F5F5;
   --color-surface-200: #E7E5E4;
 
-  /* === BRAND (Tím nhẹ Sata Robo) === */
-  --color-brand-50: #F5F3FF;
-  --color-brand-100: #EDE9FE;
-  --color-brand-200: #DDD6FE;
-  --color-brand-300: #C4B5FD;
-  --color-brand-400: #A78BFA;
-  --color-brand-500: #8B5CF6;
-  --color-brand-600: #7C3AED;
-  --color-brand-700: #6D28D9;
-  --color-brand-800: #5B21B6;
-  --color-brand-900: #4C1D95;
+  /* === BRAND (Cam đậm — heading / eyebrow) ===
+     Trước đây là tím; đổi sang tông cam để toàn trang trắng + cam thuần. */
+  --color-brand-50: #FFF4ED;
+  --color-brand-100: #FFE6D5;
+  --color-brand-200: #FDD0AE;
+  --color-brand-300: #FDBA74;
+  --color-brand-400: #FB923C;
+  --color-brand-500: #F26419;
+  --color-brand-600: #DC5410;
+  --color-brand-700: #C24B00;
+  --color-brand-800: #9A3412;
+  --color-brand-900: #7C2D12;
 
   /* === CTA (Cam — primary action) === */
-  --color-cta-50: #FFF7ED;
-  --color-cta-100: #FFEDD5;
-  --color-cta-200: #FED7AA;
-  --color-cta-300: #FDBA74;
-  --color-cta-400: #FB923C;
-  --color-cta-500: #F97316;
-  --color-cta-600: #EA580C;
-  --color-cta-700: #C2410C;
+  --color-cta-50: #FFF0E6;
+  --color-cta-100: #FFE0CC;
+  --color-cta-200: #F5C49A;
+  --color-cta-300: #F4A878;
+  --color-cta-400: #F4854A;
+  --color-cta-500: #F26419;
+  --color-cta-600: #DC5410;
+  --color-cta-700: #C24B00;
   --color-cta-800: #9A3412;
   --color-cta-900: #7C2D12;
 
@@ -54,9 +55,9 @@
   --shadow-soft: 0 4px 16px -2px rgb(0 0 0 / 0.06);
   --shadow-card: 0 12px 32px -8px rgb(0 0 0 / 0.1);
   --shadow-card-hover: 0 20px 40px -12px rgb(0 0 0 / 0.15);
-  --shadow-cta: 0 8px 24px -4px rgb(249 115 22 / 0.4);
-  --shadow-cta-glow: 0 0 32px rgb(249 115 22 / 0.45);
-  --shadow-brand-glow: 0 0 32px rgb(139 92 246 / 0.3);
+  --shadow-cta: 0 8px 24px -4px rgb(242 100 25 / 0.4);
+  --shadow-cta-glow: 0 0 32px rgb(242 100 25 / 0.45);
+  --shadow-brand-glow: 0 0 32px rgb(242 100 25 / 0.3);
 }
 
 html {
@@ -129,12 +130,12 @@ body {
 @keyframes pulse-glow {
   0%,
   100% {
-    box-shadow: 0 8px 24px -4px rgb(249 115 22 / 0.4),
-      0 0 0 0 rgb(249 115 22 / 0.4);
+    box-shadow: 0 8px 24px -4px rgb(242 100 25 / 0.4),
+      0 0 0 0 rgb(242 100 25 / 0.4);
   }
   50% {
-    box-shadow: 0 12px 32px -4px rgb(249 115 22 / 0.5),
-      0 0 0 12px rgb(249 115 22 / 0);
+    box-shadow: 0 12px 32px -4px rgb(242 100 25 / 0.5),
+      0 0 0 12px rgb(242 100 25 / 0);
   }
 }
 .animate-pulse-glow {

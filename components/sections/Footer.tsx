@@ -172,7 +172,7 @@ export function Footer() {
         {/* Bottom bar */}
         <div className="pt-6 border-t border-gray-800 text-center md:text-left md:flex md:items-center md:justify-between gap-4">
           <p className="text-xs text-gray-500 mb-2 md:mb-0">
-            Công ty Cổ phần Công nghệ Giáo dục Sata Robo · MST: 0402301783
+            Công ty Cổ phần Công nghệ Giáo dục Sata Robo
           </p>
           <p className="text-xs text-gray-500">
             {`© ${new Date().getFullYear()} Sata Robo. Bảo lưu mọi quyền.`}
