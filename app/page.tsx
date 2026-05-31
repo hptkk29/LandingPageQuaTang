@@ -1,4 +1,5 @@
 import { Header } from "@/components/sections/Header";
+import { Banner } from "@/components/sections/Banner";
 import { Hero } from "@/components/sections/Hero";
 import { Problem } from "@/components/sections/Problem";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
@@ -72,6 +73,7 @@ export default function HomePage() {
       />
       <Header />
       <main>
+        <Banner />
         <Hero />
         <Problem />
         <WhyChooseUs />
