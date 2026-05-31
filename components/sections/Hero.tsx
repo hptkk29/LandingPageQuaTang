@@ -1,13 +1,6 @@
+import Image from "next/image";
 import { LeadForm } from "@/components/forms/LeadForm";
 import { Container } from "@/components/shared/Container";
-
-const CHIPS = ["ROBOTICS", "ROBOSIM", "CODING"];
-
-const STATS = [
-  { value: "≤12", label: "học viên / lớp" },
-  { value: "2026", label: "RoboSim" },
-  { value: "100%", label: "hoàn tiền" },
-];
 
 export function Hero() {
   return (
@@ -23,52 +16,20 @@ export function Hero() {
 
       <Container size="xl" className="relative">
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-8 lg:gap-12 items-center">
-          {/* LEFT */}
-          <div>
-            <div className="inline-flex items-center gap-2 bg-cta-50 border border-[#F5C49A] rounded-pill px-4 py-2 mb-6">
-              <span className="w-2 h-2 rounded-full bg-cta-500 animate-pulse" />
-              <span className="font-display font-semibold text-cta-700 text-sm">
-                Tuyển sinh RoboSim 2026
-              </span>
-            </div>
+          {/* LEFT: Banner image */}
+          <a href="#dang-ky" className="block scroll-mt-20" aria-label="Đăng ký học thử miễn phí">
+            <Image
+              src="/hero-banner.jpg"
+              alt="Lập trình Robot RoboSim cơ bản cho trẻ 6–13 tuổi — Sata Robo"
+              width={1920}
+              height={820}
+              priority
+              sizes="(max-width: 1024px) 100vw, 55vw"
+              className="w-full h-auto rounded-card shadow-card"
+            />
+          </a>
 
-            <h1 className="font-display text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight mb-5">
-              Lập trình Robot{" "}
-              <span className="text-cta-600">RoboSim cơ bản</span> cho trẻ 6–13
-              tuổi
-            </h1>
-
-            <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-              Khơi dậy đam mê công nghệ, rèn tư duy logic và sự tự tin cho con
-              qua các khoá học lập trình robot thực hành.
-            </p>
-
-            {/* Chips */}
-            <div className="flex flex-wrap gap-3 mb-7">
-              {CHIPS.map((chip) => (
-                <span
-                  key={chip}
-                  className="px-4 py-1.5 rounded-pill bg-white border border-[#F5C49A] text-cta-700 text-sm font-display font-bold tracking-wider"
-                >
-                  {chip}
-                </span>
-              ))}
-            </div>
-
-            {/* Stats */}
-            <div className="flex flex-wrap gap-6 md:gap-8">
-              {STATS.map((s) => (
-                <div key={s.label}>
-                  <div className="font-display text-3xl md:text-4xl font-extrabold text-cta-600">
-                    {s.value}
-                  </div>
-                  <div className="text-gray-500 text-sm">{s.label}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* RIGHT: Form */}
+          {/* RIGHT: Form (giữ nguyên) */}
           <div id="dang-ky" className="scroll-mt-20">
             <div className="bg-white rounded-card shadow-card border border-[#F5C49A] p-5 md:p-7 lg:p-8">
               <div className="text-center mb-5">
