@@ -76,7 +76,7 @@ export function Carousel({ children, className, interval = 3500 }: Props) {
       {Children.map(children, (child, i) => (
         <div
           key={i}
-          className="snap-center shrink-0 w-[85%] sm:w-[60%] md:w-auto"
+          className="snap-center shrink-0 w-full md:w-auto"
         >
           {child}
         </div>
