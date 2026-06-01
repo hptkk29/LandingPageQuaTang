@@ -1,3 +1,5 @@
+import { Carousel } from "@/components/shared/Carousel";
+
 const STATS = [
   { num: "500+", lbl: "Học viên đã đào tạo" },
   { num: "2", lbl: "Cơ sở tại Đà Nẵng" },
@@ -15,14 +17,14 @@ export function TrustBadges() {
           <span className="kicker kicker--onlight">Niềm tin từ cộng đồng</span>
           <h2 className="sticker sticker--red">Được phụ huynh &amp; đối tác<br />Đà Nẵng <span className="hl">tin tưởng</span></h2>
         </div>
-        <div className="grid-cards grid-4">
+        <Carousel className="md:grid-cols-4">
           {STATS.map((s) => (
             <div className="tb-stat" key={s.lbl}>
               <div className="num">{s.num}</div>
               <div className="lbl">{s.lbl}</div>
             </div>
           ))}
-        </div>
+        </Carousel>
         <p className="partners-label">Đồng hành &amp; bảo trợ</p>
         <div className="partners">
           {PARTNERS.map((p) => (<div className="partner" key={p}>{p}</div>))}

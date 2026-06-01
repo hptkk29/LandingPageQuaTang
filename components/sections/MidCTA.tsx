@@ -8,7 +8,7 @@ const BULLETS = [
 
 export function MidCTA() {
   return (
-    <section className="section section--red midcta">
+    <section className="section section--cream midcta">
       <div className="container container--xl">
         <div className="grid">
           <div>

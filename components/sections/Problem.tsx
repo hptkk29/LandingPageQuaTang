@@ -53,11 +53,11 @@ function PCard({ p }: { p: (typeof PAIN_POINTS)[number] }) {
 
 export function Problem() {
   return (
-    <section id="van-de" className="section section--red" style={{ scrollMarginTop: 80 }}>
+    <section id="van-de" className="section section--white" style={{ scrollMarginTop: 80 }}>
       <div className="container container--xl">
         <div className="head">
-          <span className="kicker kicker--onred">Ba mẹ có đang lo lắng?</span>
-          <h2 className="sticker sticker--light">Nếu con thường xuyên<br />gặp phải các <span className="hl">vấn đề sau</span>:</h2>
+          <span className="kicker kicker--onlight">Ba mẹ có đang lo lắng?</span>
+          <h2 className="sticker sticker--red">Nếu con thường xuyên<br />gặp phải các <span className="hl">vấn đề sau</span>:</h2>
         </div>
         <div className="problem-stage">
           <div className="problem-col">
@@ -72,7 +72,7 @@ export function Problem() {
             <PCard p={PAIN_POINTS[3]} />
           </div>
         </div>
-        <p style={{ textAlign: "center", marginTop: 40, fontFamily: "var(--fontd)", fontWeight: 700, fontSize: "clamp(1.1rem,2.2vw,1.5rem)", color: "#fff", position: "relative", zIndex: 2 }}>
+        <p style={{ textAlign: "center", marginTop: 40, fontFamily: "var(--fontd)", fontWeight: 700, fontSize: "clamp(1.1rem,2.2vw,1.5rem)", color: "var(--red-600)", position: "relative", zIndex: 2 }}>
           → Lập trình Robot RoboSim biến những nỗi lo đó thành cơ hội phát triển ↓
         </p>
       </div>

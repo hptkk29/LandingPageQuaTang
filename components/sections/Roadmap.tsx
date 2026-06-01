@@ -45,7 +45,7 @@ export function Roadmap() {
   const lv = LEVELS[active];
 
   return (
-    <section id="chuong-trinh" className="section section--cream" style={{ scrollMarginTop: 80 }}>
+    <section id="chuong-trinh" className="section section--white" style={{ scrollMarginTop: 80 }}>
       <div className="container container--md">
         <div className="head">
           <span className="kicker kicker--onlight">Lộ trình học</span>

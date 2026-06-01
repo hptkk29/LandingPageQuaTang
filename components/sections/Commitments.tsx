@@ -1,3 +1,5 @@
+import { Carousel } from "@/components/shared/Carousel";
+
 const COMMITMENTS = [
   {
     icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2 10h20" /></svg>,
@@ -39,7 +41,7 @@ export function Commitments() {
           <span className="kicker kicker--onlight">Cam kết của Sata Robo</span>
           <h2 className="sticker sticker--red">6 cam kết cho hành trình<br />học của <span className="hl">con</span></h2>
         </div>
-        <div className="grid-cards grid-3">
+        <Carousel className="md:grid-cols-3">
           {COMMITMENTS.map((c, i) => (
             <article className="commit" key={c.title}>
               <div className="top"><span className="no">{i + 1}</span><span className="gear-chip">{c.icon}</span></div>
@@ -47,7 +49,7 @@ export function Commitments() {
               <p>{c.desc}</p>
             </article>
           ))}
-        </div>
+        </Carousel>
       </div>
     </section>
   );

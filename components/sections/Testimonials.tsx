@@ -28,7 +28,7 @@ export function Testimonials() {
   // nhân đôi để marquee lặp liền mạch
   const loop = [...TESTIMONIALS, ...TESTIMONIALS];
   return (
-    <section className="section section--cream">
+    <section className="section section--white">
       <div className="container container--xl">
         <div className="head">
           <span className="kicker kicker--onlight">Phụ huynh nói gì</span>

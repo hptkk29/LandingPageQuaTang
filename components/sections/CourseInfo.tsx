@@ -29,11 +29,11 @@ const ZIGS = [
 
 export function CourseInfo() {
   return (
-    <section id="khac-biet" className="section section--red" style={{ scrollMarginTop: 80 }}>
+    <section id="khac-biet" className="section section--cream" style={{ scrollMarginTop: 80 }}>
       <div className="container container--xl">
         <div className="head">
-          <span className="kicker kicker--onred">Điểm khác biệt</span>
-          <h2 className="sticker sticker--light">Chương trình học tại Sata Robo<br />có gì <span className="hl">khác biệt</span>?</h2>
+          <span className="kicker kicker--onlight">Điểm khác biệt</span>
+          <h2 className="sticker sticker--red">Chương trình học tại Sata Robo<br />có gì <span className="hl">khác biệt</span>?</h2>
         </div>
 
         {ZIGS.map((z) => (

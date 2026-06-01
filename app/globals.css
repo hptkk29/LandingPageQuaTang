@@ -277,3 +277,12 @@ body {
   animation: marquee-x 50s linear infinite;
   will-change: transform;
 }
+
+/* Floating CTA — zoom in/out nhẹ */
+@keyframes zoom-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.07); }
+}
+.animate-zoom-breathe {
+  animation: zoom-breathe 1.8s ease-in-out infinite;
+}
