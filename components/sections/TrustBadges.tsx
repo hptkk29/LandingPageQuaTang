@@ -10,8 +10,7 @@ const STATS = [
 
 const PARTNERS = [
   "Thành Đoàn Đà Nẵng",
-  "Báo Đà Nẵng",
-  "Sở Giáo dục & Đào tạo",
+  "Báo Sở hữu trí tuệ",
   "Nghị quyết 57",
 ];
 

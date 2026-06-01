@@ -1,4 +1,3 @@
-import { Carousel } from "@/components/shared/Carousel";
 import { Container } from "@/components/shared/Container";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 
@@ -69,46 +68,58 @@ const TESTIMONIALS = [
   },
 ];
 
-export function Testimonials() {
+function Card({
+  t,
+}: {
+  t: (typeof TESTIMONIALS)[number];
+}) {
   return (
-    <section className="py-14 md:py-24 bg-white">
+    <div className="mr-5 md:mr-6 w-[300px] md:w-[360px] shrink-0">
+      <div className="h-full bg-cta-50 rounded-card p-6 md:p-7 border border-[#F5C49A] shadow-soft flex flex-col">
+        <div className="text-amber-400 text-lg mb-3 tracking-wide">★★★★★</div>
+        <p className="text-gray-700 leading-relaxed italic mb-5 flex-1">
+          &ldquo;{t.quote}&rdquo;
+        </p>
+        <div className="flex items-center gap-3 pt-4 border-t border-[#F5C49A]/60">
+          <div className="shrink-0 w-11 h-11 rounded-full bg-gradient-to-br from-cta-400 to-cta-600 text-white flex items-center justify-center font-display font-bold">
+            {t.initial}
+          </div>
+          <div className="min-w-0">
+            <p className="font-display font-bold text-gray-900 text-sm leading-tight">
+              {t.name}
+            </p>
+            <p className="text-xs text-gray-500 leading-tight">{t.role}</p>
+            <p className="text-xs text-gray-400 leading-tight">
+              📍 {t.location}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function Testimonials() {
+  // Nhân đôi danh sách để marquee lặp liền mạch (translateX -50%)
+  const loop = [...TESTIMONIALS, ...TESTIMONIALS];
+
+  return (
+    <section className="py-14 md:py-24 bg-white overflow-hidden">
       <Container size="xl">
         <SectionHeading
           eyebrow="Phụ huynh nói gì"
           title="2.000+ phụ huynh tin tưởng"
           description="Những phản hồi thật từ phụ huynh đã cho con học tại Sata Robo."
         />
-
-        <Carousel className="md:grid-cols-2 lg:grid-cols-3">
-          {TESTIMONIALS.map((t) => (
-            <div
-              key={t.name}
-              className="h-full bg-cta-50 rounded-card p-6 md:p-7 border border-[#F5C49A] shadow-soft flex flex-col"
-            >
-              <div className="text-amber-400 text-lg mb-3 tracking-wide">
-                ★★★★★
-              </div>
-              <p className="text-gray-700 leading-relaxed italic mb-5 flex-1">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-              <div className="flex items-center gap-3 pt-4 border-t border-[#F5C49A]/60">
-                <div className="shrink-0 w-11 h-11 rounded-full bg-gradient-to-br from-cta-400 to-cta-600 text-white flex items-center justify-center font-display font-bold">
-                  {t.initial}
-                </div>
-                <div className="min-w-0">
-                  <p className="font-display font-bold text-gray-900 text-sm leading-tight">
-                    {t.name}
-                  </p>
-                  <p className="text-xs text-gray-500 leading-tight">{t.role}</p>
-                  <p className="text-xs text-gray-400 leading-tight">
-                    📍 {t.location}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </Carousel>
       </Container>
+
+      <div className="group relative [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
+        <div className="flex w-max items-stretch animate-marquee group-hover:[animation-play-state:paused] motion-reduce:animate-none">
+          {loop.map((t, i) => (
+            <Card key={`${t.name}-${i}`} t={t} />
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
