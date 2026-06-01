@@ -30,7 +30,7 @@ const PAIN_POINTS = [
 
 export function Problem() {
   return (
-    <section className="py-14 md:py-24 bg-surface-50">
+    <section className="py-14 md:py-24 bg-white">
       <Container>
         <SectionHeading
           eyebrow="Ba mẹ có đang lo lắng?"
@@ -42,7 +42,7 @@ export function Problem() {
           {PAIN_POINTS.map((p) => (
             <div
               key={p.title}
-              className="bg-white rounded-card p-6 md:p-7 border border-[#F5C49A] shadow-soft hover:shadow-card transition-shadow text-center"
+              className="bg-cta-50 rounded-card p-6 md:p-7 border border-[#F5C49A] shadow-soft hover:shadow-card transition-shadow text-center"
             >
               <div className="text-4xl md:text-5xl mb-3">{p.icon}</div>
               <h3 className="font-display text-lg md:text-xl font-bold text-gray-900 mb-2 leading-tight">

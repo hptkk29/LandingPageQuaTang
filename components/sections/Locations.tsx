@@ -4,7 +4,7 @@ import { CAMPAIGN } from "@/lib/constants/campaign";
 
 export function Locations() {
   return (
-    <section id="co-so" className="py-14 md:py-24 bg-surface-100 scroll-mt-20">
+    <section id="co-so" className="py-14 md:py-24 bg-white scroll-mt-20">
       <Container>
         <SectionHeading
           eyebrow="Hệ thống cơ sở"
@@ -20,7 +20,7 @@ export function Locations() {
             return (
               <div
                 key={loc.key}
-                className="bg-white rounded-card p-7 md:p-8 border border-[#F5C49A] shadow-soft hover:shadow-card transition-shadow"
+                className="bg-cta-50 rounded-card p-7 md:p-8 border border-[#F5C49A] shadow-soft hover:shadow-card transition-shadow"
               >
                 <div className="flex items-start gap-3 mb-4">
                   <span className="text-3xl">📍</span>

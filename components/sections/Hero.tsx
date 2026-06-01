@@ -11,21 +11,21 @@ const STATS = [
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-surface-50 via-white to-surface-50 pt-8 md:pt-12 pb-14 md:pb-20">
+    <section className="relative overflow-hidden bg-gradient-to-b from-cta-50 via-cta-50 to-white pt-8 md:pt-12 pb-14 md:pb-20">
       <div
         aria-hidden="true"
-        className="absolute -top-20 -left-24 w-[420px] h-[420px] bg-cta-100/50 rounded-full blur-3xl"
+        className="absolute -top-20 -left-24 w-[420px] h-[420px] bg-cta-100/60 rounded-full blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="absolute top-10 -right-24 w-[420px] h-[420px] bg-cta-50 rounded-full blur-3xl"
+        className="absolute top-10 -right-24 w-[420px] h-[420px] bg-cta-100/50 rounded-full blur-3xl"
       />
 
       <Container size="xl" className="relative">
         <div className="grid lg:grid-cols-[1.1fr_1fr] gap-8 lg:gap-12 items-center">
           {/* LEFT */}
           <div>
-            <div className="inline-flex items-center gap-2 bg-cta-50 border border-[#F5C49A] rounded-pill px-4 py-2 mb-6">
+            <div className="inline-flex items-center gap-2 bg-white border border-[#F5C49A] rounded-pill px-4 py-2 mb-6 shadow-soft">
               <span className="w-2 h-2 rounded-full bg-cta-500 animate-pulse" />
               <span className="font-display font-semibold text-cta-700 text-sm">
                 Tuyển sinh RoboSim 2026
@@ -48,7 +48,7 @@ export function Hero() {
               {CHIPS.map((chip) => (
                 <span
                   key={chip}
-                  className="px-4 py-1.5 rounded-pill bg-white border border-[#F5C49A] text-cta-700 text-sm font-display font-bold tracking-wider"
+                  className="px-4 py-1.5 rounded-pill bg-white border border-[#F5C49A] text-cta-700 text-sm font-display font-bold tracking-wider shadow-soft"
                 >
                   {chip}
                 </span>

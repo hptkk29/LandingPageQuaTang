@@ -3,9 +3,9 @@ import { CAMPAIGN } from "@/lib/constants/campaign";
 
 export function FinalCTA() {
   return (
-    <section className="py-14 md:py-24 bg-surface-50">
+    <section className="py-14 md:py-24 bg-white">
       <Container size="md">
-        <div className="text-center max-w-2xl mx-auto">
+        <div className="text-center max-w-2xl mx-auto bg-cta-50 border border-[#F5C49A] rounded-card shadow-soft px-6 py-10 md:px-10 md:py-12">
           <p className="font-display text-sm font-semibold uppercase tracking-wider text-cta-600 mb-3">
             Sẵn sàng cho con bắt đầu?
           </p>

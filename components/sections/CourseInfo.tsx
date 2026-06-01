@@ -24,7 +24,7 @@ const DIFFERENTIATORS = [
 
 export function CourseInfo() {
   return (
-    <section className="py-14 md:py-24 bg-white">
+    <section className="py-14 md:py-24 bg-cta-50">
       <Container>
         <SectionHeading
           eyebrow="Điểm khác biệt"
@@ -36,7 +36,7 @@ export function CourseInfo() {
           {DIFFERENTIATORS.map((d) => (
             <div
               key={d.title}
-              className="relative bg-surface-50 rounded-card p-8 border border-[#F5C49A] hover:border-cta-500 transition-colors"
+              className="relative bg-white rounded-card p-8 border border-[#F5C49A] shadow-soft hover:border-cta-500 hover:shadow-card transition-all"
             >
               <div className="text-5xl md:text-6xl mb-5">{d.icon}</div>
               <h3 className="font-display text-xl md:text-2xl font-bold text-cta-700 mb-3 leading-tight">

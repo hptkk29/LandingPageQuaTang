@@ -87,6 +87,8 @@ export default function HomePage() {
         <FinalCTA />
       </main>
       <Footer />
+      {/* đệm dưới để thanh CTA cố định không che nội dung footer */}
+      <div aria-hidden="true" className="h-16 bg-gray-900" />
       <FloatingZalo />
       <ExitIntent />
     </>

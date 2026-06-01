@@ -17,7 +17,7 @@ const PARTNERS = [
 
 export function TrustBadges() {
   return (
-    <section className="py-14 md:py-24 bg-white">
+    <section className="py-14 md:py-24 bg-cta-50">
       <Container size="xl">
         <SectionHeading
           eyebrow="Niềm tin từ cộng đồng"
@@ -28,7 +28,7 @@ export function TrustBadges() {
           {STATS.map((s) => (
             <div
               key={s.label}
-              className="text-center bg-cta-50 rounded-card p-6 border border-[#F5C49A]"
+              className="text-center bg-white rounded-card p-6 border border-[#F5C49A] shadow-soft"
             >
               <div className="font-display text-4xl md:text-5xl font-extrabold text-cta-600 mb-1.5">
                 {s.number}
@@ -45,7 +45,7 @@ export function TrustBadges() {
           {PARTNERS.map((p) => (
             <div
               key={p}
-              className="bg-surface-50 border border-gray-200 rounded-pill px-5 py-2.5 font-display font-semibold text-gray-800 text-sm md:text-base"
+              className="bg-white border border-[#F5C49A] rounded-pill px-5 py-2.5 font-display font-semibold text-gray-800 text-sm md:text-base shadow-soft"
             >
               {p}
             </div>

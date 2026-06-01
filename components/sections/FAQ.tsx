@@ -47,7 +47,7 @@ const FAQS = [
 
 export function FAQ() {
   return (
-    <section id="cau-hoi" className="py-14 md:py-24 bg-white scroll-mt-20">
+    <section id="cau-hoi" className="py-14 md:py-24 bg-cta-50 scroll-mt-20">
       <Container size="md">
         <SectionHeading
           eyebrow="Câu hỏi thường gặp"
@@ -55,7 +55,7 @@ export function FAQ() {
           description="Những thắc mắc phổ biến nhất trước khi đăng ký cho con."
         />
 
-        <div className="bg-surface-50 rounded-card border border-[#F5C49A] shadow-soft p-2 md:p-3">
+        <div className="bg-white rounded-card border border-[#F5C49A] shadow-soft p-2 md:p-3">
           <Accordion>
             {FAQS.map((faq, idx) => (
               <AccordionItem

@@ -36,7 +36,7 @@ const COMMITMENTS = [
 
 export function Commitments() {
   return (
-    <section className="py-14 md:py-24 bg-surface-100">
+    <section className="py-14 md:py-24 bg-white">
       <Container size="xl">
         <SectionHeading
           eyebrow="Cam kết của Sata Robo"
@@ -48,10 +48,10 @@ export function Commitments() {
           {COMMITMENTS.map((c, idx) => (
             <div
               key={c.title}
-              className="bg-white rounded-card p-6 md:p-7 border-l-4 border-cta-500 shadow-soft hover:shadow-card transition-shadow"
+              className="bg-cta-50 rounded-card p-6 md:p-7 border-l-4 border-cta-500 border-y border-r border-[#F5C49A] shadow-soft hover:shadow-card transition-shadow"
             >
               <div className="flex items-center gap-3 mb-3">
-                <span className="shrink-0 w-10 h-10 rounded-full bg-cta-50 text-cta-700 font-display font-extrabold flex items-center justify-center">
+                <span className="shrink-0 w-10 h-10 rounded-full bg-white text-cta-700 font-display font-extrabold flex items-center justify-center shadow-soft">
                   {idx + 1}
                 </span>
                 <span className="text-3xl">{c.icon}</span>

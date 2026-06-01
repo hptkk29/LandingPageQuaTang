@@ -1,72 +1,26 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import { CAMPAIGN } from "@/lib/constants/campaign";
 
 export function FloatingZalo() {
-  const [visible, setVisible] = useState(false);
-  const [expanded, setExpanded] = useState(true);
-
-  useEffect(() => {
-    function onScroll() {
-      setVisible(window.scrollY > 600);
-    }
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  useEffect(() => {
-    if (visible && expanded) {
-      const timer = setTimeout(() => setExpanded(false), 5000);
-      return () => clearTimeout(timer);
-    }
-  }, [visible, expanded]);
-
-  if (!visible) return null;
-
   return (
-    <div className="fixed bottom-5 right-5 md:bottom-6 md:right-6 z-50">
+    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 md:gap-3 px-2">
+      <a
+        href="#dang-ky"
+        className="inline-flex items-center gap-2 bg-gradient-to-r from-cta-500 to-cta-600 hover:from-cta-600 hover:to-cta-700 text-white font-display font-extrabold text-sm md:text-base px-5 md:px-7 py-3 md:py-3.5 rounded-pill shadow-cta animate-pulse-glow transition-all hover:-translate-y-0.5 whitespace-nowrap"
+      >
+        🎁 Đăng ký ngay
+      </a>
       <a
         href={`https://zalo.me/${CAMPAIGN.hotlineDigits}`}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat Zalo Sata Robo"
-        onMouseEnter={() => setExpanded(true)}
-        onFocus={() => setExpanded(true)}
-        className="relative flex items-center gap-3 bg-[#0068FF] hover:bg-[#0055CC] text-white shadow-2xl rounded-pill transition-all duration-300 hover:scale-105 overflow-hidden"
-        style={{
-          paddingLeft: expanded ? "20px" : "16px",
-          paddingRight: expanded ? "20px" : "16px",
-          paddingTop: "14px",
-          paddingBottom: "14px",
-        }}
+        className="inline-flex items-center gap-2 bg-[#0068FF] hover:bg-[#0055CC] text-white font-display font-bold text-sm md:text-base px-4 md:px-5 py-3 md:py-3.5 rounded-pill shadow-lg transition-all hover:-translate-y-0.5 whitespace-nowrap"
       >
-        <span
-          aria-hidden="true"
-          className="absolute inset-0 rounded-pill bg-[#0068FF] animate-ping opacity-20"
-        />
-
-        <span className="relative shrink-0 w-7 h-7 rounded-full bg-white flex items-center justify-center font-bold text-[#0068FF] text-sm">
+        <span className="w-6 h-6 rounded-full bg-white text-[#0068FF] flex items-center justify-center font-bold text-sm">
           Z
         </span>
-
-        <span
-          className="relative font-display font-bold text-sm md:text-base whitespace-nowrap overflow-hidden transition-all duration-300"
-          style={{
-            maxWidth: expanded ? "200px" : "0px",
-            opacity: expanded ? 1 : 0,
-          }}
-        >
-          Chat tư vấn ngay
-        </span>
+        <span className="hidden sm:inline">Zalo</span>
       </a>
-
-      {expanded && (
-        <div className="absolute -top-2 -right-2 bg-cta-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-pill shadow-md animate-bounce-in">
-          24/7
-        </div>
-      )}
     </div>
   );
 }

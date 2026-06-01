@@ -24,7 +24,7 @@ const REASONS = [
 
 export function WhyChooseUs() {
   return (
-    <section id="vi-sao" className="py-14 md:py-24 bg-white scroll-mt-20">
+    <section id="vi-sao" className="py-14 md:py-24 bg-cta-50 scroll-mt-20">
       <Container>
         <SectionHeading
           eyebrow="Vì sao nên cho con học"
@@ -36,7 +36,7 @@ export function WhyChooseUs() {
           {REASONS.map((r) => (
             <div
               key={r.title}
-              className="bg-cta-50 rounded-card p-8 border border-[#F5C49A] text-center hover:shadow-card transition-shadow"
+              className="bg-white rounded-card p-8 border border-[#F5C49A] text-center shadow-soft hover:shadow-card transition-shadow"
             >
               <div className="text-5xl md:text-6xl mb-5">{r.icon}</div>
               <h3 className="font-display text-xl md:text-2xl font-bold text-cta-700 mb-3 leading-tight">

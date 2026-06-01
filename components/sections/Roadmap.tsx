@@ -47,7 +47,7 @@ export function Roadmap() {
   const level = LEVELS[active];
 
   return (
-    <section id="chuong-trinh" className="py-14 md:py-24 bg-surface-50 scroll-mt-20">
+    <section id="chuong-trinh" className="py-14 md:py-24 bg-white scroll-mt-20">
       <Container size="md">
         <SectionHeading
           eyebrow="Lộ trình học"
@@ -64,7 +64,7 @@ export function Roadmap() {
               className={`px-5 md:px-6 py-3 rounded-pill font-display font-bold text-sm md:text-base transition-all cursor-pointer ${
                 active === key
                   ? "bg-cta-500 text-white shadow-cta"
-                  : "bg-white text-gray-700 border border-[#F5C49A] hover:bg-cta-50"
+                  : "bg-cta-50 text-cta-700 border border-[#F5C49A] hover:bg-cta-100"
               }`}
             >
               {LEVELS[key].label}
@@ -75,7 +75,7 @@ export function Roadmap() {
           ))}
         </div>
 
-        <div className="bg-white rounded-card p-6 md:p-8 border border-[#F5C49A] shadow-soft">
+        <div className="bg-cta-50 rounded-card p-6 md:p-8 border border-[#F5C49A] shadow-soft">
           <h3 className="font-display text-xl md:text-2xl font-bold text-cta-700 mb-5">
             {level.title}{" "}
             <span className="text-gray-400 text-base font-normal">
