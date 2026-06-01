@@ -1,133 +1,77 @@
-"use client";
-
-import { motion, useReducedMotion } from "framer-motion";
-import { Carousel } from "@/components/shared/Carousel";
-import { Container } from "@/components/shared/Container";
-import { SectionHeading } from "@/components/shared/SectionHeading";
-
 const PAIN_POINTS = [
   {
-    icon: "🎮",
-    tag: "Giải trí thụ động",
-    title: "Chơi game cả ngày",
-    description:
-      "Con dành phần lớn thời gian rảnh cho game giải trí — màn hình chỉ để tiêu khiển, không tạo ra giá trị.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="6" y1="11" x2="10" y2="11" /><line x1="8" y1="9" x2="8" y2="13" /><line x1="15" y1="12" x2="15" y2="12" /><line x1="18" y1="10" x2="18" y2="10" /><rect x="2" y="6" width="20" height="12" rx="6" /></svg>
+    ),
+    titleBefore: "Con ",
+    tag: "chơi game",
+    titleAfter: " cả ngày không chán",
+    desc: "Màn hình chỉ để tiêu khiển, không tạo ra giá trị cho con.",
   },
   {
-    icon: "😵‍💫",
-    tag: "Khó tập trung",
-    title: "Mất tập trung, ngại học",
-    description:
-      "Dễ bị phân tâm, khó ngồi yên với một việc, ngại những môn đòi hỏi tư duy và kiên nhẫn.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="5" y="2" width="14" height="20" rx="2.5" /><line x1="11" y1="18" x2="13" y2="18" /></svg>
+    ),
+    titleBefore: "",
+    tag: "Nghiện máy tính, điện thoại",
+    titleAfter: " nhưng không biết ứng dụng vào việc học",
+    desc: "Phụ thuộc thiết bị mà thiếu hoạt động phát triển trí tuệ.",
   },
   {
-    icon: "📱",
-    tag: "Phụ thuộc thiết bị",
-    title: "Nghiện điện thoại",
-    description:
-      "Phụ thuộc thiết bị nhưng không dùng vào việc có ích — thiếu hoạt động phát triển trí tuệ.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08A2.5 2.5 0 0 1 2 14.5a2.5 2.5 0 0 1 1.32-2.2A2.5 2.5 0 0 1 5 7.5 2.5 2.5 0 0 1 7 5a2.5 2.5 0 0 1 2.5-3Z" /></svg>
+    ),
+    titleBefore: "Con dễ ",
+    tag: "mất tập trung",
+    titleAfter: ", ảnh hưởng đến việc học",
+    desc: "Khó ngồi yên, ngại những môn đòi hỏi tư duy và kiên nhẫn.",
   },
   {
-    icon: "😟",
-    tag: "Ngại thể hiện",
-    title: "Thiếu tự tin",
-    description:
-      "Ngại giao tiếp, ngại làm việc nhóm, chưa có thành quả thật để tự hào và tin vào bản thân.",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M16 16s-1.5-2-4-2-4 2-4 2" /><line x1="9" y1="9" x2="9" y2="9" /><line x1="15" y1="9" x2="15" y2="9" /></svg>
+    ),
+    titleBefore: "",
+    tag: "Thiếu kỹ năng mềm:",
+    titleAfter: " giải quyết vấn đề, giao tiếp, làm việc nhóm, thuyết trình",
+    desc: "Chưa có thành quả thật để tự hào và tin vào bản thân.",
   },
 ];
 
-export function Problem() {
-  const reduce = useReducedMotion();
-
+function PCard({ p }: { p: (typeof PAIN_POINTS)[number] }) {
   return (
-    <section className="relative overflow-hidden py-14 md:py-24 bg-white">
-      {/* decorative playful blobs */}
-      <div
-        aria-hidden="true"
-        className="absolute -top-24 -left-24 w-[360px] h-[360px] bg-cta-100/50 rounded-full blur-3xl"
-      />
-      <div
-        aria-hidden="true"
-        className="absolute -bottom-24 -right-24 w-[360px] h-[360px] bg-cta-100/40 rounded-full blur-3xl"
-      />
+    <article className="p-card">
+      <span className="gear-chip">{p.icon}</span>
+      <div>
+        <h3>{p.titleBefore}<span className="tagword">{p.tag}</span>{p.titleAfter}</h3>
+        <p>{p.desc}</p>
+      </div>
+    </article>
+  );
+}
 
-      <Container className="relative">
-        <SectionHeading
-          eyebrow="Ba mẹ có đang lo lắng?"
-          title={"Có phải con đang gặp\n1 trong 4 vấn đề này?"}
-          description="Những điều ba mẹ thường trăn trở nhất ở trẻ trong thời đại công nghệ."
-        />
-
-        <Carousel className="md:grid-cols-2 lg:grid-cols-4">
-          {PAIN_POINTS.map((p, i) => (
-            <motion.div
-              key={p.title}
-              initial={reduce ? false : { opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.3 }}
-              transition={{
-                duration: 0.55,
-                delay: i * 0.08,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-              whileHover={reduce ? undefined : { y: -10 }}
-              className="group relative h-full overflow-hidden bg-white rounded-card p-6 md:p-7 border border-[#F5C49A] shadow-soft hover:shadow-card-hover transition-shadow"
-            >
-              {/* top accent bar reveal on hover */}
-              <span
-                aria-hidden="true"
-                className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-cta-400 to-cta-600 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300"
-              />
-              {/* corner glow */}
-              <span
-                aria-hidden="true"
-                className="absolute -top-10 -right-10 w-28 h-28 bg-cta-100 rounded-full blur-2xl opacity-60 group-hover:opacity-100 transition-opacity"
-              />
-
-              <div className="relative">
-                <div className="mb-4 flex items-center gap-3">
-                  <motion.div
-                    className="shrink-0 grid place-items-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cta-400 to-cta-600 text-white text-4xl shadow-cta group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300"
-                    animate={reduce ? undefined : { y: [0, -6, 0] }}
-                    transition={
-                      reduce
-                        ? undefined
-                        : {
-                            duration: 3,
-                            repeat: Infinity,
-                            ease: "easeInOut",
-                            delay: i * 0.25,
-                          }
-                    }
-                  >
-                    <span className="drop-shadow-sm">{p.icon}</span>
-                  </motion.div>
-                  <span className="font-display text-[11px] md:text-xs font-bold uppercase tracking-wider text-cta-700 bg-cta-50 border border-[#F5C49A] rounded-pill px-2.5 py-1">
-                    {p.tag}
-                  </span>
-                </div>
-
-                <h3 className="font-display text-lg md:text-xl font-bold text-gray-900 mb-2 leading-tight">
-                  {p.title}
-                </h3>
-                <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                  {p.description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </Carousel>
-
-        <motion.p
-          initial={reduce ? false : { opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-          className="text-center mt-10 text-lg md:text-xl font-display font-semibold text-cta-600"
-        >
+export function Problem() {
+  return (
+    <section id="van-de" className="section section--red" style={{ scrollMarginTop: 80 }}>
+      <div className="container container--xl">
+        <div className="head">
+          <span className="kicker kicker--onred">Ba mẹ có đang lo lắng?</span>
+          <h2 className="sticker sticker--light">Nếu con thường xuyên<br />gặp phải các <span className="hl">vấn đề sau</span>:</h2>
+        </div>
+        <div className="problem-stage">
+          <div className="problem-col">
+            <PCard p={PAIN_POINTS[0]} />
+            <PCard p={PAIN_POINTS[1]} />
+          </div>
+          <div className="problem-kid"><span>ảnh học viên · PNG nền trong</span></div>
+          <div className="problem-col">
+            <PCard p={PAIN_POINTS[2]} />
+            <PCard p={PAIN_POINTS[3]} />
+          </div>
+        </div>
+        <p style={{ textAlign: "center", marginTop: 40, fontFamily: "var(--fontd)", fontWeight: 700, fontSize: "clamp(1.1rem,2.2vw,1.5rem)", color: "#fff", position: "relative", zIndex: 2 }}>
           → Lập trình Robot RoboSim biến những nỗi lo đó thành cơ hội phát triển ↓
-        </motion.p>
-      </Container>
+        </p>
+      </div>
     </section>
   );
 }

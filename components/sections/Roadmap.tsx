@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Container } from "@/components/shared/Container";
-import { SectionHeading } from "@/components/shared/SectionHeading";
 
 const LEVELS = {
   basic: {
@@ -44,56 +42,40 @@ type LevelKey = keyof typeof LEVELS;
 
 export function Roadmap() {
   const [active, setActive] = useState<LevelKey>("basic");
-  const level = LEVELS[active];
+  const lv = LEVELS[active];
 
   return (
-    <section id="chuong-trinh" className="py-14 md:py-24 bg-white scroll-mt-20">
-      <Container size="md">
-        <SectionHeading
-          eyebrow="Lộ trình học"
-          title="Lộ trình 3 cấp theo độ tuổi"
-          description="Chương trình được thiết kế phù hợp với từng giai đoạn phát triển của con."
-        />
+    <section id="chuong-trinh" className="section section--cream" style={{ scrollMarginTop: 80 }}>
+      <div className="container container--md">
+        <div className="head">
+          <span className="kicker kicker--onlight">Lộ trình học</span>
+          <h2 className="sticker sticker--red">Lộ trình 3 cấp theo <span className="hl">độ tuổi</span></h2>
+          <p>Chương trình được thiết kế phù hợp với từng giai đoạn phát triển của con.</p>
+        </div>
 
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
-          {(Object.keys(LEVELS) as LevelKey[]).map((key) => (
+        <div className="level-tabs">
+          {(Object.keys(LEVELS) as LevelKey[]).map((k) => (
             <button
-              key={key}
+              key={k}
               type="button"
-              onClick={() => setActive(key)}
-              className={`px-5 md:px-6 py-3 rounded-pill font-display font-bold text-sm md:text-base transition-all cursor-pointer ${
-                active === key
-                  ? "bg-cta-500 text-white shadow-cta"
-                  : "bg-cta-50 text-cta-700 border border-[#F5C49A] hover:bg-cta-100"
-              }`}
+              className={`level-tab ${active === k ? "active" : ""}`}
+              onClick={() => setActive(k)}
             >
-              {LEVELS[key].label}
-              <span className="block text-xs font-normal opacity-80">
-                {LEVELS[key].age}
-              </span>
+              {LEVELS[k].label}
+              <small>{LEVELS[k].age}</small>
             </button>
           ))}
         </div>
 
-        <div className="bg-cta-50 rounded-card p-6 md:p-8 border border-[#F5C49A] shadow-soft">
-          <h3 className="font-display text-xl md:text-2xl font-bold text-cta-700 mb-5">
-            {level.title}{" "}
-            <span className="text-gray-400 text-base font-normal">
-              · {level.age}
-            </span>
-          </h3>
-          <ul className="space-y-4">
-            {level.items.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-3 text-gray-800">
-                <span className="shrink-0 w-7 h-7 rounded-full bg-cta-500 text-white text-sm font-bold flex items-center justify-center">
-                  {idx + 1}
-                </span>
-                <span className="leading-relaxed pt-0.5">{item}</span>
-              </li>
+        <div className="level-panel swap" key={active}>
+          <h3>{lv.title} <span className="age">· {lv.age}</span></h3>
+          <ul className="level-list">
+            {lv.items.map((it, i) => (
+              <li key={i}><span className="n">{i + 1}</span><span>{it}</span></li>
             ))}
           </ul>
         </div>
-      </Container>
+      </div>
     </section>
   );
 }

@@ -1,53 +1,64 @@
-import { Carousel } from "@/components/shared/Carousel";
-import { Container } from "@/components/shared/Container";
-import { SectionHeading } from "@/components/shared/SectionHeading";
-
-const REASONS = [
+const ROWS = [
   {
-    icon: "🎨",
-    title: "Biến thời gian màn hình thành sáng tạo",
-    description:
+    no: "1",
+    color: "blue",
+    label: "Biến thời gian màn hình thành sáng tạo",
+    body: [
       "Thay vì chỉ giải trí, con dùng máy tính để thiết kế, lập trình và tạo ra sản phẩm robot của riêng mình.",
+      "9–13 tuổi là giai đoạn vàng để con tiếp cận tư duy công nghệ một cách tự nhiên và hào hứng.",
+    ],
+    ph: "ảnh con thực hành RoboSim",
   },
   {
-    icon: "🧠",
-    title: "Rèn tư duy & kiên nhẫn qua thực hành thật",
-    description:
-      "Học qua dự án thực tế: thử – sai – sửa. Con rèn tư duy logic, khả năng giải quyết vấn đề và sự kiên trì.",
+    no: "2",
+    color: "orange",
+    label: "Rèn tư duy & kiên nhẫn qua thực hành thật",
+    body: [
+      "Học qua dự án thực tế theo vòng lặp thử – sai – sửa. Con rèn tư duy logic, khả năng giải quyết vấn đề và sự kiên trì.",
+      "Kết hợp lý thuyết và thực hành giúp con học tốt hơn cả các môn ở trường.",
+    ],
+    ph: "ảnh lớp học dự án",
   },
   {
-    icon: "🏆",
-    title: "Tự tin khi có thành quả thật",
-    description:
-      "Con tự tay lắp ráp, lập trình robot chạy được và thuyết trình về sản phẩm — tự tin từ thành quả cụ thể.",
+    no: "3",
+    color: "green",
+    label: "Tự tin khi có thành quả thật",
+    body: [
+      "Con tự tay lắp ráp, lập trình robot chạy được và thuyết trình về sản phẩm — sự tự tin đến từ thành quả cụ thể.",
+      "Thay đổi hoàn toàn thói quen dùng công nghệ: từ người tiêu thụ thành người sáng tạo.",
+    ],
+    ph: "ảnh con thuyết trình",
   },
 ];
 
 export function WhyChooseUs() {
   return (
-    <section id="vi-sao" className="py-14 md:py-24 bg-cta-50 scroll-mt-20">
-      <Container>
-        <SectionHeading
-          eyebrow="Vì sao nên cho con học"
-          title="Học lập trình Robot mang lại gì cho con?"
-          description="Ba giá trị cốt lõi mà mỗi học viên Sata Robo nhận được."
-        />
+    <section id="vi-sao" className="section section--cream" style={{ scrollMarginTop: 80 }}>
+      <span className="doodle" style={{ top: "7%", left: "4%" }}><span style={{ display: "inline-block", background: "var(--red-500)", color: "#fff", fontFamily: "var(--fontd)", fontWeight: 800, fontSize: ".8rem", padding: "6px 12px", borderRadius: 10, boxShadow: "var(--sh-pop)", transform: "rotate(-8deg)" }}>JAVA</span></span>
+      <span className="doodle floaty" style={{ top: "6%", right: "6%" }}><span style={{ display: "inline-block", background: "var(--blue)", color: "#fff", fontFamily: "var(--fontd)", fontWeight: 800, fontSize: ".8rem", padding: "6px 12px", borderRadius: 10, boxShadow: "var(--sh-pop)", transform: "rotate(7deg)" }}>PHP</span></span>
+      <span className="doodle" style={{ bottom: "5%", left: "7%" }}><span style={{ display: "inline-block", background: "var(--yellow)", color: "var(--red-700)", fontFamily: "var(--fontd)", fontWeight: 800, fontSize: ".8rem", padding: "6px 12px", borderRadius: 10, boxShadow: "var(--sh-pop)", transform: "rotate(6deg)" }}>PYTHON</span></span>
 
-        <Carousel className="md:grid-cols-3">
-          {REASONS.map((r) => (
-            <div
-              key={r.title}
-              className="h-full bg-white rounded-card p-8 border border-[#F5C49A] text-center shadow-soft hover:shadow-card transition-shadow"
-            >
-              <div className="text-5xl md:text-6xl mb-5">{r.icon}</div>
-              <h3 className="font-display text-xl md:text-2xl font-bold text-cta-700 mb-3 leading-tight">
-                {r.title}
-              </h3>
-              <p className="text-gray-600 leading-relaxed">{r.description}</p>
+      <div className="container container--md">
+        <div className="head">
+          <span className="kicker kicker--onlight">Vì sao nên cho con học</span>
+          <h2 className="sticker sticker--red">Học lập trình Robot<br />mang lại gì cho <span className="hl">con</span>?</h2>
+        </div>
+
+        {ROWS.map((r) => (
+          <div className="why-row" key={r.no}>
+            <div className="pill-head">
+              <span className={`badge-no b-${r.color}`}>{r.no}</span>
+              <span className={`label p-${r.color}`}>{r.label}</span>
             </div>
-          ))}
-        </Carousel>
-      </Container>
+            <div className="body">
+              <div className="txt">
+                {r.body.map((t, i) => (<p key={i}>{t}</p>))}
+              </div>
+              <div className={`ph ph--${r.color}`}><span>{r.ph}</span></div>
+            </div>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }

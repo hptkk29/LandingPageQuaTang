@@ -1,5 +1,4 @@
 import { Header } from "@/components/sections/Header";
-import { Banner } from "@/components/sections/Banner";
 import { Hero } from "@/components/sections/Hero";
 import { Problem } from "@/components/sections/Problem";
 import { WhyChooseUs } from "@/components/sections/WhyChooseUs";
@@ -73,8 +72,7 @@ export default function HomePage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <Header />
-      <main>
-        <Banner />
+      <main className="v2-root">
         <Hero />
         <Problem />
         <WhyChooseUs />
@@ -89,8 +87,6 @@ export default function HomePage() {
         <FinalCTA />
       </main>
       <Footer />
-      {/* đệm dưới để thanh CTA cố định không che nội dung footer */}
-      <div aria-hidden="true" className="h-16 bg-gray-900" />
       <FloatingZalo />
       <ExitIntent />
     </>

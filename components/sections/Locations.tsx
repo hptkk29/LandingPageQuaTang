@@ -1,72 +1,48 @@
-import { Container } from "@/components/shared/Container";
-import { SectionHeading } from "@/components/shared/SectionHeading";
 import { CAMPAIGN } from "@/lib/constants/campaign";
+
+const PinIcon = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>
+);
+
+const LOCATIONS = [
+  { ph: "ảnh cơ sở 1 · phòng lab", chipBg: "var(--orange-500)", n: "Cơ sở 1", addr: "211 Nguyễn Hữu Thọ", dist: "Hoà Cường, Đà Nẵng", q: "211 Nguyễn Hữu Thọ, Hoà Cường, Đà Nẵng" },
+  { ph: "ảnh cơ sở 2 · phòng lab", chipBg: "var(--blue)", n: "Cơ sở 2", addr: "114 Hoàng Diệu", dist: "Hải Châu, Đà Nẵng", q: "114 Hoàng Diệu, Hải Châu, Đà Nẵng" },
+];
 
 export function Locations() {
   return (
-    <section id="co-so" className="py-14 md:py-24 bg-white scroll-mt-20">
-      <Container>
-        <SectionHeading
-          eyebrow="Hệ thống cơ sở"
-          title="2 cơ sở thuận tiện tại Đà Nẵng"
-          description="Trang thiết bị hiện đại, không gian thực hành an toàn cho con."
-        />
-
-        <div className="grid md:grid-cols-2 gap-6 md:gap-8 max-w-4xl mx-auto">
-          {CAMPAIGN.locations.map((loc, idx) => {
-            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-              loc.fullAddress
-            )}`;
-            return (
-              <div
-                key={loc.key}
-                className="bg-cta-50 rounded-card p-7 md:p-8 border border-[#F5C49A] shadow-soft hover:shadow-card transition-shadow"
-              >
-                <div className="flex items-start gap-3 mb-4">
-                  <span className="text-3xl">📍</span>
+    <section id="co-so" className="section section--white" style={{ scrollMarginTop: 80 }}>
+      <div className="container">
+        <div className="head">
+          <span className="kicker kicker--onlight">Hệ thống cơ sở</span>
+          <h2 className="sticker sticker--red">2 cơ sở thuận tiện tại <span className="hl">Đà Nẵng</span></h2>
+          <p>Trang thiết bị hiện đại, không gian thực hành an toàn cho con.</p>
+        </div>
+        <div className="grid-cards grid-2" style={{ maxWidth: 880, marginInline: "auto" }}>
+          {LOCATIONS.map((l) => (
+            <article className="loc" key={l.n}>
+              <div className="ph"><span>{l.ph}</span></div>
+              <div className="body">
+                <div className="top">
+                  <span className="gear-chip" style={{ background: l.chipBg }}><PinIcon /></span>
                   <div>
-                    <h3 className="font-display text-lg md:text-xl font-bold text-gray-900">
-                      Cơ sở {idx + 1}
-                    </h3>
-                    <p className="text-gray-700 mt-1">{loc.address}</p>
-                    <p className="text-gray-500 text-sm">
-                      {loc.district}, {loc.city}
-                    </p>
+                    <h3>{l.n}</h3>
+                    <p className="addr">{l.addr}</p>
+                    <p className="dist">{l.dist}</p>
                   </div>
                 </div>
-                <a
-                  href={mapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 font-display font-semibold text-cta-600 hover:text-cta-700 transition-colors"
-                >
+                <a className="maps" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.q)}`} target="_blank" rel="noopener noreferrer">
                   Xem trên Google Maps <span aria-hidden="true">→</span>
                 </a>
               </div>
-            );
-          })}
+            </article>
+          ))}
         </div>
-
-        <p className="text-center mt-10 text-gray-600">
-          Cần hỗ trợ? Gọi hotline{" "}
-          <a
-            href={`tel:${CAMPAIGN.hotlineDigits}`}
-            className="font-display font-bold text-cta-600 hover:text-cta-700"
-          >
-            {CAMPAIGN.hotline}
-          </a>{" "}
-          hoặc{" "}
-          <a
-            href={`https://zalo.me/${CAMPAIGN.hotlineDigits}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-display font-bold text-cta-600 hover:text-cta-700"
-          >
-            chat Zalo
-          </a>
-          .
+        <p className="loc-help">
+          Cần hỗ trợ? Gọi hotline <a href={`tel:${CAMPAIGN.hotlineDigits}`}>{CAMPAIGN.hotline}</a> hoặc{" "}
+          <a href={`https://zalo.me/${CAMPAIGN.hotlineDigits}`} target="_blank" rel="noopener noreferrer">chat Zalo</a>.
         </p>
-      </Container>
+      </div>
     </section>
   );
 }

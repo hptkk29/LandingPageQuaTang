@@ -68,7 +68,7 @@ export function ExitIntent() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 30 }}
             transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
-            className="relative bg-white rounded-card shadow-2xl border border-[#F5C49A] max-w-md w-full max-h-[90vh] overflow-y-auto p-5 md:p-7"
+            className="v2-root relative bg-white rounded-card shadow-2xl border border-[#F5C49A] max-w-md w-full max-h-[90vh] overflow-y-auto p-5 md:p-7"
             onClick={(e) => e.stopPropagation()}
           >
             <button

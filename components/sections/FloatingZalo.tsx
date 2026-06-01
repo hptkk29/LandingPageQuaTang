@@ -2,24 +2,27 @@ import { CAMPAIGN } from "@/lib/constants/campaign";
 
 export function FloatingZalo() {
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2.5 md:gap-3 px-2">
+    <div className="fixed right-5 bottom-5 z-[60]">
       <a
-        href="#dang-ky"
-        className="inline-flex items-center gap-2 bg-gradient-to-r from-cta-500 to-cta-600 hover:from-cta-600 hover:to-cta-700 text-white font-display font-extrabold text-sm md:text-base px-5 md:px-7 py-3 md:py-3.5 rounded-pill shadow-cta animate-pulse-glow transition-all hover:-translate-y-0.5 whitespace-nowrap"
+        href={`tel:${CAMPAIGN.hotlineDigits}`}
+        aria-label="Gọi hotline"
+        className="relative grid place-items-center w-14 h-14 rounded-full bg-[#ed2d22] text-white shadow-[0_16px_34px_-14px_rgb(120_20_10/0.5)] transition-transform hover:scale-110"
       >
-        🎁 Đăng ký ngay
-      </a>
-      <a
-        href={`https://zalo.me/${CAMPAIGN.hotlineDigits}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Chat Zalo Sata Robo"
-        className="inline-flex items-center gap-2 bg-[#0068FF] hover:bg-[#0055CC] text-white font-display font-bold text-sm md:text-base px-4 md:px-5 py-3 md:py-3.5 rounded-pill shadow-lg transition-all hover:-translate-y-0.5 whitespace-nowrap"
-      >
-        <span className="w-6 h-6 rounded-full bg-white text-[#0068FF] flex items-center justify-center font-bold text-sm">
-          Z
-        </span>
-        <span className="hidden sm:inline">Zalo</span>
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 rounded-full border-2 border-[#ed2d22] animate-ping"
+        />
+        <svg
+          className="relative w-6 h-6"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92Z" />
+        </svg>
       </a>
     </div>
   );
