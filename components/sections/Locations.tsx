@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { CAMPAIGN } from "@/lib/constants/campaign";
 
 const PinIcon = () => (
@@ -5,8 +6,8 @@ const PinIcon = () => (
 );
 
 const LOCATIONS = [
-  { ph: "ảnh cơ sở 1 · phòng lab", chipBg: "var(--orange-500)", n: "Cơ sở 1", addr: "211 Nguyễn Hữu Thọ", dist: "Hoà Cường, Đà Nẵng", q: "211 Nguyễn Hữu Thọ, Hoà Cường, Đà Nẵng" },
-  { ph: "ảnh cơ sở 2 · phòng lab", chipBg: "var(--blue)", n: "Cơ sở 2", addr: "114 Hoàng Diệu", dist: "Hải Châu, Đà Nẵng", q: "114 Hoàng Diệu, Hải Châu, Đà Nẵng" },
+  { ph: "Cơ sở 1 · phòng lab", img: "/anh-phong-lab-cs1.jpg", chipBg: "var(--orange-500)", n: "Cơ sở 1", addr: "211 Nguyễn Hữu Thọ", dist: "Hoà Cường, Đà Nẵng", q: "211 Nguyễn Hữu Thọ, Hoà Cường, Đà Nẵng" },
+  { ph: "Cơ sở 2 · phòng lab", img: "/anh-phong-lab-cs2.jpg", chipBg: "var(--blue)", n: "Cơ sở 2", addr: "114 Hoàng Diệu", dist: "Hải Châu, Đà Nẵng", q: "114 Hoàng Diệu, Hải Châu, Đà Nẵng" },
 ];
 
 export function Locations() {
@@ -21,7 +22,9 @@ export function Locations() {
         <div className="grid-cards grid-2" style={{ maxWidth: 880, marginInline: "auto" }}>
           {LOCATIONS.map((l) => (
             <article className="loc" key={l.n}>
-              <div className="ph"><span>{l.ph}</span></div>
+              <div className="ph">
+                <Image src={l.img} alt={l.ph} fill sizes="(max-width:620px) 100vw, 440px" style={{ objectFit: "cover" }} />
+              </div>
               <div className="body">
                 <div className="top">
                   <span className="gear-chip" style={{ background: l.chipBg }}><PinIcon /></span>

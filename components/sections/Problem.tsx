@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const PAIN_POINTS = [
   {
     icon: (
@@ -62,7 +64,9 @@ export function Problem() {
             <PCard p={PAIN_POINTS[0]} />
             <PCard p={PAIN_POINTS[1]} />
           </div>
-          <div className="problem-kid"><span>ảnh học viên · PNG nền trong</span></div>
+          <div className="problem-kid">
+            <Image src="/anh-hoc-vien.jpg" alt="Học viên Sata Robo thực hành robot" fill sizes="(max-width:940px) 100vw, 320px" style={{ objectFit: "cover" }} />
+          </div>
           <div className="problem-col">
             <PCard p={PAIN_POINTS[2]} />
             <PCard p={PAIN_POINTS[3]} />

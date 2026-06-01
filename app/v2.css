@@ -173,7 +173,7 @@
   /* problem */
   .problem-stage { display: grid; grid-template-columns: 1fr 320px 1fr; gap: 26px; align-items: center; position: relative; z-index: 2; }
   .problem-col { display: grid; gap: 22px; }
-  .problem-kid { align-self: stretch; min-height: 380px; border-radius: 200px 200px 28px 28px; background-color: rgb(255 255 255 / .14); background-image: repeating-linear-gradient(-45deg, transparent, transparent 12px, rgb(255 255 255 / .08) 12px, rgb(255 255 255 / .08) 24px); border: 3px solid rgb(255 255 255 / .35); display: grid; place-items: end center; padding-bottom: 26px; }
+  .problem-kid { position: relative; overflow: hidden; align-self: stretch; min-height: 380px; border-radius: 200px 200px 28px 28px; background-color: rgb(255 255 255 / .14); background-image: repeating-linear-gradient(-45deg, transparent, transparent 12px, rgb(255 255 255 / .08) 12px, rgb(255 255 255 / .08) 24px); border: 3px solid rgb(255 255 255 / .35); display: grid; place-items: end center; padding-bottom: 26px; }
   .problem-kid span { font-family: ui-monospace, Menlo, monospace; font-size: .72rem; color: var(--red-700); background: #fff; padding: 7px 15px; border-radius: var(--r-pill); box-shadow: var(--sh-pop); }
   .p-card { background: #fff; border-radius: var(--r-card); padding: 22px 24px; box-shadow: var(--sh-card); display: flex; gap: 16px; align-items: flex-start; transition: transform .2s; }
   .p-card:hover { transform: translateY(-5px); }

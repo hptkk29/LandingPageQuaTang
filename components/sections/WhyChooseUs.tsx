@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 const ROWS = [
   {
     no: "1",
@@ -7,7 +9,8 @@ const ROWS = [
       "Thay vì chỉ giải trí, con dùng máy tính để thiết kế, lập trình và tạo ra sản phẩm robot của riêng mình.",
       "9–13 tuổi là giai đoạn vàng để con tiếp cận tư duy công nghệ một cách tự nhiên và hào hứng.",
     ],
-    ph: "ảnh con thực hành RoboSim",
+    ph: "Con thực hành RoboSim",
+    img: "/anh-con-thuc-hanh-robosim.jpg",
   },
   {
     no: "2",
@@ -17,7 +20,8 @@ const ROWS = [
       "Học qua dự án thực tế theo vòng lặp thử – sai – sửa. Con rèn tư duy logic, khả năng giải quyết vấn đề và sự kiên trì.",
       "Kết hợp lý thuyết và thực hành giúp con học tốt hơn cả các môn ở trường.",
     ],
-    ph: "ảnh lớp học dự án",
+    ph: "Lớp học dự án",
+    img: "/anh-lop-hoc-du-an.jpg",
   },
   {
     no: "3",
@@ -27,7 +31,8 @@ const ROWS = [
       "Con tự tay lắp ráp, lập trình robot chạy được và thuyết trình về sản phẩm — sự tự tin đến từ thành quả cụ thể.",
       "Thay đổi hoàn toàn thói quen dùng công nghệ: từ người tiêu thụ thành người sáng tạo.",
     ],
-    ph: "ảnh con thuyết trình",
+    ph: "Con thuyết trình",
+    img: "/anh-con-thuyet-trinh.jpg",
   },
 ];
 
@@ -54,7 +59,9 @@ export function WhyChooseUs() {
               <div className="txt">
                 {r.body.map((t, i) => (<p key={i}>{t}</p>))}
               </div>
-              <div className={`ph ph--${r.color}`}><span>{r.ph}</span></div>
+              <div className={`ph ph--${r.color}`}>
+                <Image src={r.img} alt={r.ph} fill sizes="(max-width:760px) 100vw, 35vw" style={{ objectFit: "cover" }} />
+              </div>
             </div>
           </div>
         ))}
