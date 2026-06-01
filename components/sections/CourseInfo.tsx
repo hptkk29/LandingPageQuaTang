@@ -1,3 +1,4 @@
+import { Carousel } from "@/components/shared/Carousel";
 import { Container } from "@/components/shared/Container";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 
@@ -32,11 +33,11 @@ export function CourseInfo() {
           description="Không chỉ dạy code — Sata Robo tạo ra trải nghiệm học tập trọn vẹn."
         />
 
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+        <Carousel className="md:grid-cols-3">
           {DIFFERENTIATORS.map((d) => (
             <div
               key={d.title}
-              className="relative bg-white rounded-card p-8 border border-[#F5C49A] shadow-soft hover:border-cta-500 hover:shadow-card transition-all"
+              className="h-full relative bg-white rounded-card p-8 border border-[#F5C49A] shadow-soft hover:border-cta-500 hover:shadow-card transition-all"
             >
               <div className="text-5xl md:text-6xl mb-5">{d.icon}</div>
               <h3 className="font-display text-xl md:text-2xl font-bold text-cta-700 mb-3 leading-tight">
@@ -45,7 +46,7 @@ export function CourseInfo() {
               <p className="text-gray-600 leading-relaxed">{d.description}</p>
             </div>
           ))}
-        </div>
+        </Carousel>
       </Container>
     </section>
   );

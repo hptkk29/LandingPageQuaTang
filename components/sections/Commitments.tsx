@@ -1,3 +1,4 @@
+import { Carousel } from "@/components/shared/Carousel";
 import { Container } from "@/components/shared/Container";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 
@@ -44,11 +45,11 @@ export function Commitments() {
           description="Những cam kết rõ ràng để ba mẹ hoàn toàn yên tâm."
         />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
+        <Carousel className="md:grid-cols-2 lg:grid-cols-3">
           {COMMITMENTS.map((c, idx) => (
             <div
               key={c.title}
-              className="bg-cta-50 rounded-card p-6 md:p-7 border-l-4 border-cta-500 border-y border-r border-[#F5C49A] shadow-soft hover:shadow-card transition-shadow"
+              className="h-full bg-cta-50 rounded-card p-6 md:p-7 border-l-4 border-cta-500 border-y border-r border-[#F5C49A] shadow-soft hover:shadow-card transition-shadow"
             >
               <div className="flex items-center gap-3 mb-3">
                 <span className="shrink-0 w-10 h-10 rounded-full bg-white text-cta-700 font-display font-extrabold flex items-center justify-center shadow-soft">
@@ -64,7 +65,7 @@ export function Commitments() {
               </p>
             </div>
           ))}
-        </div>
+        </Carousel>
       </Container>
     </section>
   );

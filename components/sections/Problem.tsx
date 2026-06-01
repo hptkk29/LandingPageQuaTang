@@ -1,3 +1,4 @@
+import { Carousel } from "@/components/shared/Carousel";
 import { Container } from "@/components/shared/Container";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 
@@ -38,11 +39,11 @@ export function Problem() {
           description="Những điều ba mẹ thường trăn trở nhất ở trẻ trong thời đại công nghệ."
         />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+        <Carousel className="md:grid-cols-2 lg:grid-cols-4">
           {PAIN_POINTS.map((p) => (
             <div
               key={p.title}
-              className="bg-cta-50 rounded-card p-6 md:p-7 border border-[#F5C49A] shadow-soft hover:shadow-card transition-shadow text-center"
+              className="h-full bg-cta-50 rounded-card p-6 md:p-7 border border-[#F5C49A] shadow-soft hover:shadow-card transition-shadow text-center"
             >
               <div className="text-4xl md:text-5xl mb-3">{p.icon}</div>
               <h3 className="font-display text-lg md:text-xl font-bold text-gray-900 mb-2 leading-tight">
@@ -53,7 +54,7 @@ export function Problem() {
               </p>
             </div>
           ))}
-        </div>
+        </Carousel>
 
         <p className="text-center mt-10 text-lg md:text-xl font-display font-semibold text-cta-600">
           → Lập trình Robot RoboSim biến những nỗi lo đó thành cơ hội phát triển ↓

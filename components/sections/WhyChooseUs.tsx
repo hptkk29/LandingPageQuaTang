@@ -1,3 +1,4 @@
+import { Carousel } from "@/components/shared/Carousel";
 import { Container } from "@/components/shared/Container";
 import { SectionHeading } from "@/components/shared/SectionHeading";
 
@@ -32,11 +33,11 @@ export function WhyChooseUs() {
           description="Ba giá trị cốt lõi mà mỗi học viên Sata Robo nhận được."
         />
 
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+        <Carousel className="md:grid-cols-3">
           {REASONS.map((r) => (
             <div
               key={r.title}
-              className="bg-white rounded-card p-8 border border-[#F5C49A] text-center shadow-soft hover:shadow-card transition-shadow"
+              className="h-full bg-white rounded-card p-8 border border-[#F5C49A] text-center shadow-soft hover:shadow-card transition-shadow"
             >
               <div className="text-5xl md:text-6xl mb-5">{r.icon}</div>
               <h3 className="font-display text-xl md:text-2xl font-bold text-cta-700 mb-3 leading-tight">
@@ -45,7 +46,7 @@ export function WhyChooseUs() {
               <p className="text-gray-600 leading-relaxed">{r.description}</p>
             </div>
           ))}
-        </div>
+        </Carousel>
       </Container>
     </section>
   );

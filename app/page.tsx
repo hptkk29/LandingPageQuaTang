@@ -7,6 +7,7 @@ import { Commitments } from "@/components/sections/Commitments";
 import { CourseInfo } from "@/components/sections/CourseInfo";
 import { Roadmap } from "@/components/sections/Roadmap";
 import { TrustBadges } from "@/components/sections/TrustBadges";
+import { Testimonials } from "@/components/sections/Testimonials";
 import { MidCTA } from "@/components/sections/MidCTA";
 import { Locations } from "@/components/sections/Locations";
 import { FAQ } from "@/components/sections/FAQ";
@@ -81,6 +82,7 @@ export default function HomePage() {
         <CourseInfo />
         <Roadmap />
         <TrustBadges />
+        <Testimonials />
         <MidCTA />
         <Locations />
         <FAQ />
