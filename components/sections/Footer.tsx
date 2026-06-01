@@ -62,11 +62,11 @@ export function Footer() {
                 <span className="font-semibold">{CAMPAIGN.hotline}</span>
               </a>
               <a
-                href="mailto:thongtin@satarobo.vn"
+                href="mailto:info@satarobo.vn"
                 className="flex items-center gap-2 text-gray-300 hover:text-cta-400 transition-colors"
               >
                 <span>✉️</span>
-                <span>thongtin@satarobo.vn</span>
+                <span>info@satarobo.vn</span>
               </a>
             </div>
           </div>

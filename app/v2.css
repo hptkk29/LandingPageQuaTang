@@ -79,7 +79,7 @@
   .sticker--red .hl { color: var(--orange-500); }
 
   .head { max-width: 860px; margin: 0 auto clamp(36px, 5vw, 58px); text-align: center; position: relative; z-index: 2; }
-  .head .kicker { display: inline-block; font-family: var(--fontd); font-weight: 700; font-size: .82rem; text-transform: uppercase; letter-spacing: .1em; padding: 7px 18px; border-radius: var(--r-pill); margin-bottom: 16px; max-width: 100%; }
+  .kicker { display: inline-block; font-family: var(--fontd); font-weight: 700; font-size: .82rem; line-height: 1.35; text-transform: uppercase; letter-spacing: .1em; padding: 8px 18px; border-radius: var(--r-pill); margin-bottom: 16px; max-width: 100%; }
   .kicker--onred { background: rgb(255 255 255 / .16); color: #fff; border: 1.5px solid rgb(255 255 255 / .4); }
   .kicker--onlight { background: var(--red-500); color: #fff; box-shadow: var(--sh-pop); }
   .head p { margin-top: 16px; font-size: clamp(1rem, 1.6vw, 1.18rem); }
