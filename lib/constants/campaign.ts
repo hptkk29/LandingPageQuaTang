@@ -5,17 +5,23 @@ export const CAMPAIGN = {
   locations: [
     {
       key: "co-so-1",
+      name: "Cơ sở 1",
       address: "211 Nguyễn Hữu Thọ",
       district: "Hoà Cường",
       city: "Đà Nẵng",
       fullAddress: "211 Nguyễn Hữu Thọ, Hoà Cường, Đà Nẵng",
+      phone: "0818.823.720",
+      phoneDigits: "0818823720",
     },
     {
       key: "co-so-2",
+      name: "Cơ sở 2",
       address: "114 Hoàng Diệu",
       district: "Hải Châu",
       city: "Đà Nẵng",
       fullAddress: "114 Hoàng Diệu, Hải Châu, Đà Nẵng",
+      phone: "0702.193.933",
+      phoneDigits: "0702193933",
     },
   ],
 

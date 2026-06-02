@@ -54,13 +54,16 @@ export function Footer() {
               2 cơ sở tại Đà Nẵng
             </p>
             <div className="space-y-2 text-sm">
-              <a
-                href={`tel:${CAMPAIGN.hotlineDigits}`}
-                className="flex items-center gap-2 text-gray-300 hover:text-cta-400 transition-colors"
-              >
-                <span>📞</span>
-                <span className="font-semibold">{CAMPAIGN.hotline}</span>
-              </a>
+              {CAMPAIGN.locations.map((loc) => (
+                <a
+                  key={loc.key}
+                  href={`tel:${loc.phoneDigits}`}
+                  className="flex items-center gap-2 text-gray-300 hover:text-cta-400 transition-colors"
+                >
+                  <span>📞</span>
+                  <span className="font-semibold">{loc.name}: {loc.phone}</span>
+                </a>
+              ))}
               <a
                 href="mailto:info@satarobo.vn"
                 className="flex items-center gap-2 text-gray-300 hover:text-cta-400 transition-colors"
@@ -130,9 +133,13 @@ export function Footer() {
                 <li key={loc.key} className="flex items-start gap-2 text-gray-400">
                   <span className="shrink-0 mt-0.5">📍</span>
                   <span>
-                    <strong className="text-gray-300">{loc.address}</strong>
+                    <strong className="text-gray-300">{loc.name} · {loc.address}</strong>
                     <br />
                     {loc.district}, {loc.city}
+                    <br />
+                    <a href={`tel:${loc.phoneDigits}`} className="text-gray-300 hover:text-cta-400 transition-colors">
+                      📞 {loc.phone}
+                    </a>
                   </span>
                 </li>
               ))}
@@ -155,15 +162,6 @@ export function Footer() {
                     {s.icon}
                   </a>
                 ))}
-                <a
-                  href={`https://zalo.me/${CAMPAIGN.hotlineDigits}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="Zalo"
-                  className="w-9 h-9 rounded-full bg-gray-800 hover:bg-[#0068FF] text-gray-300 hover:text-white flex items-center justify-center transition-all hover:-translate-y-0.5 font-bold text-sm"
-                >
-                  Z
-                </a>
               </div>
             </div>
           </div>

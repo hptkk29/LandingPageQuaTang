@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { CAMPAIGN } from "@/lib/constants/campaign";
 
 const FAQS = [
   { q: "Con 6 tuổi học được không? Chưa biết gì về lập trình có theo kịp không?", a: "Hoàn toàn được. Lộ trình cấp Cơ bản (6–9 tuổi) bắt đầu từ lập trình kéo–thả trực quan, không cần biết trước kiến thức gì. Giáo viên kèm sát từng con trong lớp tối đa 12 học viên." },
@@ -43,8 +42,8 @@ export function FAQ() {
         </div>
 
         <div style={{ textAlign: "center", marginTop: 32, position: "relative", zIndex: 2 }}>
-          <p style={{ color: "var(--ink-600)", marginBottom: 16 }}>Còn câu hỏi khác? <strong>Inbox Zalo</strong> — Sata Robo phản hồi trong ít phút.</p>
-          <a className="btn btn--red" href={`https://zalo.me/${CAMPAIGN.hotlineDigits}`} target="_blank" rel="noopener noreferrer">💬 Chat Zalo ngay →</a>
+          <p style={{ color: "var(--ink-600)", marginBottom: 16 }}>Còn câu hỏi khác? Để lại thông tin, Sata Robo sẽ gọi lại tư vấn ngay.</p>
+          <a className="btn btn--cta" href="#dang-ky">📝 Đăng ký ngay →</a>
         </div>
       </div>
     </section>
