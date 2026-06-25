@@ -20,7 +20,7 @@ export default function ThankYouPage() {
           Sata Robo đã nhận được đăng ký của ba mẹ.
           <br />
           Đội ngũ tư vấn sẽ <strong>gọi điện hoặc nhắn Zalo</strong> cho ba mẹ
-          sớm nhất để sắp xếp lịch học 5 buổi miễn phí.
+          sớm nhất để sắp xếp lịch học 4 buổi miễn phí.
         </p>
 
         <div className="bg-white rounded-2xl shadow-lg p-6 mb-8 border-2 border-purple-100">

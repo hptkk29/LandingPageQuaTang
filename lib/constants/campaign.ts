@@ -30,7 +30,7 @@ export const CAMPAIGN = {
   // "Thứ 7, 30/05/2026" (luôn là Thứ 7 sắp tới, tự reset mỗi tuần).
   classTime: "15h45-17h15",
   classDuration: "90 phút/buổi",
-  totalSessions: 5,
+  totalSessions: 4,
 
   // Registration deadline = end of upcoming Saturday (computed dynamically).
   // Countdown component sẽ tự reset vào Chủ nhật 00:00 (sau khi Thứ 7

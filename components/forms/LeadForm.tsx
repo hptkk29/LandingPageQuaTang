@@ -23,7 +23,7 @@ type Props = {
 
 export function LeadForm({
   source = "v2",
-  submitLabel = "Nhận 5 buổi miễn phí →",
+  submitLabel = "Nhận 4 buổi miễn phí →",
 }: Props) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -51,13 +51,13 @@ export function LeadForm({
       const res = await submitLead(data);
       if (res.ok) {
         trackMetaEvent("Lead", {
-          content_name: "5 buổi RoboSim MIỄN PHÍ",
+          content_name: "4 buổi RoboSim MIỄN PHÍ",
           content_category: "Robotics Education",
           value: 0,
           currency: "VND",
         });
         trackMetaEvent("CompleteRegistration", {
-          content_name: "5 buổi RoboSim MIỄN PHÍ",
+          content_name: "4 buổi RoboSim MIỄN PHÍ",
           status: true,
           value: 0,
           currency: "VND",

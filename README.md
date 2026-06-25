@@ -1,6 +1,6 @@
-# Landing Page Quà Tặng 5 Buổi RoboSim — Sata Robo
+# Landing Page Quà Tặng 4 Buổi RoboSim — Sata Robo
 
-Landing page nhận lead cho chương trình tặng 5 buổi học Robotics cơ bản miễn phí.
+Landing page nhận lead cho chương trình tặng 4 buổi học Robotics cơ bản miễn phí.
 Dành cho học sinh lớp 1-8, tổ chức tại 2 cơ sở Sata Robo Đà Nẵng.
 
 ## Stack

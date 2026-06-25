@@ -26,10 +26,10 @@ export function Hero() {
 
           <div id="dang-ky" style={{ scrollMarginTop: 90 }}>
             <div className="form-card">
-              <span className="ribbon">🎁 5 BUỔI MIỄN PHÍ</span>
+              <span className="ribbon">🎁 4 BUỔI MIỄN PHÍ</span>
               <h2>Đăng ký tư vấn miễn phí</h2>
               <p className="sub">Để lại thông tin, Sata Robo sẽ liên hệ ngay</p>
-              <LeadForm source="hero" submitLabel="Nhận 5 buổi miễn phí →" />
+              <LeadForm source="hero" submitLabel="Nhận 4 buổi miễn phí →" />
             </div>
           </div>
         </div>
