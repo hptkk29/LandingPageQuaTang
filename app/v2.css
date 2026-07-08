@@ -295,6 +295,27 @@
   @media (max-width: 820px) { .zig { grid-template-columns: 1fr; } .zig:nth-child(even) .ph { order: 0; } }
   @media (max-width: 760px) { .why-row .body { grid-template-columns: 1fr; } }
   @media (max-width: 620px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } }
+
+  /* Form đăng ký 2 cột trên Hero/MidCTA để thu gọn chiều cao cho cân với section.
+     Giữ nguyên toàn bộ field/thiết kế; popup (data-source="v2") + mobile vẫn 1 cột. */
+  @media (min-width: 640px) {
+    .lead-form[data-source="hero"],
+    .lead-form[data-source="mid-cta"] {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 14px;
+      row-gap: 12px;
+      align-items: start;
+    }
+    .lead-form[data-source="hero"] .field,
+    .lead-form[data-source="mid-cta"] .field { margin-bottom: 0; }
+    .lead-form[data-source="hero"] > button,
+    .lead-form[data-source="mid-cta"] > button,
+    .lead-form[data-source="hero"] > .form-foot,
+    .lead-form[data-source="mid-cta"] > .form-foot { grid-column: 1 / -1; }
+    .lead-form[data-source="hero"] > .form-foot,
+    .lead-form[data-source="mid-cta"] > .form-foot { margin-top: 0; }
+  }
 }
 
 @keyframes v2-pulse-glow { 0%,100% { box-shadow: 0 6px 0 var(--orange-600), 0 0 0 0 rgb(242 100 25 / .5); } 50% { box-shadow: 0 6px 0 var(--orange-600), 0 0 0 16px rgb(242 100 25 / 0); } }
