@@ -25,8 +25,12 @@ export function MidCTA() {
           </div>
           <div id="dang-ky-2" style={{ scrollMarginTop: 90 }}>
             <div className="form-card">
-              <h2 style={{ marginTop: 0 }}>Đăng ký tư vấn miễn phí</h2>
-              <p className="sub">Chỉ mất 30 giây để giữ chỗ cho con</p>
+              <h2 style={{ marginTop: 0 }}>Đăng ký học thử Kỹ sư nhí</h2>
+              <p className="sub">
+                Suất học thử tuần này có hạn tại{" "}
+                <strong style={{ color: "var(--red-500)" }}>2 cơ sở Đà Nẵng</strong>{" "}
+                — đăng ký sớm để giữ chỗ
+              </p>
               <LeadForm source="mid-cta" submitLabel="Giữ chỗ cho con ngay →" />
             </div>
           </div>

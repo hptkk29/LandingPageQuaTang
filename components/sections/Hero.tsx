@@ -27,8 +27,12 @@ export function Hero() {
           <div id="dang-ky" style={{ scrollMarginTop: 90 }}>
             <div className="form-card">
               <span className="ribbon">🎁 4 BUỔI MIỄN PHÍ</span>
-              <h2>Đăng ký tư vấn miễn phí</h2>
-              <p className="sub">Để lại thông tin, Sata Robo sẽ liên hệ ngay</p>
+              <h2>Đăng ký học thử Kỹ sư nhí</h2>
+              <p className="sub">
+                Suất học thử tuần này có hạn tại{" "}
+                <strong style={{ color: "var(--red-500)" }}>2 cơ sở Đà Nẵng</strong>{" "}
+                — đăng ký sớm để giữ chỗ
+              </p>
               <LeadForm source="hero" submitLabel="Nhận 4 buổi miễn phí →" />
             </div>
           </div>

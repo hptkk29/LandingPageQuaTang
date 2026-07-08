@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { leadSchema, type AppsScriptPayload } from "@/lib/schemas/lead";
+import { leadSchema } from "@/lib/schemas/lead";
+import { branchLabel, provinceName } from "@/lib/constants/misa";
 import type { LeadApiResponse } from "@/lib/types/api";
 
 const RATE_LIMIT_WINDOW_MS = 30 * 1000;
@@ -94,14 +95,18 @@ export async function POST(
     }
 
     const userAgent = req.headers.get("user-agent") ?? "unknown";
-    const payload: AppsScriptPayload = {
+    // Giữ nguyên các key cũ của Google Sheet để không lệch cột; bổ sung
+    // họ tên con + tỉnh/thành dưới dạng key mới (Apps Script bỏ qua nếu không dùng).
+    const payload = {
       secret,
-      ho_ten: data.ho_ten,
+      ho_ten: data.ho_ten_ph ?? "", // họ tên phụ huynh
+      ho_ten_con: data.ho_ten_con, // họ tên con
       sdt: data.sdt,
       email: data.email ?? "",
-      lop: data.lop,
+      lop: data.lop ?? "",
       truong: data.truong ?? "",
-      co_so: data.co_so,
+      co_so: branchLabel(data.co_so),
+      tinh: provinceName(data.tinh),
       source: "quatang.edu.vn",
       ip,
       user_agent: userAgent,

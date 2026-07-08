@@ -6,12 +6,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
+import { leadSchema, type LeadInput, LEAD_DEFAULTS } from "@/lib/schemas/lead";
 import {
-  leadSchema,
-  type LeadInput,
-  LOP_OPTIONS,
-  CO_SO_OPTIONS,
-} from "@/lib/schemas/lead";
+  BRANCHES,
+  PROVINCES,
+  DEFAULT_BRANCH_VALUE,
+  DEFAULT_PROVINCE_ID,
+} from "@/lib/constants/misa";
+import { submitToMisa } from "@/lib/api/submit-misa";
 import { submitLead } from "@/lib/api/submit-lead";
 import { trackMetaEvent } from "@/components/analytics/MetaPixel";
 import { trackGAEvent } from "@/components/analytics/GoogleAnalytics";
@@ -23,7 +25,7 @@ type Props = {
 
 export function LeadForm({
   source = "v2",
-  submitLabel = "Nhận 4 buổi miễn phí →",
+  submitLabel = "Đăng ký học thử miễn phí →",
 }: Props) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -34,47 +36,49 @@ export function LeadForm({
     formState: { errors },
   } = useForm<LeadInput>({
     resolver: zodResolver(leadSchema),
-    defaultValues: {
-      ho_ten: "",
-      sdt: "",
-      email: "",
-      lop: undefined,
-      truong: "",
-      co_so: undefined,
-      website: "",
-    },
+    defaultValues: LEAD_DEFAULTS,
   });
 
   async function onSubmit(data: LeadInput) {
     setIsSubmitting(true);
     try {
-      const res = await submitLead(data);
-      if (res.ok) {
-        trackMetaEvent("Lead", {
-          content_name: "4 buổi RoboSim MIỄN PHÍ",
-          content_category: "Robotics Education",
-          value: 0,
-          currency: "VND",
-        });
-        trackMetaEvent("CompleteRegistration", {
-          content_name: "4 buổi RoboSim MIỄN PHÍ",
-          status: true,
-          value: 0,
-          currency: "VND",
-        });
-        trackGAEvent("generate_lead", {
-          form_name: "quatang-robosim",
-          co_so: data.co_so,
-          lop: data.lop,
-        });
-        trackGAEvent("sign_up", { method: "landing-page-form", co_so: data.co_so });
-
-        toast.success(res.message);
-        await new Promise((r) => setTimeout(r, 500));
+      // Honeypot: bot điền field ẩn → giả vờ thành công, KHÔNG đẩy sang CRM
+      if (data.website && data.website.length > 0) {
         router.push("/thank-you");
-      } else {
-        toast.error(res.message ?? "Có lỗi xảy ra, vui lòng thử lại");
+        return;
       }
+
+      // Backup best-effort vào Google Sheet — không chặn luồng, lỗi thì bỏ qua
+      submitLead(data).catch(() => {});
+
+      // Chính: đẩy lead sang MISA CRM
+      const ok = await submitToMisa(data);
+      if (!ok) {
+        toast.error("Mất kết nối, vui lòng kiểm tra mạng và thử lại");
+        return;
+      }
+
+      trackMetaEvent("Lead", {
+        content_name: "Đăng ký học thử Kỹ sư nhí",
+        content_category: "Robotics Education",
+        value: 0,
+        currency: "VND",
+      });
+      trackMetaEvent("CompleteRegistration", {
+        content_name: "Đăng ký học thử Kỹ sư nhí",
+        status: true,
+        value: 0,
+        currency: "VND",
+      });
+      trackGAEvent("generate_lead", {
+        form_name: "quatang-misa",
+        co_so: data.co_so,
+      });
+      trackGAEvent("sign_up", { method: "landing-page-form", co_so: data.co_so });
+
+      toast.success("Đăng ký thành công!");
+      await new Promise((r) => setTimeout(r, 400));
+      router.push("/thank-you");
     } finally {
       setIsSubmitting(false);
     }
@@ -93,50 +97,60 @@ export function LeadForm({
         <input id={`website-${source}`} type="text" autoComplete="off" tabIndex={-1} {...register("website")} />
       </div>
 
-      <div className={`field ${errors.ho_ten ? "show-err" : ""}`}>
-        <label>Tên phụ huynh <span className="req">*</span></label>
-        <input className={`input ${errors.ho_ten ? "invalid" : ""}`} type="text" placeholder="VD: Nguyễn Văn A" autoComplete="name" {...register("ho_ten")} />
-        <span className="err">{errors.ho_ten?.message ?? "Vui lòng nhập tên phụ huynh."}</span>
+      <div className={`field ${errors.ho_ten_con ? "show-err" : ""}`}>
+        <label>Họ và tên con <span className="req">*</span></label>
+        <input className={`input ${errors.ho_ten_con ? "invalid" : ""}`} type="text" placeholder="VD: Nguyễn Minh Khoa" autoComplete="off" {...register("ho_ten_con")} />
+        <span className="err">{errors.ho_ten_con?.message ?? "Vui lòng nhập họ và tên con."}</span>
+      </div>
+
+      <div className={`field ${errors.ho_ten_ph ? "show-err" : ""}`}>
+        <label>Họ tên phụ huynh</label>
+        <input className={`input ${errors.ho_ten_ph ? "invalid" : ""}`} type="text" placeholder="VD: Nguyễn Văn A" autoComplete="name" {...register("ho_ten_ph")} />
+        <span className="err">{errors.ho_ten_ph?.message ?? "Họ tên không hợp lệ."}</span>
       </div>
 
       <div className={`field ${errors.sdt ? "show-err" : ""}`}>
-        <label>Số điện thoại <span className="req">*</span></label>
-        <input className={`input ${errors.sdt ? "invalid" : ""}`} type="tel" inputMode="tel" placeholder="VD: 0818 823 720" autoComplete="tel" {...register("sdt")} />
+        <label>ĐT di động phụ huynh <span className="req">*</span></label>
+        <input className={`input ${errors.sdt ? "invalid" : ""}`} type="tel" inputMode="tel" placeholder="VD: 09xx xxx xxx" autoComplete="tel" {...register("sdt")} />
         <span className="err">{errors.sdt?.message ?? "Số điện thoại chưa hợp lệ."}</span>
       </div>
 
       <div className={`field ${errors.email ? "show-err" : ""}`}>
-        <label>Email (không bắt buộc)</label>
-        <input className={`input ${errors.email ? "invalid" : ""}`} type="email" placeholder="bame@gmail.com" autoComplete="email" {...register("email")} />
+        <label>Email phụ huynh</label>
+        <input className={`input ${errors.email ? "invalid" : ""}`} type="email" placeholder="(không bắt buộc)" autoComplete="email" {...register("email")} />
         <span className="err">{errors.email?.message ?? "Email không hợp lệ."}</span>
       </div>
 
-      <div className={`field ${errors.lop ? "show-err" : ""}`}>
-        <label>Lớp con đang học <span className="req">*</span></label>
-        <select className={`select ${errors.lop ? "invalid" : ""}`} defaultValue="" {...register("lop")}>
-          <option value="" disabled>Chọn lớp của con</option>
-          {LOP_OPTIONS.map((lop) => (
-            <option key={lop} value={lop}>{lop}</option>
-          ))}
-        </select>
-        <span className="err">{errors.lop?.message ?? "Vui lòng chọn lớp."}</span>
+      <div className={`field ${errors.truong ? "show-err" : ""}`}>
+        <label>Trường con đang học</label>
+        <input className={`input ${errors.truong ? "invalid" : ""}`} type="text" placeholder="VD: Trường Tiểu học Hoàng Văn Thụ" {...register("truong")} />
+        <span className="err">{errors.truong?.message ?? "Tên trường không hợp lệ."}</span>
       </div>
 
-      <div className={`field ${errors.truong ? "show-err" : ""}`}>
-        <label>Trường con đang học <span className="req">*</span></label>
-        <input className={`input ${errors.truong ? "invalid" : ""}`} type="text" placeholder="VD: Trường Tiểu học Hoàng Văn Thụ" {...register("truong")} />
-        <span className="err">{errors.truong?.message ?? "Vui lòng nhập tên trường của con."}</span>
+      <div className={`field ${errors.lop ? "show-err" : ""}`}>
+        <label>Lớp con đang học</label>
+        <input className={`input ${errors.lop ? "invalid" : ""}`} type="text" placeholder="VD: Lớp 4" {...register("lop")} />
+        <span className="err">{errors.lop?.message ?? "Lớp không hợp lệ."}</span>
       </div>
 
       <div className={`field ${errors.co_so ? "show-err" : ""}`}>
-        <label>Cơ sở mong muốn <span className="req">*</span></label>
-        <select className={`select ${errors.co_so ? "invalid" : ""}`} defaultValue="" {...register("co_so")}>
-          <option value="" disabled>Chọn cơ sở</option>
-          {CO_SO_OPTIONS.map((cs) => (
-            <option key={cs} value={cs}>{cs}</option>
+        <label>Chọn cơ sở <span className="req">*</span></label>
+        <select className={`select ${errors.co_so ? "invalid" : ""}`} defaultValue={DEFAULT_BRANCH_VALUE} {...register("co_so")}>
+          {BRANCHES.map((b) => (
+            <option key={b.value} value={b.value}>{b.label}</option>
           ))}
         </select>
         <span className="err">{errors.co_so?.message ?? "Vui lòng chọn cơ sở."}</span>
+      </div>
+
+      <div className={`field ${errors.tinh ? "show-err" : ""}`}>
+        <label>Tỉnh/Thành phố</label>
+        <select className={`select ${errors.tinh ? "invalid" : ""}`} defaultValue={DEFAULT_PROVINCE_ID} {...register("tinh")}>
+          {PROVINCES.map((p) => (
+            <option key={p.id} value={p.id}>{p.name}</option>
+          ))}
+        </select>
+        <span className="err">{errors.tinh?.message ?? "Vui lòng chọn tỉnh/thành phố."}</span>
       </div>
 
       <button className="btn btn--cta btn--lg btn--pulse" type="submit" style={{ width: "100%" }} disabled={isSubmitting}>
