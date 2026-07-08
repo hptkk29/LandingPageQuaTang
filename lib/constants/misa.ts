@@ -6,7 +6,7 @@ export const MISA = {
   endpoint: "https://amisapp.misa.vn/crm/gc/api/open/WebForm/savecollection",
   id: "adaa2ae1-2b96-d740-131b-c6020c5c6c7e",
   companyCode: "uys4eef4",
-  allowUrl: "https://quatang.edu.vn/",
+  allowUrl: "*", // đồng bộ theo mã nhúng MISA (AllowURL='*' — chấp nhận mọi origin)
   formKey: "eQ2hPdagkyg7ulh2a0bHUH9pIx2KBhfSdzW48CJKgR4=",
   redirectUrl: "https://quatang.edu.vn/thank-you",
 
