@@ -44,7 +44,9 @@ export function getMisaConfig(): MisaConfig | null {
     formId,
     companyCode,
     formKey,
-    allowUrl: process.env.MISA_ALLOW_URL ?? siteOrigin,
+    // Default '*' đồng bộ với cấu hình form MISA HIỆN TẠI (mã nhúng gốc gửi '*').
+    // Siết về đúng origin ở P0-02: đổi cấu hình trên MISA admin + env cùng lúc.
+    allowUrl: process.env.MISA_ALLOW_URL ?? "*",
     redirectUrl: process.env.MISA_REDIRECT_URL ?? `${siteOrigin}/thank-you`,
     siteOrigin,
   };
@@ -97,16 +99,37 @@ export function buildMisaBody(
 }
 
 /**
+ * Phân loại response savecollection. Format chưa có tài liệu chính thức →
+ * ưu tiên đọc marker tường minh trong JSON; heuristic keyword chỉ là fallback
+ * và tránh các bẫy đã biết ("error":null, "invalidFields":[] là body THÀNH CÔNG
+ * theo convention phổ biến). Body luôn được log để tinh chỉnh sau lead test
+ * đầu tiên (bước bắt buộc trong runbook Pha 0).
+ */
+export function classifyMisaResponse(httpOk: boolean, text: string): boolean {
+  if (!httpOk) return false;
+  try {
+    const parsed: unknown = JSON.parse(text);
+    if (parsed && typeof parsed === "object") {
+      const o = parsed as Record<string, unknown>;
+      if (o.success === true || o.Success === true) return true;
+      if (o.success === false || o.Success === false) return false;
+      if (typeof o.code === "number" && o.code >= 400) return false;
+      if (o.error != null || o.Error != null) return false;
+      return true; // JSON object không có marker lỗi nào
+    }
+  } catch {
+    // không phải JSON (có thể là HTML trang cảm ơn sau redirect) — fallback
+  }
+  return !/"error"\s*:\s*(?!null)|exception|unauthoriz|denied/i.test(text);
+}
+
+/**
  * Gửi lead sang MISA CRM từ phía server (P0-03).
  *
  * Khác bản client cũ (`mode: "no-cors"` — response opaque, mất lead âm thầm):
  * server đọc được status + body thật, log đầy đủ để phát hiện thất bại.
  * Header Origin/Referer đặt sẵn theo site để cấu hình AllowURL siết về đúng
  * tên miền (P0-02) không làm gãy request server-to-server.
- *
- * Chưa có tài liệu chính thức về format response của savecollection nên
- * heuristic: HTTP 2xx và body không chứa dấu hiệu lỗi → OK. Body luôn được
- * log (cắt 500 ký tự) để tinh chỉnh sau các lead thật đầu tiên.
  */
 export async function submitToMisaServer(
   data: LeadInput,
@@ -129,17 +152,16 @@ export async function submitToMisaServer(
         Referer: `${cfg.siteOrigin}/`,
       },
       body: buildMisaBody(cfg, data, aff).toString(),
-      signal: AbortSignal.timeout(8000),
+      // 6s: đủ cho API bình thường, không bắt khách chờ quá lâu khi MISA treo
+      // (lead vẫn an toàn ở kênh Sheet — KT-03)
+      signal: AbortSignal.timeout(6000),
       cache: "no-store",
     });
 
     const text = await res.text().catch(() => "");
     const bodySnippet = text.slice(0, 500);
-    const looksLikeError = /"error"|invalid|exception|unauthoriz|denied/i.test(
-      text
-    );
 
-    if (res.ok && !looksLikeError) {
+    if (classifyMisaResponse(res.ok, text)) {
       console.log("[misa] OK", res.status, bodySnippet);
       return { status: "OK", httpStatus: res.status, bodySnippet };
     }

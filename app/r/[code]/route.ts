@@ -39,7 +39,7 @@ export async function GET(
   // Meta Pixel/analytics trên landing vẫn thấy nguồn chiến dịch (FR-B09).
   const target = new URL("/", req.nextUrl.origin);
   req.nextUrl.searchParams.forEach((value, key) => {
-    target.searchParams.set(key, value);
+    target.searchParams.append(key, value); // append: không nuốt param trùng key
   });
   const res = NextResponse.redirect(target, 302);
 

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { waitUntil } from "@vercel/functions";
 import { leadSchema } from "@/lib/schemas/lead";
 import { branchLabel, provinceName } from "@/lib/constants/misa";
 import { submitToMisaServer } from "@/lib/server/misa";
@@ -14,23 +15,31 @@ import {
 import { resolveAffCode } from "@/lib/server/aff-store";
 import type { LeadApiResponse } from "@/lib/types/api";
 
+// /api/lead giờ là đường DUY NHẤT vào cả MISA lẫn Sheet nên rate-limit phải:
+// (1) key theo SĐT chứ không theo IP — nhà mạng VN dùng CGNAT nặng, hai phụ
+//     huynh sau cùng một IP công cộng không được chặn nhau;
+// (2) chỉ "đóng dấu" SAU khi lead đã vào được ít nhất một kênh — submit thất
+//     bại thì lần thử lại ngay không bị 429 (thử lại là cứu lead, không phải spam).
 const RATE_LIMIT_WINDOW_MS = 30 * 1000;
 const rateLimitMap = new Map<string, number>();
 
-function isRateLimited(ip: string): boolean {
+function isRateLimited(key: string): boolean {
+  const lastOk = rateLimitMap.get(key);
+  return !!lastOk && Date.now() - lastOk < RATE_LIMIT_WINDOW_MS;
+}
+
+function markSubmitted(key: string): void {
   const now = Date.now();
-  const lastSubmit = rateLimitMap.get(ip);
-  if (lastSubmit && now - lastSubmit < RATE_LIMIT_WINDOW_MS) {
-    return true;
-  }
-  rateLimitMap.set(ip, now);
+  rateLimitMap.set(key, now);
   if (rateLimitMap.size > 1000) {
-    for (const [key, ts] of rateLimitMap.entries()) {
-      if (now - ts > 3600 * 1000) rateLimitMap.delete(key);
+    for (const [k, ts] of rateLimitMap.entries()) {
+      if (now - ts > 3600 * 1000) rateLimitMap.delete(k);
     }
   }
-  return false;
 }
+
+// Vercel: cho phép chờ hết đường lui (MISA 6s + Sheet 15s) + Sheet chạy nền
+export const maxDuration = 60;
 
 function getClientIp(req: NextRequest): string {
   const forwarded = req.headers.get("x-forwarded-for");
@@ -121,13 +130,15 @@ export async function POST(
       );
     }
 
+    // Rate-limit theo SĐT đã chuẩn hoá bởi schema (không theo IP — CGNAT);
+    // chỉ chặn khi lần gửi TRƯỚC ĐÓ đã THÀNH CÔNG trong 30s (chống double-click)
     const ip = getClientIp(req);
-    if (isRateLimited(ip)) {
+    if (isRateLimited(data.sdt)) {
       return NextResponse.json(
         {
           ok: false,
           error: "RATE_LIMITED",
-          message: "Bạn gửi quá nhanh, vui lòng đợi 30 giây",
+          message: "Bạn vừa đăng ký thành công, vui lòng đợi 30 giây",
         },
         { status: 429 }
       );
@@ -138,19 +149,40 @@ export async function POST(
     // ── Attribution affiliate: đọc cookie server-side (UI không đổi — AC-10).
     // Resolve mã link → mã NV TẠI THỜI ĐIỂM SUBMIT (link đã thu hồi → không
     // gán, AC-08). Mọi lỗi khối này đều nuốt — không bao giờ chặn đăng ký
-    // (FR-B05). Sheet luôn lưu mã link THÔ nên resolve fail vẫn truy ngược được.
-    let affLast: AffTouch | null = null;
-    let affFirst: AffTouch | null = null;
-    let affUtm: AffUtm = {};
+    // (FR-B05); cookie là input KHÔNG TIN ĐƯỢC nên cả phần dựng giá trị cho
+    // Sheet cũng nằm trong try/catch. Sheet lưu mã link THÔ nên resolve fail
+    // vẫn truy ngược được người giới thiệu.
     let affEmployeeCode = "";
+    let affSheetFields = {
+      aff_ma_link_cuoi: "",
+      aff_ma_link_dau: "",
+      aff_click_id: "",
+      aff_thoi_diem_click: "",
+      aff_utm: "",
+    };
     try {
-      affLast = parseTouch(req.cookies.get(AFF_COOKIE_LAST)?.value);
-      affFirst = parseTouch(req.cookies.get(AFF_COOKIE_FIRST)?.value);
-      affUtm = parseUtmCookie(req.cookies.get(AFF_COOKIE_UTM)?.value);
+      const affLast: AffTouch | null = parseTouch(
+        req.cookies.get(AFF_COOKIE_LAST)?.value
+      );
+      const affFirst: AffTouch | null = parseTouch(
+        req.cookies.get(AFF_COOKIE_FIRST)?.value
+      );
+      const affUtm: AffUtm = parseUtmCookie(req.cookies.get(AFF_COOKIE_UTM)?.value);
       if (affLast) {
         const info = await resolveAffCode(affLast.code);
         if (info?.employeeCode) affEmployeeCode = info.employeeCode;
       }
+      affSheetFields = {
+        aff_ma_link_cuoi: affLast?.code ?? "",
+        aff_ma_link_dau: affFirst?.code ?? "",
+        aff_click_id: affLast?.clickId ?? "",
+        aff_thoi_diem_click: affLast
+          ? new Date(affLast.clickedAt).toISOString()
+          : "",
+        aff_utm: [affUtm.source, affUtm.medium, affUtm.campaign]
+          .filter(Boolean)
+          .join(" / "),
+      };
     } catch (err) {
       console.error("[/api/lead] aff attribution error (bỏ qua):", err);
     }
@@ -178,16 +210,8 @@ export async function POST(
       ip,
       user_agent: userAgent,
       // Cột attribution (Apps Script v2.2 — cột O–U; script cũ bỏ qua key lạ)
-      aff_ma_link_cuoi: affLast?.code ?? "",
-      aff_ma_link_dau: affFirst?.code ?? "",
+      ...affSheetFields,
       aff_ma_nv: affEmployeeCode,
-      aff_click_id: affLast?.clickId ?? "",
-      aff_thoi_diem_click: affLast
-        ? new Date(affLast.clickedAt).toISOString()
-        : "",
-      aff_utm: [affUtm.source, affUtm.medium, affUtm.campaign]
-        .filter(Boolean)
-        .join(" / "),
       misa_status:
         misaResult.status === "OK"
           ? "OK"
@@ -198,16 +222,20 @@ export async function POST(
             }`,
     };
 
-    const sheetResult = await submitToSheet(sheetPayload);
-
-    // KT-03: khách thấy "thành công" nếu dữ liệu vào được ít nhất MỘT nơi
-    if (misaResult.status === "OK" || sheetResult.ok) {
-      if (misaResult.status !== "OK") {
-        console.error(
-          "[MISA-FAIL] Lead chỉ vào Sheet — cần đối soát nhập lại MISA:",
-          data.sdt.slice(0, 4) + "***"
-        );
-      }
+    // MISA đã OK → lead an toàn (KT-03), trả thành công NGAY; Sheet backup
+    // ghi nền qua waitUntil — khách không phải chờ thêm 1-15s của Apps Script.
+    if (misaResult.status === "OK") {
+      markSubmitted(data.sdt);
+      waitUntil(
+        submitToSheet(sheetPayload).then((r) => {
+          if (!r.ok) {
+            console.error(
+              "[/api/lead] Sheet backup fail (lead đã ở MISA):",
+              r.detail
+            );
+          }
+        })
+      );
       return NextResponse.json(
         {
           ok: true,
@@ -218,6 +246,26 @@ export async function POST(
       );
     }
 
+    // MISA fail → Sheet là kênh duy nhất còn lại, PHẢI chờ ghi xong mới dám
+    // báo thành công (KT-03: ≥1 nơi giữ được lead)
+    const sheetResult = await submitToSheet(sheetPayload);
+    if (sheetResult.ok) {
+      markSubmitted(data.sdt);
+      console.error(
+        "[MISA-FAIL] Lead chỉ vào Sheet — cần đối soát nhập lại MISA:",
+        data.sdt.slice(0, 4) + "***"
+      );
+      return NextResponse.json(
+        {
+          ok: true,
+          message:
+            "Đăng ký thành công! Sata Robo sẽ liên hệ ba mẹ trong 24 giờ.",
+        },
+        { status: 200 }
+      );
+    }
+
+    // Cả hai kênh chết — KHÔNG markSubmitted: khách bấm thử lại ngay được
     console.error("[/api/lead] CẢ HAI kênh đều thất bại — lead bị mất!");
     return NextResponse.json(
       {

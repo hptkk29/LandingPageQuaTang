@@ -89,7 +89,11 @@ function doPost(e) {
 
     // Verify secret (Script Properties — hỗ trợ 2 secret trong giai đoạn xoay)
     const validSecrets = getValidSecrets_();
-    if (validSecrets.length === 0 || validSecrets.indexOf(data.secret) === -1) {
+    if (validSecrets.length === 0) {
+      // Phân biệt với UNAUTHORIZED để chẩn đoán nhanh khi quên set Script Properties
+      return jsonResponse({ ok: false, error: 'NOT_CONFIGURED', message: 'Chưa set Script Property WEBHOOK_SECRET' }, 500);
+    }
+    if (validSecrets.indexOf(data.secret) === -1) {
       return jsonResponse({ ok: false, error: 'UNAUTHORIZED' }, 401);
     }
 
@@ -130,36 +134,40 @@ function doPost(e) {
 
     const timestamp = new Date();
     sheet.appendRow([
-      timestamp,                          // A: Thời gian
-      data.ho_ten_con || '',              // B: Họ tên con
-      data.ho_ten || '',                  // C: Họ tên phụ huynh
-      sdtClean,                           // D: SĐT phụ huynh
-      data.email || '',                   // E: Email phụ huynh
-      data.truong || '',                  // F: Trường con đang học
-      data.lop || '',                     // G: Lớp con đang học
-      data.co_so || '',                   // H: Cơ sở
-      data.tinh || '',                    // I: Tỉnh/Thành phố
-      data.source || 'quatang.edu.vn',    // J: Nguồn
-      data.ip || '',                      // K: IP
-      data.user_agent || '',              // L: User Agent
-      'Mới',                              // M: Trạng thái
-      '',                                 // N: Ghi chú
-      data.aff_ma_link_cuoi || '',        // O: Aff mã link cuối
-      data.aff_ma_link_dau || '',         // P: Aff mã link đầu
-      data.aff_ma_nv || '',               // Q: Aff mã NV
-      data.aff_click_id || '',            // R: Aff clickId
-      data.aff_thoi_diem_click || '',     // S: Aff thời điểm click
-      data.aff_utm || '',                 // T: Aff UTM
-      data.misa_status || '',             // U: MISA status
+      timestamp,                                  // A: Thời gian
+      safeCell_(data.ho_ten_con),                 // B: Họ tên con
+      safeCell_(data.ho_ten),                     // C: Họ tên phụ huynh
+      safeCell_(sdtClean),                        // D: SĐT phụ huynh
+      safeCell_(data.email),                      // E: Email phụ huynh
+      safeCell_(data.truong),                     // F: Trường con đang học
+      safeCell_(data.lop),                        // G: Lớp con đang học
+      safeCell_(data.co_so),                      // H: Cơ sở
+      safeCell_(data.tinh),                       // I: Tỉnh/Thành phố
+      safeCell_(data.source || 'quatang.edu.vn'), // J: Nguồn
+      safeCell_(data.ip),                         // K: IP
+      safeCell_(data.user_agent),                 // L: User Agent
+      'Mới',                                      // M: Trạng thái
+      '',                                         // N: Ghi chú
+      safeCell_(data.aff_ma_link_cuoi),           // O: Aff mã link cuối
+      safeCell_(data.aff_ma_link_dau),            // P: Aff mã link đầu
+      safeCell_(data.aff_ma_nv),                  // Q: Aff mã NV
+      safeCell_(data.aff_click_id),               // R: Aff clickId
+      safeCell_(data.aff_thoi_diem_click),        // S: Aff thời điểm click
+      safeCell_(data.aff_utm),                    // T: Aff UTM
+      safeCell_(data.misa_status),                // U: MISA status
     ]);
 
-    // MISA thất bại → email cảnh báo ngay (không im lặng — FR-E04).
+    // MISA thất bại → email cảnh báo (không im lặng — FR-E04), throttle 15 phút
+    // để MISA sập hàng loạt không đốt hết quota MailApp (100 mail/ngày).
     // Lỗi gửi mail không được làm hỏng việc lưu lead.
     try {
       const misaStatus = String(data.misa_status || '');
       if (misaStatus && misaStatus !== 'OK') {
         const alertTo = PropertiesService.getScriptProperties().getProperty('ALERT_EMAIL');
-        if (alertTo) {
+        const cache = CacheService.getScriptCache();
+        const throttled = cache.get('misa_alert_sent');
+        if (alertTo && !throttled) {
+          cache.put('misa_alert_sent', '1', 900); // 15 phút
           MailApp.sendEmail({
             to: alertTo,
             subject: '[MISA-FAIL] Lead quatang.edu.vn chỉ vào Sheet — cần nhập lại MISA',
@@ -169,7 +177,8 @@ function doPost(e) {
               'SĐT: ' + sdtClean + '\n' +
               'Thời điểm: ' + new Date().toISOString() + '\n\n' +
               'Lead đã được lưu an toàn trong Google Sheet (cột U = ' + misaStatus + ').\n' +
-              'Runbook: lọc cột U khác OK, nhập tay vào MISA rồi ghi chú cột N.',
+              'Runbook: lọc cột U khác OK, nhập tay vào MISA rồi ghi chú cột N.\n' +
+              '(Email này throttle 15 phút — kiểm tra Sheet để thấy TOÀN BỘ row lỗi.)',
           });
         }
       }
@@ -198,6 +207,15 @@ function doPost(e) {
 }
 
 // ============ HELPERS ============
+
+/**
+ * Chống formula injection: giá trị bắt đầu bằng = + - @ hoặc tab/CR sẽ được
+ * Sheets hiểu là công thức khi mở file — prefix dấu nháy đơn để ép thành text.
+ */
+function safeCell_(v) {
+  const s = String(v == null ? '' : v);
+  return /^[=+\-@\t\r]/.test(s) ? "'" + s : s;
+}
 
 function jsonResponse(obj, statusCode) {
   const payload = Object.assign({}, obj, { httpStatus: statusCode || 200 });

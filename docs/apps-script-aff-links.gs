@@ -95,7 +95,10 @@ function doPost(e) {
     }
 
     const validSecrets = getValidSecrets_();
-    if (validSecrets.length === 0 || validSecrets.indexOf(data.secret) === -1) {
+    if (validSecrets.length === 0) {
+      return jsonResponse_({ ok: false, error: 'NOT_CONFIGURED', message: 'Chưa set Script Property AFF_SECRET' });
+    }
+    if (validSecrets.indexOf(data.secret) === -1) {
       return jsonResponse_({ ok: false, error: 'UNAUTHORIZED' });
     }
 
@@ -143,24 +146,32 @@ function handleClick_(data) {
   const isValid = !!(link && link.status === STATUS_ACTIVE);
 
   clicksSheet.appendRow([
-    String(data.clickId || ''),
-    code,
+    safeCell_(data.clickId),
+    safeCell_(code),
     isValid,
     data.occurredAt ? new Date(Number(data.occurredAt)) : new Date(),
-    String(data.domain || ''),
-    String(data.utmSource || ''),
-    String(data.utmMedium || ''),
-    String(data.utmCampaign || ''),
-    String(data.referrer || ''),
-    String(data.ip || ''),
-    String(data.userAgent || ''),
+    safeCell_(data.domain),
+    safeCell_(data.utmSource),
+    safeCell_(data.utmMedium),
+    safeCell_(data.utmCampaign),
+    safeCell_(data.referrer),
+    safeCell_(data.ip),
+    safeCell_(data.userAgent),
   ]);
 
   if (isValid && link) {
-    // Cột H (Số click) của dòng link tương ứng
-    const linksSheet = ss.getSheetByName(LINKS_SHEET);
-    const cell = linksSheet.getRange(link.rowIndex, 8);
-    cell.setValue((Number(cell.getValue()) || 0) + 1);
+    // Cột H (Số click) — read-modify-write cần lock, doPost chạy concurrent
+    const lock = LockService.getScriptLock();
+    try {
+      lock.waitLock(5000);
+      const linksSheet = ss.getSheetByName(LINKS_SHEET);
+      const cell = linksSheet.getRange(link.rowIndex, 8);
+      cell.setValue((Number(cell.getValue()) || 0) + 1);
+    } catch (lockErr) {
+      Logger.log('Lock timeout — bỏ qua tăng Số click (row Clicks vẫn đủ để đếm lại): ' + lockErr);
+    } finally {
+      try { lock.releaseLock(); } catch (e) {}
+    }
   }
 
   return jsonResponse_({ ok: true, valid: isValid });
@@ -188,6 +199,12 @@ function findLink_(code) {
     }
   }
   return null;
+}
+
+/** Chống formula injection khi mở Sheet — prefix ' nếu bắt đầu bằng = + - @ tab/CR. */
+function safeCell_(v) {
+  const s = String(v == null ? '' : v);
+  return /^[=+\-@\t\r]/.test(s) ? "'" + s : s;
 }
 
 function jsonResponse_(obj) {

@@ -17,6 +17,10 @@ export const AFF_CODE_REGEX = /^[A-Za-z0-9_-]{6,64}$/;
 
 const CLICK_ID_REGEX = /^[A-Za-z0-9_-]{8,32}$/;
 
+// Biên trên của JS Date (±8.64e15 ms) — timestamp giả mạo vượt biên sẽ làm
+// new Date(x).toISOString() throw RangeError. Cookie là input không tin được.
+const MAX_EPOCH_MS = 8_640_000_000_000_000;
+
 export type AffTouch = {
   code: string; // mã link (không phải mã NV — resolve lúc submit)
   clickId: string; // định danh phiên click (BRD §8.3) — nối click ↔ lead
@@ -37,7 +41,9 @@ export function parseTouch(raw: string | undefined): AffTouch | null {
   if (!AFF_CODE_REGEX.test(code)) return null;
   if (!CLICK_ID_REGEX.test(clickId)) return null;
   const clickedAt = Number(ts);
-  if (!Number.isFinite(clickedAt) || clickedAt <= 0) return null;
+  if (!Number.isFinite(clickedAt) || clickedAt <= 0 || clickedAt > MAX_EPOCH_MS) {
+    return null;
+  }
   return { code, clickId, clickedAt };
 }
 
