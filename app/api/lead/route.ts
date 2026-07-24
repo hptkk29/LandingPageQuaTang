@@ -2,6 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { leadSchema } from "@/lib/schemas/lead";
 import { branchLabel, provinceName } from "@/lib/constants/misa";
 import { submitToMisaServer } from "@/lib/server/misa";
+import {
+  AFF_COOKIE_FIRST,
+  AFF_COOKIE_LAST,
+  AFF_COOKIE_UTM,
+  parseTouch,
+  parseUtmCookie,
+  type AffTouch,
+  type AffUtm,
+} from "@/lib/server/attribution";
+import { resolveAffCode } from "@/lib/server/aff-store";
 import type { LeadApiResponse } from "@/lib/types/api";
 
 const RATE_LIMIT_WINDOW_MS = 30 * 1000;
@@ -125,9 +135,33 @@ export async function POST(
 
     const userAgent = req.headers.get("user-agent") ?? "unknown";
 
+    // ── Attribution affiliate: đọc cookie server-side (UI không đổi — AC-10).
+    // Resolve mã link → mã NV TẠI THỜI ĐIỂM SUBMIT (link đã thu hồi → không
+    // gán, AC-08). Mọi lỗi khối này đều nuốt — không bao giờ chặn đăng ký
+    // (FR-B05). Sheet luôn lưu mã link THÔ nên resolve fail vẫn truy ngược được.
+    let affLast: AffTouch | null = null;
+    let affFirst: AffTouch | null = null;
+    let affUtm: AffUtm = {};
+    let affEmployeeCode = "";
+    try {
+      affLast = parseTouch(req.cookies.get(AFF_COOKIE_LAST)?.value);
+      affFirst = parseTouch(req.cookies.get(AFF_COOKIE_FIRST)?.value);
+      affUtm = parseUtmCookie(req.cookies.get(AFF_COOKIE_UTM)?.value);
+      if (affLast) {
+        const info = await resolveAffCode(affLast.code);
+        if (info?.employeeCode) affEmployeeCode = info.employeeCode;
+      }
+    } catch (err) {
+      console.error("[/api/lead] aff attribution error (bỏ qua):", err);
+    }
+
     // Kênh chính: MISA CRM — gửi từ server, đọc response thật (P0-03).
     // Chạy trước để row Sheet ghi được misa_status (soi thất bại, không im lặng).
-    const misaResult = await submitToMisaServer(data);
+    // FR-B08: không có mã giới thiệu → không truyền aff → field bị omit hoàn toàn.
+    const misaResult = await submitToMisaServer(
+      data,
+      affEmployeeCode ? { employeeCode: affEmployeeCode } : undefined
+    );
 
     // Giữ nguyên các key cũ của Google Sheet để không lệch cột; key mới
     // (misa_status...) Apps Script bỏ qua nếu chưa có cột tương ứng.
@@ -143,6 +177,17 @@ export async function POST(
       source: "quatang.edu.vn",
       ip,
       user_agent: userAgent,
+      // Cột attribution (Apps Script v2.2 — cột O–U; script cũ bỏ qua key lạ)
+      aff_ma_link_cuoi: affLast?.code ?? "",
+      aff_ma_link_dau: affFirst?.code ?? "",
+      aff_ma_nv: affEmployeeCode,
+      aff_click_id: affLast?.clickId ?? "",
+      aff_thoi_diem_click: affLast
+        ? new Date(affLast.clickedAt).toISOString()
+        : "",
+      aff_utm: [affUtm.source, affUtm.medium, affUtm.campaign]
+        .filter(Boolean)
+        .join(" / "),
       misa_status:
         misaResult.status === "OK"
           ? "OK"

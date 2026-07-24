@@ -1,7 +1,13 @@
 /**
  * Lead Handler — Landing Page Quà Tặng RoboSim
  * Owner: Sata Robo (hptkk29)
- * Version: 2.1.0
+ * Version: 2.2.0
+ *
+ * v2.2: thêm cột attribution affiliate O–U (BRD-AFF-005 FR-B09) + email cảnh
+ *   báo khi MISA thất bại (misa_status khác OK — tinh thần FR-E04, không im lặng).
+ *   Script Properties bổ sung (tuỳ chọn):
+ *     ALERT_EMAIL = satarobo.it@gmail.com   (rỗng = không gửi mail)
+ *   ⚠️ Sau khi paste v2.2: chạy lại setupHeaders() để ghi thêm cột O–U.
  *
  * v2.1: secret KHÔNG còn hardcode — đọc từ Script Properties.
  *   Setup (1 lần, trên script.google.com): Project Settings > Script Properties:
@@ -48,6 +54,13 @@ const HEADERS = [
   'User Agent',             // L
   'Trạng thái',             // M
   'Ghi chú',                // N
+  'Aff mã link cuối',       // O — mã link THÔ lần chạm cuối (truy ngược được kể cả khi resolve fail)
+  'Aff mã link đầu',        // P
+  'Aff mã NV',              // Q — mã NV người giới thiệu đã resolve (rỗng = không có)
+  'Aff clickId',            // R — nối với tab Clicks của sheet AffLinks
+  'Aff thời điểm click',    // S
+  'Aff UTM',                // T
+  'MISA status',            // U — OK / FAIL_xxx / SKIPPED_CONFIG
 ];
 
 // ============ MAIN HANDLER ============
@@ -56,7 +69,7 @@ function doGet(e) {
   return jsonResponse({
     ok: true,
     service: 'Lead Handler - QuaTang',
-    version: '2.1.0',
+    version: '2.2.0',
     timestamp: new Date().toISOString(),
   });
 }
@@ -131,7 +144,38 @@ function doPost(e) {
       data.user_agent || '',              // L: User Agent
       'Mới',                              // M: Trạng thái
       '',                                 // N: Ghi chú
+      data.aff_ma_link_cuoi || '',        // O: Aff mã link cuối
+      data.aff_ma_link_dau || '',         // P: Aff mã link đầu
+      data.aff_ma_nv || '',               // Q: Aff mã NV
+      data.aff_click_id || '',            // R: Aff clickId
+      data.aff_thoi_diem_click || '',     // S: Aff thời điểm click
+      data.aff_utm || '',                 // T: Aff UTM
+      data.misa_status || '',             // U: MISA status
     ]);
+
+    // MISA thất bại → email cảnh báo ngay (không im lặng — FR-E04).
+    // Lỗi gửi mail không được làm hỏng việc lưu lead.
+    try {
+      const misaStatus = String(data.misa_status || '');
+      if (misaStatus && misaStatus !== 'OK') {
+        const alertTo = PropertiesService.getScriptProperties().getProperty('ALERT_EMAIL');
+        if (alertTo) {
+          MailApp.sendEmail({
+            to: alertTo,
+            subject: '[MISA-FAIL] Lead quatang.edu.vn chỉ vào Sheet — cần nhập lại MISA',
+            body:
+              'Một lead vừa KHÔNG vào được MISA CRM (misa_status=' + misaStatus + ').\n\n' +
+              'Họ tên con: ' + (data.ho_ten_con || '') + '\n' +
+              'SĐT: ' + sdtClean + '\n' +
+              'Thời điểm: ' + new Date().toISOString() + '\n\n' +
+              'Lead đã được lưu an toàn trong Google Sheet (cột U = ' + misaStatus + ').\n' +
+              'Runbook: lọc cột U khác OK, nhập tay vào MISA rồi ghi chú cột N.',
+          });
+        }
+      }
+    } catch (mailErr) {
+      Logger.log('ALERT_EMAIL error (bỏ qua): ' + mailErr.toString());
+    }
 
     Logger.log('Lead saved: con=' + data.ho_ten_con + ' | ph=' + (data.ho_ten || '-') +
       ' | ' + sdtClean + ' | ' + (data.truong || '-') + ' | ' + (data.co_so || '-') +
