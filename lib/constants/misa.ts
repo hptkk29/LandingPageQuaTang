@@ -1,27 +1,6 @@
-// Cấu hình tích hợp AMIS MISA CRM (Web-to-lead).
-// Các giá trị dưới đây vốn công khai trong mã nguồn form nhúng của MISA
-// nên đặt ở client là an toàn. Nếu MISA cấp form mới, chỉ cần sửa ở đây.
-
-export const MISA = {
-  endpoint: "https://amisapp.misa.vn/crm/gc/api/open/WebForm/savecollection",
-  id: "adaa2ae1-2b96-d740-131b-c6020c5c6c7e",
-  companyCode: "uys4eef4",
-  allowUrl: "*", // đồng bộ theo mã nhúng MISA (AllowURL='*' — chấp nhận mọi origin)
-  formKey: "eQ2hPdagkyg7ulh2a0bHUH9pIx2KBhfSdzW48CJKgR4=",
-  redirectUrl: "https://quatang.edu.vn/thank-you",
-
-  // Ánh xạ field của form → tên field MISA CRM
-  fields: {
-    hoTenCon: "LastName", // bắt buộc theo cấu hình MISA
-    hoTenPhuHuynh: "CustomField25",
-    sdtPhuHuynh: "CustomField15",
-    email: "Email",
-    truong: "CustomField14",
-    lop: "CustomField13",
-    coSo: "CustomField17",
-    tinh: "MailingProvinceID",
-  },
-} as const;
+// Dữ liệu danh mục dùng chung client/server (cơ sở, tỉnh/thành, Zalo).
+// Cấu hình + credentials MISA CRM đã chuyển về server-only: lib/server/misa.ts
+// (đọc từ env MISA_* — không còn nằm trong bundle client).
 
 // Cơ sở — value là giá trị MISA CustomField17 ("1" / "2")
 export const BRANCHES = [
