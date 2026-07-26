@@ -105,8 +105,14 @@ export function buildMisaBody(
  * theo convention phổ biến). Body luôn được log để tinh chỉnh sau lead test
  * đầu tiên (bước bắt buộc trong runbook Pha 0).
  */
-export function classifyMisaResponse(httpOk: boolean, text: string): boolean {
-  if (!httpOk) return false;
+export function classifyMisaResponse(status: number, text: string): boolean {
+  // MISA WebForm LƯU THÀNH CÔNG → trả 3xx redirect về RedirectURL (đã xác minh:
+  // 302 Location: .../thank-you). Đây là tín hiệu thành công tin cậy nhất —
+  // KHÔNG follow redirect (fetch redirect:"manual") để không nhầm trang thank-you
+  // (HTML) là lỗi. status 0 = opaqueredirect (một số runtime) cũng là redirect.
+  if (status === 0 || (status >= 300 && status < 400)) return true;
+  if (status >= 400) return false;
+  // 2xx không-redirect: một số cấu hình trả JSON — dò marker lỗi tường minh
   try {
     const parsed: unknown = JSON.parse(text);
     if (parsed && typeof parsed === "object") {
@@ -118,7 +124,7 @@ export function classifyMisaResponse(httpOk: boolean, text: string): boolean {
       return true; // JSON object không có marker lỗi nào
     }
   } catch {
-    // không phải JSON (có thể là HTML trang cảm ơn sau redirect) — fallback
+    // không phải JSON — fallback keyword
   }
   return !/"error"\s*:\s*(?!null)|exception|unauthoriz|denied/i.test(text);
 }
@@ -152,16 +158,23 @@ export async function submitToMisaServer(
         Referer: `${cfg.siteOrigin}/`,
       },
       body: buildMisaBody(cfg, data, aff).toString(),
+      // KHÔNG follow redirect: 302 -> RedirectURL chính là tín hiệu thành công
+      redirect: "manual",
       // 6s: đủ cho API bình thường, không bắt khách chờ quá lâu khi MISA treo
       // (lead vẫn an toàn ở kênh Sheet — KT-03)
       signal: AbortSignal.timeout(6000),
       cache: "no-store",
     });
 
-    const text = await res.text().catch(() => "");
-    const bodySnippet = text.slice(0, 500);
+    const isRedirect = res.status === 0 || (res.status >= 300 && res.status < 400);
+    const location = res.headers.get("location");
+    // Chỉ đọc body khi KHÔNG phải redirect (redirect có body rỗng)
+    const text = isRedirect ? "" : await res.text().catch(() => "");
+    const bodySnippet = isRedirect
+      ? `redirect -> ${location ?? "(opaque)"}`
+      : text.slice(0, 500);
 
-    if (classifyMisaResponse(res.ok, text)) {
+    if (classifyMisaResponse(res.status, text)) {
       console.log("[misa] OK", res.status, bodySnippet);
       return { status: "OK", httpStatus: res.status, bodySnippet };
     }
