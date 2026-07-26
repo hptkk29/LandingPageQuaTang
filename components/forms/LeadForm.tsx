@@ -13,7 +13,6 @@ import {
   DEFAULT_BRANCH_VALUE,
   DEFAULT_PROVINCE_ID,
 } from "@/lib/constants/misa";
-import { submitToMisa } from "@/lib/api/submit-misa";
 import { submitLead } from "@/lib/api/submit-lead";
 import { trackMetaEvent } from "@/components/analytics/MetaPixel";
 import { trackGAEvent } from "@/components/analytics/GoogleAnalytics";
@@ -48,13 +47,11 @@ export function LeadForm({
         return;
       }
 
-      // Backup best-effort vào Google Sheet — không chặn luồng, lỗi thì bỏ qua
-      submitLead(data).catch(() => {});
-
-      // Chính: đẩy lead sang MISA CRM
-      const ok = await submitToMisa(data);
-      if (!ok) {
-        toast.error("Mất kết nối, vui lòng kiểm tra mạng và thử lại");
+      // Gửi qua API server duy nhất — server lo MISA CRM + Google Sheet backup
+      // (thành công nếu dữ liệu vào được ít nhất một nơi)
+      const res = await submitLead(data);
+      if (!res.ok) {
+        toast.error(res.message ?? "Có lỗi xảy ra, vui lòng thử lại");
         return;
       }
 
