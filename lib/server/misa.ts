@@ -88,11 +88,17 @@ export function buildMisaBody(
 
   // Người giới thiệu — chỉ gửi khi có mã thật VÀ form MISA đã có field
   // (FR-B08: không có mã → omit hoàn toàn, không bao giờ gửi giá trị giả)
-  const affFieldName = process.env.MISA_AFF_FIELD_NAME;
+  const affFieldName = process.env.MISA_AFF_FIELD_NAME; // = CustomField26 trên form quà tặng
   if (aff?.employeeCode && affFieldName) {
     p.set(affFieldName, aff.employeeCode);
-    const leadSourceId = process.env.MISA_AFF_LEAD_SOURCE_ID;
-    if (leadSourceId) p.set("LeadSourceID", leadSourceId);
+    // Nguồn gốc Leads — tên field cấu hình được vì mỗi form MISA map khác nhau
+    // (form quà tặng dùng field 'FacebookID', không phải 'LeadSourceID'). Chỉ
+    // gửi khi cả tên field lẫn giá trị đều được set.
+    const leadSourceField = process.env.MISA_AFF_LEAD_SOURCE_FIELD;
+    const leadSourceValue = process.env.MISA_AFF_LEAD_SOURCE_ID;
+    if (leadSourceField && leadSourceValue) {
+      p.set(leadSourceField, leadSourceValue);
+    }
   }
 
   return p;
