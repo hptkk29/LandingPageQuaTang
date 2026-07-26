@@ -21,7 +21,7 @@ type MisaConfig = {
 const MISA_FIELDS = {
   hoTenCon: "LastName", // bắt buộc theo cấu hình MISA
   hoTenPhuHuynh: "CustomField25",
-  sdtPhuHuynh: "CustomField15",
+  sdtPhuHuynh: "Mobile", // form v2 (0dc449cf) dùng field chuẩn 'Mobile' (form cũ: CustomField15)
   email: "Email",
   truong: "CustomField14",
   lop: "CustomField13",
