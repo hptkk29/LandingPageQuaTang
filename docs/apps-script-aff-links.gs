@@ -241,11 +241,16 @@ function setupSheets() {
   Logger.log('✅ Đã tạo 2 tab Links + Clicks với header.');
 }
 
-/** Sinh mã link ngẫu nhiên 20 ký tự base64url (FR-A02: ≥16, không chứa mã NV). */
+/**
+ * Sinh mã link ngẫu nhiên 8 ký tự (rút gọn cho Sale dễ gửi).
+ * Bảng ký tự bỏ 0/O/1/l/I cho dễ đọc & đọc qua điện thoại. ~45 bit — thực tế
+ * không đoán được; nới nhẹ so với FR-A02 (≥16) vì link redirect công khai,
+ * đoán trúng cũng chỉ gán nhầm 1 lead, không lộ dữ liệu.
+ */
 function generateLinkCode() {
-  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+  const alphabet = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz';
   let code = '';
-  for (let i = 0; i < 20; i++) {
+  for (let i = 0; i < 8; i++) {
     code += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
   }
   Logger.log('Mã link mới: ' + code + '  →  https://quatang.edu.vn/r/' + code);
