@@ -14,7 +14,7 @@ import {
   DEFAULT_PROVINCE_ID,
 } from "@/lib/constants/misa";
 import { submitLead } from "@/lib/api/submit-lead";
-import { trackMetaEvent } from "@/components/analytics/MetaPixel";
+import { setMetaUserData, trackMetaEvent } from "@/components/analytics/MetaPixel";
 import { trackGAEvent } from "@/components/analytics/GoogleAnalytics";
 
 type Props = {
@@ -121,6 +121,12 @@ export function LeadForm({
       // Lead ĐÃ vào CRM — lỗi đo lường (pixel bị chặn/extension) không được
       // phép chặn phụ huynh sang trang cảm ơn.
       try {
+        // Manual Advanced Matching — phải gọi TRƯỚC track đầu tiên thì các sự
+        // kiện sau mới mang user data. Chỉ gửi SĐT + email của PHỤ HUYNH, cố ý
+        // không gửi họ tên con/trường/lớp (dữ liệu trẻ em). fbevents.js băm
+        // SHA-256 tại trình duyệt, Meta không nhận giá trị thô.
+        setMetaUserData({ phone: data.sdt, email: data.email });
+
         trackMetaEvent("Lead", {
           content_name: "Đăng ký học thử Kỹ sư nhí",
           content_category: "Robotics Education",
