@@ -25,22 +25,21 @@ export const CAMPAIGN = {
     },
   ],
 
-  // Lịch học: Thứ 7. Date hiển thị compute dynamically — call
-  // formatVNSaturdayLabel(getNextSaturday()) ở component để ra
-  // "Thứ 7, 30/05/2026" (luôn là Thứ 7 sắp tới, tự reset mỗi tuần).
-  classTime: "15h45-17h15",
+  // Lịch học linh hoạt — KHÔNG còn ca cố định Thứ 7. Khi phụ huynh đăng ký,
+  // trung tâm xếp ca phù hợp theo cơ sở đã chọn.
+  schedule: "cuối tuần & các buổi tối",
   classDuration: "90 phút/buổi",
   totalSessions: 4,
 
-  // Registration deadline = end of upcoming Saturday (computed dynamically).
-  // Countdown component sẽ tự reset vào Chủ nhật 00:00 (sau khi Thứ 7
-  // 23:59:59 kết thúc) để đếm tới Thứ 7 tuần sau.
+  // Hạn đăng ký mỗi đợt = hết Chủ nhật tuần này (tính động trong
+  // lib/utils/schedule.ts → getWeekDeadlineEnd, tự reset sang tuần sau).
 
   targetAudience: "Học sinh Tiểu học & THCS",
   targetGrades: "Lớp 1 – 8",
   classroom: "Phòng 201",
   minStudents: 6,
-  maxStudents: 15,
+  // Sĩ số tối đa — trùng với con số "≤12" dùng trong toàn bộ nội dung trang
+  maxStudents: 12,
 
   videoUrl: "https://youtu.be/EEVXtrzLTys",
 

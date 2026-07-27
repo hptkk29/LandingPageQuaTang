@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     template: "%s | Sata Robo",
   },
   description:
-    "Tặng phụ huynh 4 buổi đào tạo Robotics cơ bản trên phần mềm RoboSim cho học sinh lớp 1-8. 12 suất MIỄN PHÍ mỗi cơ sở. Khai giảng đợt mới mỗi Thứ 7 tại 211 Nguyễn Hữu Thọ và 114 Hoàng Diệu, Đà Nẵng.",
+    "Tặng phụ huynh 4 buổi học trải nghiệm Robotics cơ bản trên phần mềm RoboSim cho học sinh lớp 1-8. 12 suất MIỄN PHÍ mỗi cơ sở, lịch học linh hoạt cuối tuần & các buổi tối tại 211 Nguyễn Hữu Thọ và 114 Hoàng Diệu, Đà Nẵng.",
   keywords: [
     "Robotics trẻ em Đà Nẵng",
     "RoboSim",
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "🎁 Tặng 4 Buổi RoboSim MIỄN PHÍ — Sata Robo Đà Nẵng",
     description:
-      "4 buổi học Robotics đại cương MIỄN PHÍ cho con — chỉ 12 suất/cơ sở. Khai giảng đợt mới mỗi Thứ 7 tại Đà Nẵng.",
+      "4 buổi học trải nghiệm Robotics MIỄN PHÍ cho con — chỉ 12 suất/cơ sở. Lịch học linh hoạt cuối tuần & các buổi tối tại Đà Nẵng.",
     url: SITE_URL,
     siteName: "Sata Robo",
     images: [

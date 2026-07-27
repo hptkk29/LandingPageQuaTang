@@ -86,11 +86,15 @@ export function ExitIntent() {
                 Khoan đã, ba mẹ ơi!
               </h3>
               <p className="text-gray-600 text-sm md:text-base mt-1">
-                Để lại thông tin để nhận tư vấn miễn phí cho con
+                Để lại thông tin để giữ 4 buổi trải nghiệm miễn phí cho con
               </p>
             </div>
 
-            <LeadForm />
+            <LeadForm
+              source="exit-intent"
+              compact
+              submitLabel="Nhận 4 buổi miễn phí →"
+            />
           </motion.div>
         </motion.div>
       )}

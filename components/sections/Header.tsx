@@ -43,7 +43,13 @@ export function Header() {
             />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-7">
+          <nav className="hidden lg:flex items-center gap-7">
+            <a
+              href="#bon-buoi"
+              className="link-underline text-sm font-medium text-gray-700 hover:text-brand-600"
+            >
+              4 buổi trải nghiệm
+            </a>
             <a
               href="#chuong-trinh"
               className="link-underline text-sm font-medium text-gray-700 hover:text-brand-600"
@@ -67,9 +73,9 @@ export function Header() {
           <button
             type="button"
             onClick={scrollToForm}
-            className="relative bg-cta-500 hover:bg-cta-600 text-white font-display font-bold text-xs md:text-sm px-4 md:px-6 py-2 md:py-2.5 rounded-button shadow-md hover:shadow-cta transition-all hover:-translate-y-0.5 animate-shimmer cursor-pointer"
+            className="relative bg-cta-500 hover:bg-cta-600 text-white font-display font-bold text-xs md:text-sm px-4 md:px-6 py-2 md:py-2.5 rounded-button shadow-md hover:shadow-cta transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
           >
-            🎁 Đăng ký ngay
+            🎁 Nhận 4 buổi<span className="hidden sm:inline"> miễn phí</span>
           </button>
         </div>
       </Container>

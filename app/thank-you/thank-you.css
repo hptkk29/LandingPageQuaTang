@@ -1,0 +1,547 @@
+/* ============================================================
+   Trang cảm ơn /thank-you — port 1:1 CSS từ bản mẫu tĩnh
+   (yeucau-thankyou/index.html, mục CSS dòng 32..155).
+   Toàn bộ được scope dưới `.ty-root` để không rò rỉ ra phần
+   còn lại của site (landing page dùng .v2-root + Tailwind).
+
+   Khác bản mẫu (có chủ đích):
+   - KHÔNG nhúng @font-face base64 'Baloo 2' → dùng biến
+     --font-baloo do next/font nạp sẵn ở app/layout.tsx.
+   - `html{scroll-behavior:smooth}` đã có sẵn trong globals.css.
+   - `body{...}` của bản mẫu chuyển thành thuộc tính của .ty-root.
+   - Tên @keyframes thêm tiền tố `ty-` để không đụng keyframes
+     của globals.css / v2.css.
+   ============================================================ */
+
+.ty-root {
+  /* ══════════ DESIGN TOKENS — thương hiệu Sata Robo (cam + tím từ logo) ══════════ */
+  --cam: #f7941e;
+  --cam-dam: #e07b00;
+  --cam-nhat: #ffedd5;
+  --tim: #6b21a8;
+  --tim-dam: #4c1d95;
+  --tim-nhat: #f3e8ff;
+  --do: #dc2626;
+  --do-nhat: #fee2e2;
+  --nen: #fff8f0;
+  --the: #ffffff;
+  --chu: #3b2a1a;
+  /* Bản mẫu dùng #8A7360 → chỉ đạt 4.24:1 trên nền --nen, trượt WCAG AA (4.5:1).
+     Đậm lên #7A6352 = 5.34:1 — mắt thường gần như không phân biệt được, nhưng
+     đạt AA cho cả 4 chỗ dùng (.hero p, .cta-phu, .khan .vi-sao, .chan). */
+  --chu-nhat: #7a6352;
+  /* Cam đủ tối để làm CHỮ trên nền --cam-nhat (#9A5200 / #FFEDD5 = 5.12:1);
+     --cam-dam (#E07B00) chỉ đạt 2.62:1 nên không dùng cho chữ nhỏ. */
+  --cam-chu: #9a5200;
+  --bo: 24px;
+  --bong-clay: 0 6px 0 rgba(107, 33, 168, 0.1), 0 14px 28px rgba(224, 123, 0, 0.14),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.04);
+  --bong-noi: 0 10px 24px rgba(107, 33, 168, 0.16);
+
+  /* thay cho @font-face base64 của bản mẫu */
+  --ty-baloo: var(--font-baloo), "Baloo 2", -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* ══════════ body{...} của bản mẫu ══════════ */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  background: var(--nen);
+  color: var(--chu);
+  line-height: 1.55;
+  font-size: 16px;
+  overflow-x: hidden;
+  padding-bottom: 96px;
+  /* body của repo nền trắng → .ty-root phải phủ hết viewport */
+  min-height: 100vh;
+
+  & * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  & h1,
+  & h2,
+  & .baloo {
+    font-family: var(--ty-baloo);
+  }
+
+  & img,
+  & svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  & a {
+    color: inherit;
+  }
+
+  /* nền trang trí desktop */
+  & .bg-shape {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 0;
+  }
+  & .bg-shape.s1 {
+    width: 420px;
+    height: 420px;
+    background: var(--cam-nhat);
+    top: -120px;
+    left: -140px;
+  }
+  & .bg-shape.s2 {
+    width: 480px;
+    height: 480px;
+    background: var(--tim-nhat);
+    bottom: -160px;
+    right: -160px;
+  }
+
+  & .khung {
+    position: relative;
+    z-index: 1;
+    max-width: 1060px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  & .the {
+    background: var(--the);
+    border-radius: var(--bo);
+    box-shadow: var(--bong-clay);
+    padding: 28px 22px;
+    margin-top: 22px;
+  }
+
+  /* ══════════ ① HERO ══════════ */
+  & .hero {
+    text-align: center;
+    padding-top: 34px;
+    position: relative;
+  }
+  & .hero .logo {
+    width: min(220px, 58vw);
+    margin: 0 auto 18px;
+  }
+  & .tick {
+    width: 88px;
+    height: 88px;
+    margin: 0 auto 14px;
+  }
+  & .tick circle {
+    fill: none;
+    stroke: var(--cam);
+    stroke-width: 5;
+    stroke-dasharray: 264;
+    stroke-dashoffset: 264;
+    animation: ty-ve 0.7s ease-out forwards;
+  }
+  & .tick path {
+    fill: none;
+    stroke: var(--tim);
+    stroke-width: 7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 60;
+    stroke-dashoffset: 60;
+    animation: ty-ve 0.5s 0.5s ease-out forwards;
+  }
+  & .hero h1 {
+    font-size: clamp(1.7rem, 5.5vw, 2.6rem);
+    color: var(--tim-dam);
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+  & .hero p {
+    margin-top: 8px;
+    color: var(--chu-nhat);
+    font-size: clamp(1rem, 3.2vw, 1.15rem);
+  }
+  & .hero p b {
+    color: var(--chu);
+  }
+
+  /* ══════════ ② QUÀ ══════════ */
+  & .qua {
+    display: grid;
+    gap: 18px;
+    align-items: center;
+  }
+  & .robot-wrap {
+    display: flex;
+    justify-content: center;
+  }
+  & .robot {
+    width: min(240px, 60vw);
+    animation: ty-troi 3.5s ease-in-out infinite;
+  }
+  & .qua h2 {
+    font-size: clamp(1.25rem, 4.4vw, 1.8rem);
+    color: var(--tim-dam);
+    font-weight: 800;
+    line-height: 1.3;
+  }
+  & .qua .nhan {
+    display: inline-block;
+    background: var(--cam-nhat);
+    /* bản mẫu: var(--cam-dam) — 2.62:1, chữ 14.4px bold cần 4.5:1 */
+    color: var(--cam-chu);
+    font-weight: 700;
+    border-radius: 999px;
+    padding: 6px 16px;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+  }
+  & .qua .khoa {
+    color: var(--cam-dam);
+  }
+  & .badge-thi {
+    margin-top: 16px;
+    background: linear-gradient(135deg, var(--tim-nhat), #faf5ff);
+    border: 2px solid #e9d5ff;
+    border-radius: 18px;
+    padding: 14px 16px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  & .badge-thi b {
+    color: var(--tim-dam);
+  }
+
+  /* ══════════ ③ QUYỀN LỢI ══════════ */
+  & .qloi h2 {
+    font-size: clamp(1.15rem, 4vw, 1.5rem);
+    color: var(--tim-dam);
+    font-weight: 800;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  & .qloi ul {
+    list-style: none;
+    display: grid;
+    gap: 10px;
+  }
+  & .qloi li {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    background: var(--nen);
+    border-radius: 16px;
+    padding: 12px 14px;
+  }
+  & .qloi .ic {
+    flex: 0 0 auto;
+    font-size: 1.35rem;
+    line-height: 1.3;
+  }
+  & .qloi b {
+    color: var(--tim-dam);
+  }
+
+  /* ══════════ ④ KHAN HIẾM ══════════ */
+  & .khan {
+    background: linear-gradient(160deg, #fff4e5, #ffe9f0);
+    text-align: center;
+    border: 2px solid #ffd9a8;
+  }
+  & .khan .suat {
+    font-family: var(--ty-baloo);
+    font-size: clamp(1.3rem, 5vw, 1.9rem);
+    font-weight: 800;
+    color: var(--do);
+  }
+  & .khan .suat .so {
+    display: inline-block;
+    background: var(--do);
+    color: #fff;
+    border-radius: 14px;
+    padding: 2px 14px;
+    margin: 0 4px;
+    animation: ty-phong 2.2s ease-in-out infinite;
+  }
+  & .khan .vi-sao {
+    color: var(--chu-nhat);
+    font-size: 0.95rem;
+    margin-top: 8px;
+  }
+  & .khan .han {
+    margin-top: 16px;
+    font-weight: 700;
+    color: var(--chu);
+  }
+  & .dongho {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  & .dongho .o {
+    background: var(--tim-dam);
+    color: #fff;
+    border-radius: 16px;
+    /* Bản mẫu: min-width:76px cố định → 3×76 + 2×10 = 248px. Từ 360px trở lên
+       vẫn dư chỗ (checklist mục 5), nhưng dưới ~336px (Galaxy Fold gập 280px,
+       iPhone SE1 320px) cụm tràn và bị CẮT vì .ty-root{overflow-x:hidden}.
+       min() giữ nguyên 76px ở mọi mốc trong checklist, chỉ co lại khi quá hẹp. */
+    min-width: min(76px, 29%);
+    padding: 10px 6px 8px;
+    box-shadow: var(--bong-noi);
+  }
+  & .dongho .o b {
+    font-family: var(--ty-baloo);
+    font-size: clamp(1.6rem, 6vw, 2.3rem);
+    font-weight: 800;
+    display: block;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+  }
+  & .dongho .o span {
+    font-size: 0.7rem;
+    opacity: 0.8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  & .dongho.gap .o {
+    background: var(--do);
+    animation: ty-phong 1s ease-in-out infinite;
+  }
+
+  /* ══════════ ⑤ CTA ══════════ */
+  & .cta-khoi {
+    text-align: center;
+  }
+  /* ⚠️ ĐÃ BIẾT — QUYẾT ĐỊNH THIẾT KẾ, KHÔNG TỰ SỬA:
+     chữ trắng trên gradient cam (--cam #F7941E → --cam-dam #E07B00) chỉ đạt
+     ~2.3–3.0:1, dưới ngưỡng WCAG AA 4.5:1 cho cỡ chữ 16.8px ở mobile.
+     Đây là màu CTA thương hiệu, copy 1:1 từ bản mẫu đã Founder duyệt
+     (CHECKLIST-SERVER.md mục 6). Muốn đạt AA phải đổi sang
+     linear-gradient(180deg, var(--cam-dam), #B45E00) (= 4.62:1) → BÁO FOUNDER
+     duyệt trước, không sửa lặng lẽ. */
+  & .nut-cta {
+    display: block;
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    text-align: center;
+    text-decoration: none;
+    background: linear-gradient(180deg, var(--cam), var(--cam-dam));
+    color: #fff;
+    font-family: var(--ty-baloo);
+    font-weight: 800;
+    font-size: clamp(1.05rem, 3.8vw, 1.4rem);
+    padding: 18px 26px;
+    border-radius: 999px;
+    box-shadow: 0 8px 0 #b45e00, 0 18px 30px rgba(224, 123, 0, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+    animation: ty-pulse 2s ease-in-out infinite;
+  }
+  & .nut-cta:active {
+    transform: translateY(6px) scale(0.97);
+    box-shadow: 0 2px 0 #b45e00, 0 8px 14px rgba(224, 123, 0, 0.3);
+  }
+  & .cta-phu {
+    margin-top: 12px;
+    color: var(--chu-nhat);
+    font-size: 0.92rem;
+  }
+  & .dem-lui {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: var(--tim);
+    font-weight: 600;
+  }
+  & .dem-lui b {
+    color: var(--do);
+  }
+
+  /* thanh sticky mobile (bản mẫu: .sticky-bar) */
+  & .ty-sticky-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(255, 248, 240, 0.92);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid #f3e3cf;
+  }
+  & .ty-sticky-bar .nut-cta {
+    animation: none;
+    font-size: 1.05rem;
+    padding: 14px 20px;
+    box-shadow: 0 5px 0 #b45e00, 0 10px 18px rgba(224, 123, 0, 0.3);
+  }
+
+  /* ══════════ ⑥ 3 BƯỚC ══════════ */
+  & .buoc h2 {
+    font-size: clamp(1.15rem, 4vw, 1.5rem);
+    color: var(--tim-dam);
+    font-weight: 800;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  & .buoc-luoi {
+    display: grid;
+    gap: 12px;
+  }
+  & .buoc-the {
+    background: var(--nen);
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  & .buoc-so {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--tim);
+    color: #fff;
+    font-family: var(--ty-baloo);
+    font-weight: 800;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 0 var(--tim-dam);
+  }
+  & .buoc-the b {
+    color: var(--tim-dam);
+  }
+
+  /* ══════════ ⑦ SOCIAL PROOF ══════════ */
+  & .proof {
+    text-align: center;
+    background: linear-gradient(160deg, #faf5ff, #fff1f6);
+    border: 2px solid #e9d5ff;
+  }
+  & .proof p {
+    font-size: clamp(1rem, 3.6vw, 1.2rem);
+  }
+  & .proof b {
+    color: var(--tim-dam);
+  }
+
+  /* ══════════ ⑧ FOOTER ══════════ */
+  & .chan {
+    text-align: center;
+    padding: 34px 0 20px;
+    color: var(--chu-nhat);
+  }
+  & .chan .logo {
+    width: 140px;
+    margin: 0 auto 10px;
+    opacity: 0.9;
+  }
+  & .chan b {
+    color: var(--tim-dam);
+  }
+
+  /* confetti (bản mẫu: #confetti) */
+  & .ty-confetti {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 60;
+  }
+
+  /* ══════════ RESPONSIVE ══════════ */
+  @media (min-width: 768px) {
+    & .the {
+      padding: 36px 34px;
+    }
+    & .qloi ul {
+      grid-template-columns: 1fr 1fr;
+    }
+    & .qloi li:last-child {
+      grid-column: 1 / -1;
+    }
+    & .buoc-luoi {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    & .buoc-the {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    /* bản mẫu: body{padding-bottom:30px} */
+    padding-bottom: 30px;
+
+    & .ty-sticky-bar {
+      display: none;
+    }
+    & .qua {
+      grid-template-columns: 300px 1fr;
+      gap: 34px;
+    }
+    & .the {
+      margin-top: 28px;
+    }
+    & .dongho .o {
+      min-width: 96px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    & *,
+    & *::before,
+    & *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+    /* Dấu tích hero được VẼ bằng animation ty-ve (dashoffset 264/60 → 0). Tắt
+       animation mà không đặt lại dashoffset thì cả vòng tròn cam lẫn dấu check
+       tím biến mất hẳn (lỗi có sẵn trong bản mẫu). Đặt về 0 = giữ nguyên hình
+       ảnh cuối, chỉ bỏ chuyển động. */
+    & .tick circle,
+    & .tick path {
+      stroke-dashoffset: 0;
+    }
+    & .ty-confetti {
+      display: none;
+    }
+  }
+}
+
+@keyframes ty-ve {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes ty-troi {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+@keyframes ty-phong {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+@keyframes ty-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.025);
+  }
+}

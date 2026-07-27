@@ -1,7 +1,7 @@
 import { Carousel } from "@/components/shared/Carousel";
 
 const STATS = [
-  { num: "500+", lbl: "Học viên đã đào tạo" },
+  { num: "1500+", lbl: "Học viên đã đào tạo" },
   { num: "2", lbl: "Cơ sở tại Đà Nẵng" },
   { num: "15+", lbl: "Giải thưởng đạt được" },
   { num: "100%", lbl: "Phụ huynh hài lòng" },

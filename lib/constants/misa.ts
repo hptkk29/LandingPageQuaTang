@@ -88,5 +88,10 @@ export function provinceName(id: string): string {
   return PROVINCES.find((p) => p.id === id)?.name ?? id;
 }
 
-// Nhóm Zalo — dùng ở trang cảm ơn
-export const ZALO_GROUP_URL = "https://zalo.me/g/l9blwsmqglqjtvinhbd3";
+// ĐÃ XOÁ: ZALO_GROUP_URL (link nhóm Zalo cũ). Trang /thank-you mới không còn
+// dùng, và CHECKLIST-SERVER.md mục 6 cấm đặt link nhóm Zalo lên trang cảm ơn —
+// giữ hằng số chết chỉ làm tăng rủi ro có người vô tình dùng lại.
+
+// Zalo OA Sata Robo Academy — link DUY NHẤT được phép xuất hiện trên /thank-you
+// (nội dung đã Founder duyệt: không thêm link nào khác, kể cả link nhóm Zalo)
+export const ZALO_OA_URL = "https://zalo.me/40213330288531842";

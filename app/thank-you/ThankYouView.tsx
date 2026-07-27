@@ -1,201 +1,557 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { motion, useReducedMotion, type Variants } from "framer-motion";
-import { CAMPAIGN } from "@/lib/constants/campaign";
-import { ZALO_GROUP_URL } from "@/lib/constants/misa";
+import Image from "next/image";
+import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
 
-const SECONDS = 10;
-// spring-like bezier (soft-skill approved); mutable tuple for framer-motion's Easing type
-const EASE: [number, number, number, number] = [0.32, 0.72, 0, 1];
+import { trackMetaCustomEvent } from "@/components/analytics/MetaPixel";
+import { ZALO_OA_URL } from "@/lib/constants/misa";
 
-function ZaloIcon() {
+import logoSataRobo from "./logo-satarobo-tk.png";
+
+/* Số giây tự chuyển sang Zalo OA (bản mẫu: 10s, cuộn trang thì đếm lại từ đầu) */
+const GIAY_TU_CHUYEN = 10;
+
+/* Bảng màu confetti — copy nguyên từ bản mẫu */
+const MAU_CONFETTI = ["#F7941E", "#6B21A8", "#FFC94D", "#C084FC", "#FF6B9D"];
+
+type Hat = {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  vy: number;
+  vx: number;
+  r: number;
+  vr: number;
+  c: string;
+};
+
+/* Bản mẫu chỉ ghi textContent nên phần còn lại của DOM không bị đụng tới.
+   Ở React, mọi state đổi mỗi giây (đồng hồ, đếm lùi) phải nằm trong component
+   LÁ nhỏ nhất — nếu để ở component gốc thì cả cây (2 SVG lớn + 2 next/image +
+   8 section) bị reconcile lại 1 lần/giây. */
+
+/* ---------- ④ Số suất: 12–18, nhất quán per khách ---------- */
+type SuatLuu = { n: number; d: string; t: number };
+
+function laSuatLuu(v: unknown): v is SuatLuu {
+  if (!v || typeof v !== "object") return false;
+  const o = v as Record<string, unknown>;
+  return typeof o.n === "number" && typeof o.d === "string" && typeof o.t === "number";
+}
+
+function homNay(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
+function tinhSuat(): number {
+  const macDinh = 15;
+  try {
+    const raw = localStorage.getItem("sr_seats");
+    const parsed: unknown = raw ? JSON.parse(raw) : null;
+
+    let data: SuatLuu;
+    if (laSuatLuu(parsed) && parsed.d === homNay()) {
+      data = parsed;
+    } else {
+      data = {
+        n: 12 + Math.floor(Math.random() * 7) /* 12–18 */,
+        d: homNay(),
+        t: Date.now(),
+      };
+      localStorage.setItem("sr_seats", JSON.stringify(data));
+    }
+
+    /* mỗi ~3h giảm 1 suất, sàn 12 */
+    const troiQua = Math.floor((Date.now() - data.t) / (3 * 60 * 60 * 1000));
+    return Math.max(12, data.n - troiQua);
+  } catch {
+    /* private mode: số cố định, không crash */
+    return macDinh;
+  }
+}
+
+function pad(n: number): string {
+  return (n < 10 ? "0" : "") + n;
+}
+
+/* ══════════ ④ Số suất — component lá ══════════ */
+function SoSuat() {
+  /* Số suất nằm ở localStorage nên server không thể biết. Render đầu (SSR +
+     hydrate) phải là placeholder "–" y như bản mẫu, chỉ sau khi hydrate xong mới
+     thay bằng số thật → tránh hydration mismatch. Chạy đúng 1 lần khi mount. */
+  const [soSuat, setSoSuat] = useState<string>("–");
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSoSuat(String(tinhSuat()));
+  }, []);
+
+  return <span className="so">{soSuat}</span>;
+}
+
+/* ══════════ ④ Đồng hồ đếm về 23:59:59 giờ máy khách — component lá ══════════ */
+function DongHo() {
+  const [gio, setGio] = useState<string>("--");
+  const [phut, setPhut] = useState<string>("--");
+  const [giay, setGiay] = useState<string>("--");
+  const [gapGap, setGapGap] = useState(false);
+
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      const het = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate(),
+        23,
+        59,
+        59,
+        999
+      );
+      const conLai = Math.max(0, Math.floor((het.getTime() - now.getTime()) / 1000));
+      setGio(pad(Math.floor(conLai / 3600)));
+      setPhut(pad(Math.floor((conLai % 3600) / 60)));
+      setGiay(pad(conLai % 60));
+      setGapGap(conLai < 3600);
+    };
+    tick();
+    const id = window.setInterval(tick, 1000);
+    return () => window.clearInterval(id);
+  }, []);
+
   return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5 shrink-0" fill="currentColor" aria-hidden>
-      <path d="M12 3C6.9 3 3 6.6 3 11c0 2.5 1.3 4.7 3.4 6.1-.1.9-.5 2.1-1.2 3.1-.2.3 0 .7.4.6 1.9-.4 3.3-1 4.2-1.6 1 .3 2.1.4 3.2.4 5.1 0 9-3.6 9-8S17.1 3 12 3Z" />
-    </svg>
+    <div className={gapGap ? "dongho gap" : "dongho"}>
+      <div className="o">
+        <b>{gio}</b>
+        <span>Giờ</span>
+      </div>
+      <div className="o">
+        <b>{phut}</b>
+        <span>Phút</span>
+      </div>
+      <div className="o">
+        <b>{giay}</b>
+        <span>Giây</span>
+      </div>
+    </div>
   );
 }
 
-function PhoneIcon() {
+/* ══════════ ⑤ Auto-redirect 10s sang Zalo OA — component lá ══════════ */
+function DemLui({ huyRef }: { huyRef: RefObject<(() => void) | null> }) {
+  const [demLui, setDemLui] = useState<number>(GIAY_TU_CHUYEN);
+  const [anDemLui, setAnDemLui] = useState(false);
+
+  useEffect(() => {
+    let daChuyen = false;
+    try {
+      daChuyen = sessionStorage.getItem("sr_auto") === "1";
+    } catch {
+      /* private mode: coi như chưa chuyển */
+    }
+    /* Quay lại bằng Back trong cùng phiên → không tự chuyển nữa, ẩn dòng đếm lùi.
+       Cũng là setState 1 lần khi mount vì sessionStorage chỉ đọc được ở client. */
+    if (daChuyen) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setAnDemLui(true);
+      return;
+    }
+
+    let dungLai = false;
+    let conLai = GIAY_TU_CHUYEN;
+
+    const timer = window.setInterval(() => {
+      if (dungLai) {
+        window.clearInterval(timer);
+        return;
+      }
+      conLai -= 1;
+      if (conLai <= 0) {
+        window.clearInterval(timer);
+        try {
+          sessionStorage.setItem("sr_auto", "1");
+        } catch {
+          /* bỏ qua */
+        }
+        trackMetaCustomEvent("AutoRedirectOA");
+        window.location.href = ZALO_OA_URL;
+        return;
+      }
+      setDemLui(conLai);
+    }, 1000);
+
+    /* cuộn = đang đọc → reset về 10s.
+       Sự kiện scroll bắn 60–120 lần/giây; chỉ ghi state khi giá trị THỰC SỰ đổi
+       (tức lần cuộn đầu tiên sau mỗi nhịp đếm), các lần sau không đụng React. */
+    const onScroll = () => {
+      if (conLai !== GIAY_TU_CHUYEN) {
+        conLai = GIAY_TU_CHUYEN;
+        setDemLui(GIAY_TU_CHUYEN);
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    huyRef.current = () => {
+      dungLai = true;
+      window.clearInterval(timer);
+    };
+
+    return () => {
+      dungLai = true;
+      window.clearInterval(timer);
+      window.removeEventListener("scroll", onScroll);
+      huyRef.current = null;
+    };
+  }, [huyRef]);
+
   return (
-    <svg viewBox="0 0 24 24" className="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-      <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.6A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.7a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.1-1.1a2 2 0 0 1 2.1-.5c.9.3 1.8.5 2.7.6a2 2 0 0 1 1.7 2Z" />
-    </svg>
+    <p className="dem-lui" style={anDemLui ? { display: "none" } : undefined}>
+      Đang đưa ba mẹ đến trang nhận quà sau <b>{demLui}</b>s — bấm nút để nhận ngay 🎁
+    </p>
   );
+}
+
+/* ══════════ ① Confetti 1 lần (canvas thuần, tôn trọng reduced-motion) ══════════ */
+function Confetti() {
+  const [tatConfetti, setTatConfetti] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const rm =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    /* Máy bật giảm chuyển động → không chạy hiệu ứng. Không cần gỡ canvas như bản
+       mẫu vì CSS đã có @media (prefers-reduced-motion) ẩn hẳn .ty-confetti. */
+    if (rm) return;
+
+    const cv = canvasRef.current;
+    if (!cv) return;
+    const ctx = cv.getContext("2d");
+    if (!ctx) return;
+
+    cv.width = window.innerWidth;
+    cv.height = window.innerHeight;
+
+    const hat: Hat[] = [];
+    for (let j = 0; j < 90; j++) {
+      hat.push({
+        x: Math.random() * cv.width,
+        y: -20 - Math.random() * cv.height * 0.5,
+        w: 6 + Math.random() * 6,
+        h: 8 + Math.random() * 8,
+        vy: 2 + Math.random() * 3,
+        vx: -1 + Math.random() * 2,
+        r: Math.random() * Math.PI,
+        vr: -0.1 + Math.random() * 0.2,
+        c: MAU_CONFETTI[j % MAU_CONFETTI.length],
+      });
+    }
+
+    const t0 = Date.now();
+    let raf = 0;
+    const ve = () => {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      const alpha = Math.max(0, 1 - (Date.now() - t0) / 3000);
+      ctx.globalAlpha = alpha;
+      for (const p of hat) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.r += p.vr;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.r);
+        ctx.fillStyle = p.c;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+      }
+      if (alpha > 0) {
+        raf = window.requestAnimationFrame(ve);
+      } else {
+        /* hết 3s → gỡ canvas khỏi DOM */
+        setTatConfetti(true);
+      }
+    };
+    ve();
+
+    return () => window.cancelAnimationFrame(raf);
+  }, []);
+
+  if (tatConfetti) return null;
+  return <canvas ref={canvasRef} className="ty-confetti" aria-hidden="true" />;
 }
 
 export function ThankYouView() {
-  const [left, setLeft] = useState(SECONDS);
-  const reduce = useReducedMotion();
+  /* Component gốc KHÔNG giữ state nào → không bao giờ re-render, cây tĩnh
+     (hero/robot/quyền lợi/3 bước/footer) chỉ dựng đúng 1 lần. */
 
-  useEffect(() => {
-    const started = Date.now();
-    const tick = setInterval(() => {
-      const elapsed = Math.floor((Date.now() - started) / 1000);
-      setLeft(Math.max(0, SECONDS - elapsed));
-    }, 250);
-    const go = setTimeout(() => {
-      window.location.href = ZALO_GROUP_URL;
-    }, SECONDS * 1000);
-    return () => {
-      clearInterval(tick);
-      clearTimeout(go);
-    };
+  /* Hàm huỷ bộ đếm tự chuyển — do <DemLui/> gán, 2 nút CTA gọi */
+  const huyTuChuyenRef = useRef<(() => void) | null>(null);
+
+  /* bấm CTA = huỷ hẳn timer + bắn sự kiện */
+  const onClickCTA = useCallback(() => {
+    huyTuChuyenRef.current?.();
+    try {
+      sessionStorage.setItem("sr_auto", "1");
+    } catch {
+      /* bỏ qua */
+    }
+    trackMetaCustomEvent("ClickQuanTamOA");
   }, []);
 
-  const container: Variants = {
-    hidden: {},
-    show: { transition: { staggerChildren: 0.07, delayChildren: 0.04 } },
-  };
-  const item: Variants = reduce
-    ? { hidden: { opacity: 1 }, show: { opacity: 1 } }
-    : {
-        hidden: { opacity: 0, y: 14 },
-        show: {
-          opacity: 1,
-          y: 0,
-          transition: { duration: 0.5, ease: EASE },
-        },
-      };
-
   return (
-    <main className="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-gradient-to-br from-brand-50 via-white to-orange-50 px-4 py-3">
-      {/* Ambient orbs — chiều sâu, không chặn tương tác */}
-      <div aria-hidden className="animate-blob pointer-events-none absolute -left-16 -top-24 h-72 w-72 rounded-full bg-cta-300/30 blur-3xl" />
-      <div aria-hidden className="animate-blob-delayed pointer-events-none absolute -bottom-24 -right-10 h-80 w-80 rounded-full bg-accent-300/25 blur-3xl" />
+    <div className="ty-root">
+      <div className="bg-shape s1" aria-hidden="true" />
+      <div className="bg-shape s2" aria-hidden="true" />
+      <Confetti />
 
-      <motion.div
-        variants={container}
-        initial="hidden"
-        animate="show"
-        className="relative w-full min-w-0 max-w-md sm:max-w-3xl"
-      >
-        {/* Double-bezel: vỏ ngoài + lõi trong */}
-        <div className="rounded-[1.8rem] border border-white/60 bg-white/70 p-1.5 shadow-card ring-1 ring-black/5 backdrop-blur-xl">
-          <div className="rounded-[1.5rem] bg-white/80 p-4 shadow-[inset_0_1px_1px_rgba(255,255,255,0.7)] sm:p-6 [@media(max-height:440px)]:p-3.5">
-            <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] sm:items-center sm:gap-6 [@media(max-height:440px)]:gap-3">
-              {/* ===== LEFT: xác nhận + thông điệp ===== */}
-              <div className="min-w-0 text-center sm:text-left">
-                <motion.div
-                  variants={item}
-                  className="mb-2.5 inline-flex items-center gap-1.5 rounded-full bg-success-50 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-success-600"
-                >
-                  <span className="h-1.5 w-1.5 rounded-full bg-success-500" />
-                  Đăng ký thành công
-                </motion.div>
+      <main className="khung">
+        {/* ① HERO */}
+        <header className="hero">
+          <Image
+            className="logo"
+            src={logoSataRobo}
+            alt="Sata Robo"
+            width={400}
+            height={236}
+            priority
+          />
+          <svg className="tick" viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="42"></circle>
+            <path d="M32 52 L45 64 L69 38"></path>
+          </svg>
+          <h1>ĐĂNG KÝ THÀNH CÔNG!</h1>
+          <p>
+            Cảm ơn ba mẹ đã tin tưởng Sata Robo. Đội ngũ tư vấn sẽ gọi xác nhận cho ba mẹ{" "}
+            <b>trong hôm nay</b>.
+          </p>
+        </header>
 
-                <motion.h1
-                  variants={item}
-                  className="text-gradient-warm font-display text-[1.7rem] font-extrabold leading-[1.05] sm:text-[2.5rem] [@media(max-height:440px)]:text-2xl"
-                >
-                  Cảm ơn ba mẹ!
-                </motion.h1>
-
-                <motion.p
-                  variants={item}
-                  className="mx-auto mt-1.5 max-w-xs text-[13px] leading-relaxed text-stone-500 sm:mx-0 [@media(max-height:440px)]:hidden"
-                >
-                  Sata Robo đã nhận được đăng ký. Đội ngũ tư vấn sẽ liên hệ ba mẹ
-                  sớm nhất để xếp lịch học thử.
-                </motion.p>
-
-                <motion.div
-                  variants={item}
-                  className="relative mt-3 rounded-2xl border border-brand-100 bg-brand-50/60 px-3.5 py-2.5 text-left"
-                >
-                  <span className="absolute left-2 top-0 select-none font-display text-2xl leading-none text-brand-300">
-                    “
-                  </span>
-                  <p className="pl-3.5 text-[12.5px] font-semibold leading-snug text-brand-800">
-                    Hãy giúp con phát triển tư duy công nghệ để chuẩn bị hành
-                    trang hội nhập trong kỷ nguyên số &amp; AI.
-                  </p>
-                </motion.div>
-              </div>
-
-              {/* ===== RIGHT: Zalo CTA + hotline ===== */}
-              <div className="min-w-0 space-y-2.5 [@media(max-height:440px)]:space-y-2">
-                <motion.div
-                  variants={item}
-                  className="overflow-hidden rounded-2xl border border-[#CFE3FF] bg-[#EAF3FF] p-3.5 [@media(max-height:440px)]:p-3"
-                >
-                  <div className="flex items-center gap-2 text-[#0068FF]">
-                    <ZaloIcon />
-                    <span className="text-[13px] font-bold">Nhóm Zalo phụ huynh</span>
-                  </div>
-                  <p className="mt-1.5 text-[12px] leading-relaxed text-slate-600">
-                    Nhận thêm thông tin tư vấn về các khoá học của SataRobo tại
-                    nhóm Zalo sau{" "}
-                    <strong className="tabular-nums text-[#0068FF]">{left}s</strong>
-                  </p>
-
-                  <a
-                    href={ZALO_GROUP_URL}
-                    className="mt-2.5 flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#0068FF] px-4 py-2.5 text-[13px] font-bold text-white shadow-[0_6px_16px_-4px_rgba(0,104,255,0.5)] transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5 active:translate-y-0"
-                  >
-                    Vào nhóm Zalo ngay
-                    <span aria-hidden>→</span>
-                  </a>
-
-                  <div className="mt-2 h-1 overflow-hidden rounded-full bg-[#CFE3FF]">
-                    <motion.div
-                      className="h-full origin-left rounded-full bg-[#0068FF]"
-                      initial={{ scaleX: 1 }}
-                      animate={{ scaleX: 0 }}
-                      transition={{ duration: SECONDS, ease: "linear" }}
-                    />
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  variants={item}
-                  className="rounded-2xl border border-surface-200 bg-surface-50 p-3"
-                >
-                  <div className="mb-1.5 flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-wide text-stone-500">
-                    <PhoneIcon />
-                    Hỗ trợ nhanh
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {CAMPAIGN.locations.map((loc) => (
-                      <a
-                        key={loc.key}
-                        href={`tel:${loc.phoneDigits}`}
-                        className="min-w-0 rounded-xl bg-white px-2.5 py-1.5 shadow-soft transition-transform duration-300 ease-[cubic-bezier(0.32,0.72,0,1)] hover:-translate-y-0.5"
-                      >
-                        <div className="truncate text-[10px] text-stone-400">
-                          {loc.name} · {loc.address}
-                        </div>
-                        <div className="text-[13px] font-bold text-brand-600">
-                          {loc.phone}
-                        </div>
-                      </a>
-                    ))}
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-
-            {/* ===== Footer ===== */}
-            <motion.div
-              variants={item}
-              className="mt-3.5 flex flex-col items-center justify-between gap-1 border-t border-surface-100 pt-2.5 text-center sm:flex-row sm:text-left [@media(max-height:440px)]:mt-2.5 [@media(max-height:440px)]:pt-2"
-            >
-              <p className="text-[10px] leading-tight text-stone-400">
-                Công Ty CP Công Nghệ Giáo Dục Sata Robo · 258 Lê Thanh Nghị, Đà
-                Nẵng
-              </p>
-              <Link
-                href="/"
-                className="link-underline shrink-0 text-[11px] font-semibold text-brand-600"
-              >
-                ← Về trang chủ
-              </Link>
-            </motion.div>
+        {/* ② QUÀ + TRUST BADGE */}
+        <section className="the qua">
+          <div className="robot-wrap">
+            {/* mascot robot vẽ SVG theo logo: đầu cam, chi tiết tím */}
+            <svg className="robot" viewBox="0 0 220 240" aria-hidden="true">
+              <line
+                x1="110"
+                y1="18"
+                x2="110"
+                y2="52"
+                stroke="#6B21A8"
+                strokeWidth="8"
+                strokeLinecap="round"
+              />
+              <circle cx="110" cy="16" r="12" fill="#6B21A8" />
+              <rect x="30" y="50" width="160" height="130" rx="42" fill="#F7941E" />
+              <circle cx="78" cy="105" r="14" fill="#6B21A8" />
+              <circle cx="142" cy="105" r="14" fill="#6B21A8" />
+              <circle cx="82" cy="101" r="4.5" fill="#fff" />
+              <circle cx="146" cy="101" r="4.5" fill="#fff" />
+              <path
+                d="M78 140 Q110 165 142 140"
+                stroke="#6B21A8"
+                strokeWidth="10"
+                fill="none"
+                strokeLinecap="round"
+              />
+              <rect x="14" y="92" width="16" height="46" rx="8" fill="#E07B00" />
+              <rect x="190" y="92" width="16" height="46" rx="8" fill="#E07B00" />
+              <g transform="translate(178,178)">
+                <circle cx="0" cy="0" r="26" fill="#6B21A8" />
+                <circle cx="0" cy="0" r="11" fill="#FFF8F0" />
+                <g fill="#6B21A8">
+                  <rect x="-5" y="-38" width="10" height="14" rx="4" />
+                  <rect x="-5" y="24" width="10" height="14" rx="4" />
+                  <rect x="-38" y="-5" width="14" height="10" rx="4" />
+                  <rect x="24" y="-5" width="14" height="10" rx="4" />
+                  <rect
+                    x="-31"
+                    y="-31"
+                    width="12"
+                    height="12"
+                    rx="4"
+                    transform="rotate(45 -25 -25)"
+                  />
+                  <rect
+                    x="19"
+                    y="-31"
+                    width="12"
+                    height="12"
+                    rx="4"
+                    transform="rotate(-45 25 -25)"
+                  />
+                  <rect
+                    x="-31"
+                    y="19"
+                    width="12"
+                    height="12"
+                    rx="4"
+                    transform="rotate(-45 -25 25)"
+                  />
+                  <rect
+                    x="19"
+                    y="19"
+                    width="12"
+                    height="12"
+                    rx="4"
+                    transform="rotate(45 25 25)"
+                  />
+                </g>
+              </g>
+              <rect x="62" y="186" width="52" height="34" rx="12" fill="#6B21A8" opacity=".9" />
+              <rect x="70" y="194" width="36" height="18" rx="6" fill="#F3E8FF" />
+            </svg>
           </div>
-        </div>
-      </motion.div>
-    </main>
+          <div>
+            <span className="nhan">🎁 QUÀ ĐẶC BIỆT DÀNH RIÊNG CHO BA MẸ VỪA ĐĂNG KÝ</span>
+            <h2>
+              <span className="khoa">KHÓA LẬP TRÌNH ROBOSIM MIỄN PHÍ</span> — con học lập
+              trình robot ngay tại nhà, không cần mua robot.
+            </h2>
+            <div className="badge-thi">
+              🏆 Robosim là{" "}
+              <b>
+                nền tảng thi đấu chính thức suốt 5 mùa giải Cuộc thi Sáng tạo Robotics toàn
+                quốc
+              </b>{" "}
+              (Trung ương Đoàn TNCS Hồ Chí Minh) — vòng loại quốc gia 2026 thi đúng trên nền
+              tảng này. Con luyện sớm là lợi thế thật khi thi đấu.
+            </div>
+          </div>
+        </section>
+
+        {/* ③ QUYỀN LỢI */}
+        <section className="the qloi">
+          <h2>Bấm QUAN TÂM Zalo OA — ba mẹ nhận ngay:</h2>
+          {/* role="list" — CSS list-style:none làm Safari/VoiceOver bỏ ngữ nghĩa danh sách */}
+          <ul role="list">
+            <li>
+              <span className="ic" aria-hidden="true">
+                🎓
+              </span>
+              <span>
+                <b>Khóa lập trình Robosim nhập môn MIỄN PHÍ</b> — giao tự động qua Zalo ngay
+                khi quan tâm
+              </span>
+            </li>
+            <li>
+              <span className="ic" aria-hidden="true">
+                👨‍🏫
+              </span>
+              <span>
+                <b>Vào nhóm học có thầy cô hướng dẫn</b> — đề luyện mỗi tuần + giờ chữa bài
+                trực tiếp
+              </span>
+            </li>
+            <li>
+              <span className="ic" aria-hidden="true">
+                🏆
+              </span>
+              <span>
+                <b>Bộ đề luyện thi vòng loại</b> đúng nền tảng thi đấu quốc gia
+              </span>
+            </li>
+            <li>
+              <span className="ic" aria-hidden="true">
+                📸
+              </span>
+              <span>
+                <b>Nhận lịch học, lịch thi đấu &amp; hình ảnh hoạt động</b> của con tại trung
+                tâm
+              </span>
+            </li>
+            <li>
+              <span className="ic" aria-hidden="true">
+                ⚡
+              </span>
+              <span>
+                <b>Ưu tiên nhận suất sự kiện miễn phí</b> (Robo Saturday sáng thứ 7 hằng
+                tuần)
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        {/* ④ KHAN HIẾM */}
+        <section className="the khan">
+          <div className="suat">
+            🔥 HÔM NAY CHỈ CÒN <SoSuat /> SUẤT QUÀ
+          </div>
+          <p className="vi-sao">
+            Mỗi ngày Sata Robo chỉ trao tối đa 18 suất khóa Robosim miễn phí — để thầy cô
+            hướng dẫn kịp từng bé.
+          </p>
+          <p className="han">⏳ Chỉ còn 1 ngày — suất quà hôm nay khép lại sau:</p>
+          <DongHo />
+        </section>
+
+        {/* ⑤ CTA CHÍNH */}
+        <section className="cta-khoi the" style={{ background: "transparent", boxShadow: "none" }}>
+          <a className="nut-cta js-cta" href={ZALO_OA_URL} onClick={onClickCTA}>
+            🎁 CLICK NHẬN QUÀ NGAY — QUAN TÂM ZALO OA SATA ROBO
+          </a>
+          <p className="cta-phu">Miễn phí 100% · Nhận quà tự động sau 3 giây quan tâm</p>
+          <DemLui huyRef={huyTuChuyenRef} />
+        </section>
+
+        {/* ⑥ 3 BƯỚC */}
+        <section className="the buoc">
+          <h2>3 bước nhận quà</h2>
+          <div className="buoc-luoi">
+            <div className="buoc-the">
+              <span className="buoc-so">1</span>
+              <span>
+                Bấm <b>nút nhận quà</b> phía trên
+              </span>
+            </div>
+            <div className="buoc-the">
+              <span className="buoc-so">2</span>
+              <span>
+                Bấm <b>“Quan tâm”</b> trên trang Zalo OA Sata Robo Academy
+              </span>
+            </div>
+            <div className="buoc-the">
+              <span className="buoc-so">3</span>
+              <span>
+                Mở tin nhắn chào mừng —{" "}
+                <b>quà tự động gửi về Zalo của ba mẹ ngay lập tức</b> 🎉
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* ⑦ SOCIAL PROOF */}
+        <section className="the proof">
+          <p>
+            ❤️ <b>Hơn 3.000 phụ huynh mỗi năm</b> tin chọn chương trình đào tạo của Sata Robo
+            cho con học và luyện thi <b>Cuộc thi Sáng tạo Robotics</b>.
+          </p>
+        </section>
+
+        {/* ⑧ FOOTER BRAND */}
+        <footer className="chan">
+          {/* alt="" — logo trang trí, dòng chữ ngay dưới đã đọc "Sata Robo Academy";
+              để alt="Sata Robo" thì screen reader đọc trùng tên thương hiệu 2 lần */}
+          <Image
+            className="logo"
+            src={logoSataRobo}
+            alt=""
+            width={400}
+            height={236}
+          />
+          <p>
+            <b>Sata Robo Academy</b> — Học Robotics &amp; AI cho trẻ 6–13 tuổi
+          </p>
+        </footer>
+      </main>
+
+      {/* thanh CTA sticky (chỉ mobile/tablet) */}
+      <div className="ty-sticky-bar">
+        <a className="nut-cta js-cta" href={ZALO_OA_URL} onClick={onClickCTA}>
+          🎁 NHẬN QUÀ NGAY — QUAN TÂM ZALO OA
+        </a>
+      </div>
+    </div>
   );
 }
