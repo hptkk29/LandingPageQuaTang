@@ -78,10 +78,13 @@ export function parseUtmCookie(raw: string | undefined): AffUtm {
   if (!raw) return {};
   try {
     const p = new URLSearchParams(raw);
+    // Sanitize CẢ lúc đọc: cookie này không chỉ do /r/[code] của ta ghi — người
+    // dùng tự set aff_utm trong trình duyệt rồi submit form thì giá trị đi thẳng
+    // vào Google Sheet. Dùng lại đúng luật của lúc ghi (lọc ký tự + UTM_VALUE_MAX).
     return {
-      source: p.get("s") ?? undefined,
-      medium: p.get("m") ?? undefined,
-      campaign: p.get("c") ?? undefined,
+      source: sanitizeUtmValue(p.get("s")),
+      medium: sanitizeUtmValue(p.get("m")),
+      campaign: sanitizeUtmValue(p.get("c")),
     };
   } catch {
     return {};

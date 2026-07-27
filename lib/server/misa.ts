@@ -21,7 +21,7 @@ type MisaConfig = {
 const MISA_FIELDS = {
   hoTenCon: "LastName", // bắt buộc theo cấu hình MISA
   hoTenPhuHuynh: "CustomField25",
-  sdtPhuHuynh: "Mobile", // form v2 (0dc449cf) dùng field chuẩn 'Mobile' (form cũ: CustomField15)
+  sdtPhuHuynh: "Mobile", // form hiện tại dùng field chuẩn 'Mobile'
   email: "Email",
   truong: "CustomField14",
   lop: "CustomField13",
@@ -44,9 +44,11 @@ export function getMisaConfig(): MisaConfig | null {
     formId,
     companyCode,
     formKey,
-    // Default '*' đồng bộ với cấu hình form MISA HIỆN TẠI (mã nhúng gốc gửi '*').
-    // Siết về đúng origin ở P0-02: đổi cấu hình trên MISA admin + env cùng lúc.
-    allowUrl: process.env.MISA_ALLOW_URL ?? "*",
+    // Default là chính origin của site, KHÔNG phải '*': AllowURL đã được siết
+    // trên MISA admin nên nếu env này lỡ mất thì phải fail về phía an toàn.
+    // Default '*' cũ là bẫy — env biến mất một cách âm thầm là form lại nhận
+    // lead từ mọi origin mà không ai biết.
+    allowUrl: process.env.MISA_ALLOW_URL ?? siteOrigin,
     redirectUrl: process.env.MISA_REDIRECT_URL ?? `${siteOrigin}/thank-you`,
     siteOrigin,
   };

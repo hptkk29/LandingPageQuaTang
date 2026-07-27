@@ -1,7 +1,11 @@
 /**
  * AffLinks — Kho mã link affiliate tạm thời (Pha 1, BRD-AFF-005)
  * Owner: Sata Robo
- * Version: 1.0.0
+ * Version: 1.1.0
+ *
+ * v1.1: generateLinkCode() sinh mã từ Utilities.getUuid() (UUID v4 — nền tảng
+ *   dùng nguồn ngẫu nhiên an toàn) thay cho Math.random(), và nâng mã 8 → 12 ký
+ *   tự. Không cần setup thêm; mã 8 ký tự đã phát vẫn chạy bình thường.
  *
  * Vai trò: kho mã link + nhật ký click cho quatang.edu.vn cho tới khi kho mã
  * trung tâm trên satarobo.vn go-live (Pha 4). Sau đó chạy song song ~2 tuần
@@ -77,7 +81,7 @@ function doGet(e) {
   return jsonResponse_({
     ok: true,
     service: 'AffLinks - QuaTang (Pha 1)',
-    version: '1.0.0',
+    version: '1.1.0',
     timestamp: new Date().toISOString(),
   });
 }
@@ -242,16 +246,29 @@ function setupSheets() {
 }
 
 /**
- * Sinh mã link ngẫu nhiên 8 ký tự (rút gọn cho Sale dễ gửi).
- * Bảng ký tự bỏ 0/O/1/l/I cho dễ đọc & đọc qua điện thoại. ~45 bit — thực tế
- * không đoán được; nới nhẹ so với FR-A02 (≥16) vì link redirect công khai,
- * đoán trúng cũng chỉ gán nhầm 1 lead, không lộ dữ liệu.
+ * Sinh mã link ngẫu nhiên 12 ký tự (vẫn đủ ngắn để Sale gửi qua Zalo).
+ * Bảng ký tự bỏ 0/O/1/l/I cho dễ đọc & đọc qua điện thoại (56 ký tự) →
+ * ~70 bit: không dò được bằng brute-force qua /r/.
+ * Nguồn ngẫu nhiên là Utilities.getUuid() (UUID v4) chứ KHÔNG phải Math.random():
+ * Math.random là PRNG thường, biết vài mã đã phát là suy ra được mã kế tiếp —
+ * mà mã link chính là thứ quyết định hoa hồng về tay ai.
  */
 function generateLinkCode() {
   const alphabet = '23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz';
+  const CODE_LENGTH = 12;
   let code = '';
-  for (let i = 0; i < 8; i++) {
-    code += alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+  while (code.length < CODE_LENGTH) {
+    const hex = Utilities.getUuid().replace(/-/g, ''); // 32 hex = 16 byte
+    for (let i = 0; i + 1 < hex.length && code.length < CODE_LENGTH; i += 2) {
+      // Byte 6 và 8 của UUID v4 chứa bit version/variant cố định → không ngẫu
+      // nhiên đủ, bỏ qua.
+      if (i === 12 || i === 16) continue;
+      const byte = parseInt(hex.substr(i, 2), 16);
+      // 256 không chia hết cho 56 → lấy modulo thẳng sẽ thiên vị 32 ký tự đầu.
+      // Loại byte ≥ 224 (bội 56 lớn nhất ≤ 256) để phân phối đều.
+      if (byte >= 224) continue;
+      code += alphabet.charAt(byte % alphabet.length);
+    }
   }
   Logger.log('Mã link mới: ' + code + '  →  https://quatang.edu.vn/r/' + code);
   return code;

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { waitUntil } from "@vercel/functions";
+import { ipAddress, waitUntil } from "@vercel/functions";
 import { leadSchema } from "@/lib/schemas/lead";
 import { branchLabel, provinceName } from "@/lib/constants/misa";
 import { submitToMisaServer } from "@/lib/server/misa";
@@ -41,7 +41,82 @@ function markSubmitted(key: string): void {
 // Vercel: cho phép chờ hết đường lui (MISA 6s + Sheet 15s) + Sheet chạy nền
 export const maxDuration = 60;
 
+// App Router KHÔNG có bodyParser.sizeLimit (đó là khái niệm Pages Router) nên
+// phải tự chặn body quá khổ. Form này tổng các field có giới hạn chưa tới 1KB —
+// 16KB là rộng rãi, chỉ để cắt trường hợp cố tình nhồi byte.
+const MAX_BODY_BYTES = 16 * 1024;
+
+type ReadBodyResult =
+  | { ok: true; value: unknown }
+  | { ok: false; reason: "TOO_LARGE" | "INVALID" };
+
+/**
+ * Đọc body và ĐẾM BYTE THẬT thay vì tin `content-length`.
+ *
+ * `content-length` cũng là header do client đặt: khai man số nhỏ, hoặc gửi
+ * `Transfer-Encoding: chunked` (không có header này) là đi vòng qua được.
+ * Đọc theo stream và huỷ ngay khi vượt ngưỡng mới là chặn thật — quan trọng là
+ * huỷ TRƯỚC khi phần còn lại của body kịp vào bộ nhớ.
+ *
+ * Không bao giờ throw: mọi lỗi đọc/parse đều quy về "INVALID" để caller trả 400,
+ * đúng tinh thần fail-safe của route này.
+ */
+async function readJsonWithLimit(
+  req: NextRequest,
+  maxBytes: number
+): Promise<ReadBodyResult> {
+  if (!req.body) return { ok: false, reason: "INVALID" };
+
+  const reader = req.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (!value) continue;
+      total += value.byteLength;
+      if (total > maxBytes) {
+        await reader.cancel().catch(() => {});
+        return { ok: false, reason: "TOO_LARGE" };
+      }
+      chunks.push(value);
+    }
+  } catch {
+    return { ok: false, reason: "INVALID" };
+  }
+
+  const merged = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    merged.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+
+  try {
+    return { ok: true, value: JSON.parse(new TextDecoder().decode(merged)) };
+  } catch {
+    return { ok: false, reason: "INVALID" };
+  }
+}
+
+// Header user-agent do client đặt nên không tin được và có thể dài tuỳ ý;
+// 300 ký tự thừa sức nhận diện trình duyệt mà không nhồi byte rác vào Sheet.
+const MAX_USER_AGENT_CHARS = 300;
+
+// IP chỉ dùng để ghi log/Sheet, nhưng vẫn nên lấy nguồn đáng tin: ipAddress()
+// của Vercel là giá trị hạ tầng xác định, còn x-forwarded-for phần tử đầu là
+// do client gửi lên (giả mạo được) — chỉ giữ làm fallback cho local/dev nơi
+// không có header của Vercel.
 function getClientIp(req: NextRequest): string {
+  try {
+    const trusted = ipAddress(req);
+    if (trusted) return trusted;
+  } catch {
+    // Ghi nhận IP không bao giờ được phép chặn lead: lỗi ở đây thì rơi xuống
+    // fallback header, không để vỡ ra catch 500 chung của handler.
+  }
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
   const real = req.headers.get("x-real-ip");
@@ -51,14 +126,14 @@ function getClientIp(req: NextRequest): string {
 
 type SheetResult = { ok: boolean; detail?: string };
 
-// Kênh backup: Google Sheet qua Apps Script Web App.
-// GOOGLE_SCRIPT_URL là tên mới (server-only); fallback tên cũ NEXT_PUBLIC_*
-// trong 1 release để không phải phối hợp đổi env cùng lúc deploy.
+// Kênh backup: Google Sheet qua Apps Script Web App. URL là server-only —
+// fallback NEXT_PUBLIC_GOOGLE_SCRIPT_URL đã bỏ (env đó cũng đã xoá khỏi Vercel):
+// đặt tên NEXT_PUBLIC_ cho URL server-only là quả mìn, chỉ cần một client
+// component lỡ tham chiếu là Next inline thẳng vào bundle trình duyệt.
 async function submitToSheet(
   payload: Record<string, string>
 ): Promise<SheetResult> {
-  const scriptUrl =
-    process.env.GOOGLE_SCRIPT_URL ?? process.env.NEXT_PUBLIC_GOOGLE_SCRIPT_URL;
+  const scriptUrl = process.env.GOOGLE_SCRIPT_URL;
   const secret = process.env.GOOGLE_SCRIPT_SECRET;
 
   if (!scriptUrl || !secret) {
@@ -96,7 +171,39 @@ export async function POST(
   req: NextRequest
 ): Promise<NextResponse<LeadApiResponse>> {
   try {
-    const body = await req.json().catch(() => null);
+    // Cửa 1 (rẻ): client trung thực khai body quá lớn thì chặn ngay, khỏi mở
+    // stream. Header vắng mặt hoặc rác thì cho đi tiếp — cửa 2 mới là cửa thật.
+    const contentLength = Number(req.headers.get("content-length"));
+    if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES) {
+      return NextResponse.json(
+        {
+          ok: false,
+          error: "PAYLOAD_TOO_LARGE",
+          message: "Dữ liệu gửi lên quá lớn, vui lòng kiểm tra lại thông tin",
+        },
+        { status: 413 }
+      );
+    }
+
+    // Cửa 2 (thật): đếm byte theo stream, không tin header nào cả.
+    const read = await readJsonWithLimit(req, MAX_BODY_BYTES);
+    if (!read.ok) {
+      if (read.reason === "TOO_LARGE") {
+        return NextResponse.json(
+          {
+            ok: false,
+            error: "PAYLOAD_TOO_LARGE",
+            message: "Dữ liệu gửi lên quá lớn, vui lòng kiểm tra lại thông tin",
+          },
+          { status: 413 }
+        );
+      }
+      return NextResponse.json(
+        { ok: false, error: "INVALID_JSON" },
+        { status: 400 }
+      );
+    }
+    const body = read.value;
     if (!body) {
       return NextResponse.json(
         { ok: false, error: "INVALID_JSON" },
@@ -144,7 +251,10 @@ export async function POST(
       );
     }
 
-    const userAgent = req.headers.get("user-agent") ?? "unknown";
+    const userAgent = (req.headers.get("user-agent") ?? "unknown").slice(
+      0,
+      MAX_USER_AGENT_CHARS
+    );
 
     // ── Attribution affiliate: đọc cookie server-side (UI không đổi — AC-10).
     // Resolve mã link → mã NV TẠI THỜI ĐIỂM SUBMIT (link đã thu hồi → không

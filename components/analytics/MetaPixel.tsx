@@ -62,6 +62,22 @@ function taoStubFbq(): void {
   window.fbq = n;
   if (!window._fbq) window._fbq = n;
 
+  /* TẮT autoConfig — phải đứng TRƯỚC init.
+
+     autoConfig là thứ bật Automatic Advanced Matching: pixel tự quét DOM lúc
+     submit và gửi mọi thứ nó đoán là thông tin cá nhân về Meta. Trên form này
+     nó vơ cả HỌ TÊN CON, TRƯỜNG và LỚP — dữ liệu trẻ dưới 16 (Nghị định
+     13/2023), thứ không có lý do gì phải rời khỏi hệ thống của mình.
+
+     Tắt nó KHÔNG làm mất sự kiện nào của trang: PageView, Lead,
+     CompleteRegistration, ClickQuanTamOA, AutoRedirectOA đều đang được bắn
+     tường minh bằng track/trackCustom. autoConfig chỉ thêm mấy sự kiện tự đoán
+     (click nút, metadata trang) mà ta không dùng để tối ưu quảng cáo.
+
+     Muốn giữ tỷ lệ khớp cho quảng cáo thì dùng setMetaUserData() bên dưới —
+     gửi ĐÚNG thứ mình chọn, thay vì để pixel tự vét. */
+  n("set", "autoConfig", false, PIXEL_ID);
+
   /* init phải đứng trước mọi track/trackCustom — xếp hàng ngay tại đây */
   n("init", PIXEL_ID);
 }
@@ -111,6 +127,51 @@ export function trackMetaEvent(
 ) {
   if (typeof window === "undefined" || !window.fbq) return;
   window.fbq("track", eventName, parameters);
+}
+
+/**
+ * Manual Advanced Matching — bù lại tỷ lệ khớp đã mất khi tắt autoConfig,
+ * nhưng CHỈ gửi đúng những gì mình chọn.
+ *
+ * CHƯA ĐƯỢC GỌI Ở ĐÂU. Bật bằng cách gọi hàm này ngay trước trackMetaEvent("Lead")
+ * trong LeadForm, với ĐÚNG hai trường của PHỤ HUYNH:
+ *
+ *     setMetaUserData({ phone: data.sdt, email: data.email });
+ *     trackMetaEvent("Lead", { ... });
+ *
+ * Cố ý KHÔNG nhận họ tên con / trường / lớp: đó là dữ liệu trẻ em, và cũng
+ * chính là thứ Automatic Advanced Matching từng vét đi.
+ *
+ * Giá trị được fbevents.js băm SHA-256 tại trình duyệt trước khi gửi — Meta
+ * không nhận số điện thoại/email dạng thô. Chuẩn hoá trước khi băm là bắt buộc,
+ * nếu không hash sẽ không khớp với dữ liệu bên Meta:
+ *   - điện thoại: chỉ chữ số, có mã quốc gia, 0901234567 → 84901234567
+ *   - email: viết thường, bỏ khoảng trắng
+ */
+export function setMetaUserData(user: { phone?: string; email?: string }): void {
+  if (typeof window === "undefined" || !window.fbq || !PIXEL_ID) return;
+
+  const userData: Record<string, string> = {};
+
+  if (user.phone) {
+    const digits = user.phone.replace(/\D/g, "");
+    // 0901234567 → 84901234567 ; giữ nguyên nếu đã có mã quốc gia
+    const e164 = digits.startsWith("0") ? `84${digits.slice(1)}` : digits;
+    if (e164) userData.ph = e164;
+  }
+  if (user.email) {
+    const email = user.email.trim().toLowerCase();
+    if (email) userData.em = email;
+  }
+
+  if (Object.keys(userData).length === 0) return;
+
+  try {
+    // init lại cùng pixel ID = cập nhật user data cho các sự kiện sau đó
+    window.fbq("init", PIXEL_ID, userData);
+  } catch {
+    /* đo lường không bao giờ được làm hỏng luồng đăng ký */
+  }
 }
 
 // Sự kiện tự định nghĩa (trackCustom) — dùng cho AutoRedirectOA / ClickQuanTamOA

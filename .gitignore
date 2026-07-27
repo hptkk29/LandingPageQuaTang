@@ -30,9 +30,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*.local
-.env.production
+# env files — chặn RỘNG mọi biến thể rồi mở ngoại lệ cho file mẫu.
+# Lý do: `.env*.local` cũ KHÔNG match `.env` trần lẫn `.env.development`,
+# mà Next.js nạp cả hai → secret có thể lọt vào repo (repo này PUBLIC).
+.env
+.env.*
+!.env.example
 .env.backup
 *.bak
 *.backup
@@ -56,6 +59,10 @@ Thumbs.db
 
 # UI/UX Pro Max cache
 .uipro-cache/
+
+# Profile Chrome của công cụ chụp màn hình (~100MB, chứa Login Data/History/
+# Web Data). Repo PUBLIC nên tuyệt đối không để `git add .` cuốn theo.
+.shots/
 
 # Python bytecode (from UI/UX Pro Max scripts)
 __pycache__/

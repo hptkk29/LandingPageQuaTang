@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { waitUntil } from "@vercel/functions";
+import { ipAddress, waitUntil } from "@vercel/functions";
 
 import {
   AFF_CODE_REGEX,
@@ -25,7 +25,32 @@ import { logClick } from "@/lib/server/aff-store";
 
 export const dynamic = "force-dynamic";
 
+// Bot & trình quét link preview. Chúng PHẢI được redirect bình thường (Zalo/
+// Facebook cần fetch mới dựng được ảnh + tiêu đề cho link CTV chia sẻ), nhưng
+// KHÔNG được tính là một lượt click: không set cookie (không ăn mất lần chạm
+// đầu của khách thật) và không gọi logClick (không đốt quota UrlFetch của Apps
+// Script, không thổi phồng cột "Số click").
+// Đây là lý do robots.txt cố ý KHÔNG chặn /r/ — chặn ở đó là mất preview.
+const BOT_UA_REGEX =
+  /bot|crawl|spider|slurp|facebookexternalhit|facebookcatalog|zalo|twitterbot|slackbot|telegrambot|whatsapp|linkedinbot|discordbot|embedly|quora link preview|skypeuripreview|pinterest|vkshare|preview|headless|lighthouse|monitoring|uptime/i;
+
+function isBotUserAgent(userAgent: string | null): boolean {
+  if (!userAgent) return true; // không khai UA thì gần như chắc chắn không phải khách thật
+  return BOT_UA_REGEX.test(userAgent);
+}
+
 function getClientIp(req: NextRequest): string {
+  // IP này là DỮ LIỆU CHỐNG GIAN LẬN (BR-04.2: đếm lead cùng IP/ngày), nên phải
+  // lấy từ nguồn nền tảng xác thực. Header x-forwarded-for do client gửi lên —
+  // CTV tự click/tự điền form chỉ cần đổi header là né được luật trùng IP.
+  try {
+    const platformIp = ipAddress(req);
+    if (platformIp) return platformIp;
+  } catch {
+    // fail-open: không có IP cũng không được cản chuyển hướng
+  }
+
+  // Fallback cho local/dev (không chạy trên Vercel nên ipAddress() undefined)
   const forwarded = req.headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
   return req.headers.get("x-real-ip") ?? "unknown";
@@ -47,6 +72,12 @@ export async function GET(
     const { code } = await ctx.params;
     const syntaxValid = AFF_CODE_REGEX.test(code);
     const now = Date.now();
+
+    // Bot/preview: đã có `res` (302) ở trên nên link vẫn dựng được preview —
+    // thoát sớm để không set cookie và không ghi click.
+    if (isBotUserAgent(req.headers.get("user-agent"))) {
+      return res;
+    }
 
     if (syntaxValid) {
       const clickId = randomBytes(12).toString("base64url"); // 16 ký tự

@@ -1,7 +1,18 @@
 /**
  * Lead Handler — Landing Page Quà Tặng RoboSim
  * Owner: Sata Robo (hptkk29)
- * Version: 2.2.0
+ * Version: 2.3.0
+ *
+ * v2.3: SHEET_ID KHÔNG còn hardcode (file này nằm trong repo public) + Execution
+ *   log thôi in PII (che SĐT, bỏ họ tên).
+ *   ⚠️ BẮT BUỘC TRƯỚC KHI DEPLOY BẢN NÀY — Project Settings > Script Properties:
+ *     SHEET_ID = <ID spreadsheet Leads>   (lấy từ URL: /spreadsheets/d/<ID>/edit)
+ *   Thiếu property này script sẽ THROW và NGỪNG ghi lead — không có fallback,
+ *   vì ghi nhầm sang spreadsheet khác còn tệ hơn là báo lỗi to.
+ *   Lưu ý: gỡ ID khỏi file này KHÔNG xoá được nó khỏi lịch sử git đã public —
+ *   đây chỉ là vệ sinh. Hàng rào thật là quyền chia sẻ của chính spreadsheet:
+ *   phải rà lại Share của file Leads (bỏ "Anyone with the link"), và cân nhắc
+ *   tạo spreadsheet mới nếu ID cũ đã bị lộ đủ lâu.
  *
  * v2.2: thêm cột attribution affiliate O–U (BRD-AFF-005 FR-B09) + email cảnh
  *   báo khi MISA thất bại (misa_status khác OK — tinh thần FR-E04, không im lặng).
@@ -28,8 +39,15 @@
  */
 
 // ============ CONFIG ============
-const SHEET_ID = '1CHX3GmjVXb69cng5Ogve2ATgP2FbqLRPVWMwsNxt3hQ';
+// SHEET_ID nằm trong Script Properties, KHÔNG hardcode: file .gs này được commit
+// vào repo public, mà spreadsheet Leads chứa toàn bộ PII của phụ huynh.
 const SHEET_NAME = 'Leads';
+
+function getSpreadsheet_() {
+  const id = PropertiesService.getScriptProperties().getProperty('SHEET_ID');
+  if (!id) throw new Error('Chưa cấu hình Script Property SHEET_ID (ID spreadsheet Leads)');
+  return SpreadsheetApp.openById(id);
+}
 
 /** Secret hợp lệ: WEBHOOK_SECRET (+ WEBHOOK_SECRET_OLD trong giai đoạn xoay). */
 function getValidSecrets_() {
@@ -69,7 +87,7 @@ function doGet(e) {
   return jsonResponse({
     ok: true,
     service: 'Lead Handler - QuaTang',
-    version: '2.2.0',
+    version: '2.3.0',
     timestamp: new Date().toISOString(),
   });
 }
@@ -186,9 +204,12 @@ function doPost(e) {
       Logger.log('ALERT_EMAIL error (bỏ qua): ' + mailErr.toString());
     }
 
-    Logger.log('Lead saved: con=' + data.ho_ten_con + ' | ph=' + (data.ho_ten || '-') +
-      ' | ' + sdtClean + ' | ' + (data.truong || '-') + ' | ' + (data.co_so || '-') +
-      ' | ' + (data.tinh || '-'));
+    // Execution log của Apps Script bị giữ lâu và ai có quyền sửa script đều đọc
+    // được → KHÔNG ghi PII vào đây. Che SĐT như phía Next.js (4 số đầu + ***),
+    // bỏ hẳn họ tên; chỗ này chỉ cần đủ để soi sự cố, dữ liệu đầy đủ đã ở Sheet.
+    Logger.log('Lead saved: sdt=' + sdtClean.slice(0, 4) + '***' +
+      ' | cs=' + (data.co_so || '-') + ' | tinh=' + (data.tinh || '-') +
+      ' | misa=' + (data.misa_status || '-'));
 
     return jsonResponse({
       ok: true,
@@ -226,7 +247,7 @@ function jsonResponse(obj, statusCode) {
 
 /** Lấy sheet; nếu chưa có thì tạo. Nếu dòng 1 trống thì ghi header. */
 function ensureSheet_() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ss = getSpreadsheet_();
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
@@ -249,7 +270,7 @@ function writeHeaders_(sheet) {
 // ============ CHẠY 1 LẦN SAU KHI PASTE ============
 // Ghi/ghi đè dòng tiêu đề cột cho khớp form mới. KHÔNG xoá dữ liệu cũ bên dưới.
 function setupHeaders() {
-  const ss = SpreadsheetApp.openById(SHEET_ID);
+  const ss = getSpreadsheet_();
   let sheet = ss.getSheetByName(SHEET_NAME);
   if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
   writeHeaders_(sheet);

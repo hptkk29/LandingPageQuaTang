@@ -25,7 +25,7 @@ export const leadSchema = z.object({
     .optional()
     .or(z.literal("")),
 
-  // ĐT di động phụ huynh — bắt buộc (map MISA: CustomField15)
+  // ĐT di động phụ huynh — bắt buộc (map MISA: Mobile)
   sdt: z
     .string()
     .trim()
@@ -37,10 +37,12 @@ export const leadSchema = z.object({
     ),
 
   // Email phụ huynh — không bắt buộc (map MISA: Email)
+  // 254 = độ dài tối đa của một địa chỉ email theo RFC 5321
   email: z
     .string()
     .trim()
     .email("Email không hợp lệ")
+    .max(254, "Email tối đa 254 ký tự")
     .optional()
     .or(z.literal("")),
 
@@ -64,9 +66,21 @@ export const leadSchema = z.object({
   co_so: z.enum(BRANCH_VALUES, { message: "Vui lòng chọn cơ sở" }),
 
   // Tỉnh/Thành phố (map MISA: MailingProvinceID)
-  tinh: z.string().trim().min(1, "Vui lòng chọn tỉnh/thành phố"),
+  // Chặn độ dài vì giá trị lạ được provinceName() trả về nguyên chuỗi thô rồi ghi vào Sheet.
+  // Không dùng z.enum(PROVINCES): danh sách tỉnh có thể đổi phía MISA, một tỉnh mới
+  // không được phép làm hỏng việc nhận lead.
+  tinh: z
+    .string()
+    .trim()
+    .min(1, "Vui lòng chọn tỉnh/thành phố")
+    .max(20, "Mã tỉnh/thành phố không hợp lệ"),
 
-  // Honeypot — schema accepts any value; bot detection in route handler
+  // Honeypot — schema accepts any value; bot detection in route handler.
+  // CỐ Ý không .max(): schema này cũng là resolver của react-hook-form, mà ô
+  // honeypot ẩn không render lỗi ở đâu cả — một .max() ở đây biến autofill vào
+  // ô ẩn thành "bấm Đăng ký không có phản ứng gì", mất lead mà không ai biết.
+  // Giá trị này không bao giờ được ghi ra MISA/Sheet; chặn byte đã có
+  // MAX_BODY_BYTES phía server (app/api/lead/route.ts).
   website: z.string().optional(),
 });
 
