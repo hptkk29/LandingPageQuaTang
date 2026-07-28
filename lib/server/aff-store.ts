@@ -105,7 +105,10 @@ async function resolveViaSheet(code: string): Promise<AffLinkInfo | null> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ action: "resolve", secret: cfg.secret, code }),
-    signal: AbortSignal.timeout(3000),
+    // Apps Script cold-start có thể vài giây — 3s quá chặt làm rớt mã NV.
+    // Kho mã đáng tin (lead-handler cũng tự tra lại từ Links tab) nên chờ lâu
+    // hơn ở đây đáng giá; MISA vẫn timeout 6s riêng.
+    signal: AbortSignal.timeout(9000),
     cache: "no-store",
   });
   if (!res.ok) return null;
@@ -125,7 +128,7 @@ async function logClickViaSheet(evt: AffClickEvent): Promise<void> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ action: "click", secret: cfg.secret, ...evt }),
-    signal: AbortSignal.timeout(5000),
+    signal: AbortSignal.timeout(9000),
     cache: "no-store",
   });
 }

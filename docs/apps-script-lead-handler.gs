@@ -3,16 +3,20 @@
  * Owner: Sata Robo (hptkk29)
  * Version: 2.4.0
  *
- * v2.4: tự ghi TÊN người giới thiệu vào cột V lúc nhận lead (tra từ tab
- *   'NhanVien' theo mã NV ở cột Q) — thay công thức ARRAYFORMULA (dễ vỡ khi
- *   appendRow). Setup:
- *     1. Tạo tab 'NhanVien' trong CÙNG spreadsheet Leads: cột A = Mã NV, cột B = Tên.
- *     2. XOÁ sạch cột V (bỏ công thức/khoảng dữ liệu cũ nếu có).
+ * v2.5: tự tra MÃ NV (cột Q) + TÊN (cột V) từ tab 'Links' của sheet AffLinks
+ *   theo MÃ LINK (cột O) — chạy phía Google nên KHÔNG dính timeout mạng như
+ *   resolve từ server (nguyên nhân mã NV hay rớt). Dùng thẳng dữ liệu Links tab
+ *   (đã có Mã NV + Người sử dụng), KHÔNG cần tab NhanVien. Setup:
+ *     1. Project Settings > Script Properties: AFFLINKS_SHEET_ID = <ID spreadsheet AffLinks>.
+ *     2. XOÁ sạch cột V (bỏ công thức ARRAYFORMULA cũ nếu còn).
  *     3. Paste bản này > Save > chạy setupHeaders() (ghi tiêu đề cột V).
- *     4. Chạy backfillNames() 1 lần để điền tên cho lead CŨ.
- *     5. Deploy > New version (để lead MỚI tự có tên).
- *   Lưu ý: tên được "đóng băng" lúc nhận lead; đổi tab NhanVien rồi thì chạy
- *   lại backfillNames() để làm mới các dòng cũ.
+ *     4. Chạy backfillAff() 1 lần để điền mã NV + tên cho lead CŨ.
+ *     5. Deploy > New version (để lead MỚI tự có mã NV + tên).
+ *   Tab Links cần có tiêu đề: 'Mã link', 'Mã NV', và cột tên ('Người sử dụng'
+ *   / 'Người dùng' / 'Tên'). Đổi Links rồi thì chạy lại backfillAff() để làm mới.
+ *
+ * v2.4 (đã thay): tra tên từ tab 'NhanVien' theo mã NV — bỏ vì mã NV hay rớt
+ *   do resolve server timeout; v2.5 tra thẳng theo mã link.
  *
  * v2.3: SHEET_ID KHÔNG còn hardcode (file này nằm trong repo public) + Execution
  *   log thôi in PII (che SĐT, bỏ họ tên).
@@ -99,7 +103,7 @@ function doGet(e) {
   return jsonResponse({
     ok: true,
     service: 'Lead Handler - QuaTang',
-    version: '2.4.0',
+    version: '2.5.0',
     timestamp: new Date().toISOString(),
   });
 }
@@ -162,6 +166,13 @@ function doPost(e) {
     // Bảo đảm có sheet + header đúng cột (tự tạo/ghi nếu thiếu)
     const sheet = ensureSheet_();
 
+    // Tra mã NV + tên theo MÃ LINK (cột O) từ Links tab của AffLinks — nguồn
+    // đáng tin, không dính timeout. Mã NV lấy từ đây trước, chỉ fallback về
+    // giá trị resolve của server (data.aff_ma_nv) khi Links không có.
+    const affInfo = findAffLink_(data.aff_ma_link_cuoi);
+    const maNV = (affInfo && affInfo.maNV) || String(data.aff_ma_nv || '').trim();
+    const tenNV = affInfo ? affInfo.tenNV : '';
+
     const timestamp = new Date();
     sheet.appendRow([
       timestamp,                                  // A: Thời gian
@@ -180,12 +191,12 @@ function doPost(e) {
       '',                                         // N: Ghi chú
       safeCell_(data.aff_ma_link_cuoi),           // O: Aff mã link cuối
       safeCell_(data.aff_ma_link_dau),            // P: Aff mã link đầu
-      safeCell_(data.aff_ma_nv),                  // Q: Aff mã NV
+      safeCell_(maNV),                            // Q: Aff mã NV (tra từ Links tab)
       safeCell_(data.aff_click_id),               // R: Aff clickId
       safeCell_(data.aff_thoi_diem_click),        // S: Aff thời điểm click
       safeCell_(data.aff_utm),                    // T: Aff UTM
       safeCell_(data.misa_status),                // U: MISA status
-      safeCell_(lookupEmployeeName_(data.aff_ma_nv)), // V: Tên NV giới thiệu
+      safeCell_(tenNV),                           // V: Tên NV giới thiệu (tra từ Links tab)
     ]);
 
     // MISA thất bại → email cảnh báo (không im lặng — FR-E04), throttle 15 phút
@@ -259,25 +270,45 @@ function jsonResponse(obj, statusCode) {
 }
 
 /**
- * Tra tên NV từ tab 'NhanVien' (A = Mã NV, B = Tên) theo mã NV.
- * '' nếu không có mã (lead không người giới thiệu); '?' nếu có mã nhưng chưa
- * khai trong NhanVien (để dễ phát hiện mà bổ sung). Đọc trực tiếp mỗi lần —
- * volume landing page thấp nên chấp nhận được; tránh ARRAYFORMULA dễ vỡ.
+ * Đọc toàn bộ Links tab của AffLinks → map { maLink: { maNV, tenNV } }.
+ * Nhận diện cột theo TÊN TIÊU ĐỀ nên không vỡ khi thêm/đổi thứ tự cột.
+ * Đọc trực tiếp mỗi lần (volume thấp) → thay đổi Links có hiệu lực ngay.
  */
-function lookupEmployeeName_(code) {
-  const key = String(code == null ? '' : code).trim();
-  if (!key) return '';
+function getAffLinksMap_() {
+  const map = {};
+  const id = PropertiesService.getScriptProperties().getProperty('AFFLINKS_SHEET_ID');
+  if (!id) { Logger.log('Chưa set AFFLINKS_SHEET_ID — bỏ qua tra mã NV/tên.'); return map; }
   try {
-    const sheet = getSpreadsheet_().getSheetByName('NhanVien');
-    if (!sheet || sheet.getLastRow() < 2) return '?';
-    const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();
-    for (let i = 0; i < rows.length; i++) {
-      if (String(rows[i][0]).trim() === key) return String(rows[i][1]).trim();
+    const sheet = SpreadsheetApp.openById(id).getSheetByName('Links');
+    if (!sheet || sheet.getLastRow() < 2) return map;
+    const values = sheet.getDataRange().getValues();
+    const header = values[0].map(function (h) { return String(h).trim().toLowerCase(); });
+    const iCode = header.indexOf('mã link');
+    const iMaNV = header.indexOf('mã nv');
+    let iTen = header.indexOf('người sử dụng');
+    if (iTen === -1) iTen = header.indexOf('người dùng');
+    if (iTen === -1) iTen = header.indexOf('tên');
+    if (iCode === -1) { Logger.log("Links tab thiếu cột 'Mã link'."); return map; }
+    for (let r = 1; r < values.length; r++) {
+      const code = String(values[r][iCode]).trim();
+      if (!code) continue;
+      map[code] = {
+        maNV: iMaNV > -1 ? String(values[r][iMaNV]).trim() : '',
+        tenNV: iTen > -1 ? String(values[r][iTen]).trim() : '',
+      };
     }
   } catch (err) {
-    Logger.log('lookupEmployeeName_ error (bỏ qua): ' + err);
+    Logger.log('getAffLinksMap_ error (bỏ qua): ' + err);
   }
-  return '?';
+  return map;
+}
+
+/** Tra 1 link theo mã. null nếu không có mã / không tìm thấy. */
+function findAffLink_(linkCode) {
+  const key = String(linkCode == null ? '' : linkCode).trim();
+  if (!key) return null;
+  const info = getAffLinksMap_()[key];
+  return info || null;
 }
 
 /** Lấy sheet; nếu chưa có thì tạo. Nếu dòng 1 trống thì ghi header. */
@@ -314,17 +345,35 @@ function setupHeaders() {
   Logger.log('✅ Đã ghi ' + HEADERS.length + ' cột tiêu đề khớp form.');
 }
 
-// ============ CHẠY 1 LẦN — ĐIỀN TÊN CHO LEAD CŨ ============
-// Đọc mã NV ở cột Q, tra tên từ tab NhanVien, ghi vào cột V cho toàn bộ dòng
-// đã có. Chạy lại bất cứ lúc nào để làm mới sau khi cập nhật tab NhanVien.
-function backfillNames() {
+// ============ CHẠY 1 LẦN — ĐIỀN MÃ NV + TÊN CHO LEAD CŨ ============
+// Đọc MÃ LINK ở cột O, tra Links tab AffLinks, ghi mã NV (cột Q) + tên (cột V)
+// cho toàn bộ dòng đã có. Chạy lại bất cứ lúc nào để làm mới sau khi sửa Links.
+function backfillAff() {
   const sheet = getSpreadsheet_().getSheetByName(SHEET_NAME);
   const last = sheet.getLastRow();
   if (last < 2) { Logger.log('Không có dòng dữ liệu.'); return; }
-  const codes = sheet.getRange(2, 17, last - 1, 1).getValues(); // cột Q = 17 (Aff mã NV)
-  const names = codes.map(function (r) { return [lookupEmployeeName_(r[0])]; });
-  sheet.getRange(2, 22, names.length, 1).setValues(names); // cột V = 22 (Tên NV giới thiệu)
-  Logger.log('✅ Đã điền tên cho ' + names.length + ' dòng (cột V).');
+  const n = last - 1;
+  const map = getAffLinksMap_();
+  const linkCodes = sheet.getRange(2, 15, n, 1).getValues();    // cột O = 15 (mã link cuối)
+  const existingMaNV = sheet.getRange(2, 17, n, 1).getValues(); // cột Q = 17 (giữ nếu link không có trong map)
+  const maNVs = [];
+  const tens = [];
+  let filled = 0;
+  for (let i = 0; i < n; i++) {
+    const code = String(linkCodes[i][0]).trim();
+    const info = code ? map[code] : null;
+    if (info) {
+      maNVs.push([info.maNV]);
+      tens.push([info.tenNV]);
+      filled++;
+    } else {
+      maNVs.push([existingMaNV[i][0]]); // không khớp → giữ nguyên mã NV cũ (nếu có)
+      tens.push(['']);
+    }
+  }
+  sheet.getRange(2, 17, n, 1).setValues(maNVs); // Q
+  sheet.getRange(2, 22, n, 1).setValues(tens);  // V
+  Logger.log('✅ Backfill: ' + filled + '/' + n + ' dòng khớp link trong AffLinks.');
 }
 
 // ============ TEST ============
