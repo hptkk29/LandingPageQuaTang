@@ -1,7 +1,18 @@
 /**
  * Lead Handler — Landing Page Quà Tặng RoboSim
  * Owner: Sata Robo (hptkk29)
- * Version: 2.3.0
+ * Version: 2.4.0
+ *
+ * v2.4: tự ghi TÊN người giới thiệu vào cột V lúc nhận lead (tra từ tab
+ *   'NhanVien' theo mã NV ở cột Q) — thay công thức ARRAYFORMULA (dễ vỡ khi
+ *   appendRow). Setup:
+ *     1. Tạo tab 'NhanVien' trong CÙNG spreadsheet Leads: cột A = Mã NV, cột B = Tên.
+ *     2. XOÁ sạch cột V (bỏ công thức/khoảng dữ liệu cũ nếu có).
+ *     3. Paste bản này > Save > chạy setupHeaders() (ghi tiêu đề cột V).
+ *     4. Chạy backfillNames() 1 lần để điền tên cho lead CŨ.
+ *     5. Deploy > New version (để lead MỚI tự có tên).
+ *   Lưu ý: tên được "đóng băng" lúc nhận lead; đổi tab NhanVien rồi thì chạy
+ *   lại backfillNames() để làm mới các dòng cũ.
  *
  * v2.3: SHEET_ID KHÔNG còn hardcode (file này nằm trong repo public) + Execution
  *   log thôi in PII (che SĐT, bỏ họ tên).
@@ -79,6 +90,7 @@ const HEADERS = [
   'Aff thời điểm click',    // S
   'Aff UTM',                // T
   'MISA status',            // U — OK / FAIL_xxx / SKIPPED_CONFIG
+  'Tên NV giới thiệu',      // V — tra từ tab NhanVien theo cột Q (Aff mã NV)
 ];
 
 // ============ MAIN HANDLER ============
@@ -87,7 +99,7 @@ function doGet(e) {
   return jsonResponse({
     ok: true,
     service: 'Lead Handler - QuaTang',
-    version: '2.3.0',
+    version: '2.4.0',
     timestamp: new Date().toISOString(),
   });
 }
@@ -173,6 +185,7 @@ function doPost(e) {
       safeCell_(data.aff_thoi_diem_click),        // S: Aff thời điểm click
       safeCell_(data.aff_utm),                    // T: Aff UTM
       safeCell_(data.misa_status),                // U: MISA status
+      safeCell_(lookupEmployeeName_(data.aff_ma_nv)), // V: Tên NV giới thiệu
     ]);
 
     // MISA thất bại → email cảnh báo (không im lặng — FR-E04), throttle 15 phút
@@ -245,6 +258,28 @@ function jsonResponse(obj, statusCode) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+/**
+ * Tra tên NV từ tab 'NhanVien' (A = Mã NV, B = Tên) theo mã NV.
+ * '' nếu không có mã (lead không người giới thiệu); '?' nếu có mã nhưng chưa
+ * khai trong NhanVien (để dễ phát hiện mà bổ sung). Đọc trực tiếp mỗi lần —
+ * volume landing page thấp nên chấp nhận được; tránh ARRAYFORMULA dễ vỡ.
+ */
+function lookupEmployeeName_(code) {
+  const key = String(code == null ? '' : code).trim();
+  if (!key) return '';
+  try {
+    const sheet = getSpreadsheet_().getSheetByName('NhanVien');
+    if (!sheet || sheet.getLastRow() < 2) return '?';
+    const rows = sheet.getRange(2, 1, sheet.getLastRow() - 1, 2).getValues();
+    for (let i = 0; i < rows.length; i++) {
+      if (String(rows[i][0]).trim() === key) return String(rows[i][1]).trim();
+    }
+  } catch (err) {
+    Logger.log('lookupEmployeeName_ error (bỏ qua): ' + err);
+  }
+  return '?';
+}
+
 /** Lấy sheet; nếu chưa có thì tạo. Nếu dòng 1 trống thì ghi header. */
 function ensureSheet_() {
   const ss = getSpreadsheet_();
@@ -277,6 +312,19 @@ function setupHeaders() {
   // Giãn cột cho dễ đọc
   sheet.autoResizeColumns(1, HEADERS.length);
   Logger.log('✅ Đã ghi ' + HEADERS.length + ' cột tiêu đề khớp form.');
+}
+
+// ============ CHẠY 1 LẦN — ĐIỀN TÊN CHO LEAD CŨ ============
+// Đọc mã NV ở cột Q, tra tên từ tab NhanVien, ghi vào cột V cho toàn bộ dòng
+// đã có. Chạy lại bất cứ lúc nào để làm mới sau khi cập nhật tab NhanVien.
+function backfillNames() {
+  const sheet = getSpreadsheet_().getSheetByName(SHEET_NAME);
+  const last = sheet.getLastRow();
+  if (last < 2) { Logger.log('Không có dòng dữ liệu.'); return; }
+  const codes = sheet.getRange(2, 17, last - 1, 1).getValues(); // cột Q = 17 (Aff mã NV)
+  const names = codes.map(function (r) { return [lookupEmployeeName_(r[0])]; });
+  sheet.getRange(2, 22, names.length, 1).setValues(names); // cột V = 22 (Tên NV giới thiệu)
+  Logger.log('✅ Đã điền tên cho ' + names.length + ' dòng (cột V).');
 }
 
 // ============ TEST ============
