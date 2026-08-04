@@ -10,7 +10,7 @@ const ZIGS = [
     desc: "Con học trên phần mềm mô phỏng RoboSim chuẩn quốc tế VÀ thực hành với robot thật — nắm chắc nguyên lý rồi mới làm thật, học chắc và an toàn.",
   },
   {
-    ph: "Thi đấu robot",
+    ph: "Học viên Sata Robo nhận giải Sáng tạo Robotics 2026",
     img: "/anh-con-thi-dau.jpg",
     pill: "02 · Thi đấu thật 2026",
     pillBg: "var(--orange-500)",
@@ -18,8 +18,8 @@ const ZIGS = [
     desc: "Con được rèn để tham gia các giải đấu robot thực tế, cọ xát và trưởng thành. Lộ trình hướng thẳng tới giải đấu RoboSim 2026.",
   },
   {
-    ph: "Con thuyết trình",
-    img: "/anh-con-thuyet-trinh.jpg",
+    ph: "Học viên khoe sản phẩm robot tự làm",
+    img: "/anh-con-khoe-san-pham.jpg",
     pill: "03 · Thuyết trình trước ba mẹ",
     pillBg: "var(--green)",
     title: "Rèn bản lĩnh sân khấu & diễn đạt",

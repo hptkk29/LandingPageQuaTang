@@ -300,6 +300,12 @@
   .session { background: #fff; border-radius: var(--r-card); box-shadow: var(--sh-card); padding: 26px 20px 24px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; transition: transform .2s; }
   .session:hover { transform: translateY(-6px); }
   .session .badge-no { margin-top: 4px; }
+  /* chip mốc thời gian trong buổi trải nghiệm 90 phút — tông nhạt cùng màu badge */
+  .session-time { display: inline-block; border-radius: var(--r-pill); padding: 5px 14px; font-size: .84rem; font-weight: 700; background: color-mix(in srgb, var(--red-500) 14%, #fff); color: var(--red-700); }
+  .session-time.b-blue { background: color-mix(in srgb, var(--blue) 14%, #fff); color: var(--blue-d); }
+  .session-time.b-orange { background: color-mix(in srgb, var(--orange-500) 14%, #fff); color: var(--orange-600); }
+  .session-time.b-green { background: color-mix(in srgb, var(--green) 14%, #fff); color: var(--green-d); }
+  .session-time.b-yellow { background: color-mix(in srgb, var(--yellow) 22%, #fff); color: var(--yellow-d); }
   .session h3 { font-size: 1.02rem; line-height: 1.25; color: var(--ink-900); }
   .session p { color: var(--ink-600); font-size: .92rem; }
   .sessions-facts { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 12px; margin-top: 34px; position: relative; z-index: 2; }

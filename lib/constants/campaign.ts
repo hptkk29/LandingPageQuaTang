@@ -1,6 +1,13 @@
 export const CAMPAIGN = {
-  totalSlotsPerLocation: 12,
-  totalSlots: 24,
+  // Quà tặng đợt này: suất trải nghiệm 1 kèm 1 cùng chuyên gia (90 phút).
+  // 29 suất tính cho CẢ 2 CƠ SỞ, không chia đều theo từng cơ sở.
+  totalSlots: 29,
+
+  trial: {
+    format: "1 kèm 1",
+    duration: "90 phút",
+    durationMinutes: 90,
+  },
 
   locations: [
     {
@@ -29,7 +36,6 @@ export const CAMPAIGN = {
   // trung tâm xếp ca phù hợp theo cơ sở đã chọn.
   schedule: "cuối tuần & các buổi tối",
   classDuration: "90 phút/buổi",
-  totalSessions: 4,
 
   // Hạn đăng ký mỗi đợt = hết Chủ nhật tuần này (tính động trong
   // lib/utils/schedule.ts → getWeekDeadlineEnd, tự reset sang tuần sau).

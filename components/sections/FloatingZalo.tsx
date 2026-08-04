@@ -44,7 +44,7 @@ export function FloatingZalo() {
         tabIndex={show ? undefined : -1}
         className="animate-zoom-breathe motion-reduce:animate-none inline-flex items-center gap-2 rounded-full bg-[#f26419] px-5 py-3.5 text-sm font-extrabold text-white shadow-[0_12px_26px_-6px_rgba(242,100,25,0.6)] transition-transform hover:scale-105 md:px-6 md:py-4 md:text-base"
       >
-        🎁 Nhận 4 buổi miễn phí
+        🎁 Nhận suất trải nghiệm 1-1
       </a>
     </div>
   );

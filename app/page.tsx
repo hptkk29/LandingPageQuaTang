@@ -24,8 +24,8 @@ export default function HomePage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",
-    name: `Tặng ${CAMPAIGN.totalSessions} buổi học trải nghiệm lập trình robot RoboSim cho trẻ 6–13 tuổi — Sata Robo`,
-    description: `${CAMPAIGN.totalSessions} buổi học trải nghiệm miễn phí trên phần mềm mô phỏng RoboSim cho học sinh 6–13 tuổi tại Đà Nẵng. Mỗi buổi ${CAMPAIGN.classDuration}, lớp ≤${CAMPAIGN.maxStudents} học viên, lịch học linh hoạt ${CAMPAIGN.schedule}.`,
+    name: `Tặng ${CAMPAIGN.totalSlots} suất trải nghiệm lập trình robot RoboSim ${CAMPAIGN.trial.format} cùng chuyên gia cho trẻ 6–13 tuổi — Sata Robo`,
+    description: `Buổi trải nghiệm miễn phí ${CAMPAIGN.trial.format} trên phần mềm mô phỏng RoboSim cho học sinh 6–13 tuổi tại Đà Nẵng: một chuyên gia kèm riêng một bạn trong ${CAMPAIGN.trial.duration}, cuối buổi ba mẹ nhận phiếu đánh giá năng lực của con. Mỗi đợt ${CAMPAIGN.totalSlots} suất, lịch học linh hoạt ${CAMPAIGN.schedule}.`,
     provider: {
       "@type": "Organization",
       name: "Sata Robo",
@@ -45,9 +45,11 @@ export default function HomePage() {
       // Lịch linh hoạt (cuối tuần & các buổi tối) → không khai báo byDay/startDate
       courseSchedule: {
         "@type": "Schedule",
-        duration: "PT90M",
-        repeatCount: CAMPAIGN.totalSessions,
+        duration: `PT${CAMPAIGN.trial.durationMinutes}M`,
+        // Quà tặng là MỘT buổi trải nghiệm 1 kèm 1, không phải chuỗi buổi học
+        repeatCount: 1,
       },
+      maximumAttendeeCapacity: 1,
     })),
     offers: {
       "@type": "Offer",

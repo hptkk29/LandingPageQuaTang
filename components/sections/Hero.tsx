@@ -6,15 +6,15 @@ import { CAMPAIGN } from "@/lib/constants/campaign";
 import heroBanner from "@/public/hero-banner.jpg";
 
 const TICKS = [
-  "Học thật tại lớp cùng giáo viên — không phải buổi tư vấn",
-  "Con tự lắp ráp & lập trình robot trên phần mềm mô phỏng RoboSim",
+  "Một chuyên gia kèm riêng một bạn — không phải buổi tư vấn",
+  "Con tự lập trình robot trên phần mềm mô phỏng RoboSim",
   "Không mất phí, không ràng buộc học tiếp",
 ];
 
 const STATS = [
-  { num: `${CAMPAIGN.totalSessions}`, lbl: "buổi trải nghiệm" },
-  { num: "90'", lbl: "mỗi buổi" },
-  { num: "≤12", lbl: "học viên / lớp" },
+  { num: "1-1", lbl: "kèm riêng cùng chuyên gia" },
+  { num: "90'", lbl: "thời lượng buổi học" },
+  { num: `${CAMPAIGN.totalSlots}`, lbl: "suất mỗi đợt" },
   { num: "0đ", lbl: "học phí" },
 ];
 
@@ -38,11 +38,11 @@ export function Hero() {
               className="hero-banner__img"
             />
             <p className="hero-banner__flag">
-              🎁 TẶNG <b>{CAMPAIGN.totalSessions} BUỔI HỌC TRẢI NGHIỆM</b> — PHÁT TRIỂN TƯ DUY CÔNG NGHỆ
+              🎁 TẶNG <b>{CAMPAIGN.totalSlots} SUẤT TRẢI NGHIỆM 1-1 CÙNG CHUYÊN GIA</b> — PHÁT TRIỂN TƯ DUY CÔNG NGHỆ
             </p>
           </div>
 
-          {/* ===== TRÁI (dưới banner): thông điệp 4 buổi =====
+          {/* ===== TRÁI (dưới banner): thông điệp suất trải nghiệm 1 kèm 1 =====
               Đặt TRƯỚC form trong DOM để h1 đứng trước h2 (đúng thứ bậc heading
               cho SEO/screen reader); vị trí hiển thị do grid-template-areas lo. */}
           <div className="hero-copy">
@@ -52,13 +52,13 @@ export function Hero() {
             </div>
 
             <h1>
-              Tặng con <em>{CAMPAIGN.totalSessions} buổi học trải nghiệm</em> phát triển tư duy công nghệ
+              Tặng con <em>buổi trải nghiệm {CAMPAIGN.trial.format} cùng chuyên gia</em> phát triển tư duy công nghệ
             </h1>
 
             <p className="lede">
-              Lập trình robot RoboSim cho trẻ 6–13 tuổi tại Đà Nẵng. Con học thật
-              trên lớp, tự tay hoàn thành 2 dự án lập trình của riêng mình sau{" "}
-              {CAMPAIGN.totalSessions} buổi.
+              Lập trình robot RoboSim cho trẻ 6–13 tuổi tại Đà Nẵng. Một chuyên gia
+              kèm riêng con {CAMPAIGN.trial.duration}: đo năng lực, chọn đúng bài và
+              con tự hoàn thành một sản phẩm ngay tại lớp.
             </p>
 
             <ul className="hero-ticks">
@@ -85,19 +85,19 @@ export function Hero() {
           {/* ===== PHẢI: form đăng ký (sticky trên desktop) ===== */}
           <aside className="hero-aside" id="dang-ky">
             <div className="form-card form-card--hero">
-              <span className="ribbon">🎁 {CAMPAIGN.totalSessions} BUỔI MIỄN PHÍ</span>
-              <h2>Đăng ký {CAMPAIGN.totalSessions} buổi trải nghiệm</h2>
+              <span className="ribbon">🎁 TRẢI NGHIỆM 1-1 MIỄN PHÍ</span>
+              <h2>Đăng ký suất trải nghiệm 1-1</h2>
               <p className="sub">
                 Điền 3 thông tin — Sata Robo gọi lại xếp lịch học cho con tại{" "}
                 <strong style={{ color: "var(--red-500)" }}>2 cơ sở Đà Nẵng</strong>
               </p>
 
-              <DeadlineStrip slots={CAMPAIGN.totalSlotsPerLocation} />
+              <DeadlineStrip slots={CAMPAIGN.totalSlots} />
 
               <LeadForm
                 source="hero"
                 compact
-                submitLabel={`Nhận ${CAMPAIGN.totalSessions} buổi miễn phí →`}
+                submitLabel="Nhận suất trải nghiệm miễn phí →"
               />
             </div>
           </aside>

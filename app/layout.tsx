@@ -32,17 +32,18 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://quatang.edu.vn";
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "🎁 Tặng 4 Buổi RoboSim MIỄN PHÍ — Sata Robo Đà Nẵng",
+    default: "🎁 Tặng 29 Suất Trải Nghiệm RoboSim 1-1 Cùng Chuyên Gia — Sata Robo Đà Nẵng",
     template: "%s | Sata Robo",
   },
   description:
-    "Tặng phụ huynh 4 buổi học trải nghiệm Robotics cơ bản trên phần mềm RoboSim cho học sinh lớp 1-8. 12 suất MIỄN PHÍ mỗi cơ sở, lịch học linh hoạt cuối tuần & các buổi tối tại 211 Nguyễn Hữu Thọ và 114 Hoàng Diệu, Đà Nẵng.",
+    "Tặng 29 suất trải nghiệm Robotics MIỄN PHÍ 1-1 cùng chuyên gia cho học sinh lớp 1-8: một chuyên gia kèm riêng một bạn 90 phút trên phần mềm RoboSim, cuối buổi ba mẹ nhận phiếu đánh giá năng lực của con. Lịch linh hoạt cuối tuần & các buổi tối tại 211 Nguyễn Hữu Thọ và 114 Hoàng Diệu, Đà Nẵng.",
   keywords: [
     "Robotics trẻ em Đà Nẵng",
     "RoboSim",
     "STEM tiểu học",
     "Sata Robo",
     "học robot miễn phí",
+    "trải nghiệm robotics 1 kèm 1",
     "Sáng tạo Robotics 2026",
     "lớp robot lớp 1-8",
     "học robot Đà Nẵng",
@@ -51,9 +52,9 @@ export const metadata: Metadata = {
   creator: "Sata Robo",
   publisher: "Sata Robo",
   openGraph: {
-    title: "🎁 Tặng 4 Buổi RoboSim MIỄN PHÍ — Sata Robo Đà Nẵng",
+    title: "🎁 Tặng 29 Suất Trải Nghiệm RoboSim 1-1 Cùng Chuyên Gia — Sata Robo Đà Nẵng",
     description:
-      "4 buổi học trải nghiệm Robotics MIỄN PHÍ cho con — chỉ 12 suất/cơ sở. Lịch học linh hoạt cuối tuần & các buổi tối tại Đà Nẵng.",
+      "29 suất trải nghiệm Robotics MIỄN PHÍ 1-1 cùng chuyên gia — một thầy kèm riêng một bạn 90 phút. Lịch linh hoạt cuối tuần & các buổi tối tại Đà Nẵng.",
     url: SITE_URL,
     siteName: "Sata Robo",
     images: [
@@ -61,7 +62,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Tặng 4 buổi RoboSim MIỄN PHÍ — Sata Robo Đà Nẵng",
+        alt: "Tặng 29 suất trải nghiệm RoboSim 1-1 cùng chuyên gia — Sata Robo Đà Nẵng",
       },
     ],
     locale: "vi_VN",
@@ -69,8 +70,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "🎁 Tặng 4 Buổi RoboSim MIỄN PHÍ — Sata Robo",
-    description: "4 buổi MIỄN PHÍ cho con lớp 1-8. Chỉ 12 suất/cơ sở.",
+    title: "🎁 Tặng 29 Suất Trải Nghiệm RoboSim 1-1 — Sata Robo",
+    description: "29 suất trải nghiệm MIỄN PHÍ 1-1 cùng chuyên gia cho con lớp 1-8.",
     images: ["/og-image.png"],
   },
   robots: {

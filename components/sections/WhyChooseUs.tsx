@@ -31,7 +31,7 @@ const ROWS = [
       "Con tự tay lắp ráp, lập trình robot chạy được và thuyết trình về sản phẩm — sự tự tin đến từ thành quả cụ thể.",
       "Thay đổi hoàn toàn thói quen dùng công nghệ: từ người tiêu thụ thành người sáng tạo.",
     ],
-    ph: "Con thuyết trình",
+    ph: "Con thuyết trình sản phẩm robot trên RoboSim",
     img: "/anh-con-thuyet-trinh.jpg",
   },
 ];

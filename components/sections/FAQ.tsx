@@ -3,12 +3,14 @@
 import { useState } from "react";
 
 const FAQS = [
-  { q: "Con 6 tuổi học được không? Chưa biết gì về lập trình có theo kịp không?", a: "Hoàn toàn được. Lộ trình cấp Cơ bản (6–9 tuổi) bắt đầu từ lập trình kéo–thả trực quan, không cần biết trước kiến thức gì. Giáo viên kèm sát từng con trong lớp tối đa 12 học viên." },
+  { q: "Buổi trải nghiệm 1-1 diễn ra như thế nào?", a: "Một chuyên gia kèm riêng một bạn trong 90 phút, không học chung với bạn khác. 15 phút đầu kiểm tra năng lực lập trình của con, sau đó chọn đúng bài vừa sức, con tự làm sản phẩm trên RoboSim và trình bày lại cho ba mẹ. Cuối buổi ba mẹ nhận phiếu đánh giá năng lực của con." },
+  { q: "Vì sao chỉ có 29 suất? Hết suất thì sao?", a: "Vì mỗi suất là một chuyên gia kèm riêng một bạn trong 90 phút nên số suất mỗi đợt có hạn — 29 suất tính chung cho cả 2 cơ sở. Nếu đợt này hết suất, Sata Robo vẫn ghi nhận thông tin và ưu tiên xếp lịch cho con vào đợt kế tiếp." },
+  { q: "Con 6 tuổi học được không? Chưa biết gì về lập trình có theo kịp không?", a: "Hoàn toàn được. Buổi trải nghiệm là 1 kèm 1 nên bài học được chọn đúng theo mức của con, không cần biết trước kiến thức gì. Khi vào khoá chính, lộ trình cấp Cơ bản (6–9 tuổi) cũng bắt đầu từ lập trình kéo–thả trực quan." },
   { q: "Cam kết hoàn tiền 100% áp dụng thế nào?", a: "Sau buổi học đầu tiên, nếu ba mẹ thấy con không phù hợp hoặc không hài lòng, Sata Robo hoàn lại 100% học phí — không hỏi lý do, không ràng buộc." },
   { q: "RoboSim là gì? Vì sao lại quan trọng?", a: "RoboSim là phần mềm mô phỏng robot chuẩn quốc tế, được dùng tại nhiều giải đấu robotics. Con học và lập trình trên RoboSim trước, nắm chắc nguyên lý rồi mới thực hành robot thật — học chắc, tiết kiệm và an toàn." },
   { q: "Học phí bao nhiêu? Có chính sách gì không?", a: "Học phí hợp lý theo từng cấp, kèm nhiều ưu đãi tuyển sinh. Đặc biệt có cam kết hoàn tiền 100% sau buổi đầu, thưởng du lịch 3–7 triệu và hỗ trợ 3 triệu cho học viên thi quốc gia. Để lại thông tin để được tư vấn mức phí cụ thể." },
   { q: "Lịch học như thế nào? Có linh hoạt không?", a: "Lịch học linh hoạt vào cuối tuần và các buổi tối trong tuần. Khi đăng ký, ba mẹ chọn cơ sở thuận tiện và Sata Robo sẽ sắp xếp ca học phù hợp với con." },
-  { q: "Con chưa có nền tảng công nghệ, có bị đuối so với bạn không?", a: "Không. Lớp được chia theo độ tuổi và trình độ, sĩ số tối đa 12 nên giáo viên có thể kèm riêng. Con đi từ cơ bản, tiến bộ theo tốc độ của mình — ba mẹ nhận báo cáo tiến độ sau mỗi chặng." },
+  { q: "Con chưa có nền tảng công nghệ, có bị đuối so với bạn không?", a: "Không. Buổi trải nghiệm là 1 kèm 1 nên con không bị so với ai. Vào khoá chính, lớp được chia theo độ tuổi và trình độ, sĩ số tối đa 12 nên giáo viên vẫn kèm sát từng con — ba mẹ nhận báo cáo tiến độ sau mỗi chặng." },
   { q: "Thưởng du lịch và hỗ trợ thi quốc gia cụ thể thế nào?", a: "Học viên có thành tích xuất sắc được thưởng chuyến du lịch trị giá 3–7 triệu. Học viên đủ điều kiện dự thi cấp quốc gia được Sata Robo hỗ trợ 3 triệu chi phí." },
 ];
 

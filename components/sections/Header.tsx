@@ -48,7 +48,7 @@ export function Header() {
               href="#bon-buoi"
               className="link-underline text-sm font-medium text-gray-700 hover:text-brand-600"
             >
-              4 buổi trải nghiệm
+              Buổi trải nghiệm 1-1
             </a>
             <a
               href="#chuong-trinh"
@@ -75,7 +75,7 @@ export function Header() {
             onClick={scrollToForm}
             className="relative bg-cta-500 hover:bg-cta-600 text-white font-display font-bold text-xs md:text-sm px-4 md:px-6 py-2 md:py-2.5 rounded-button shadow-md hover:shadow-cta transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
           >
-            🎁 Nhận 4 buổi<span className="hidden sm:inline"> miễn phí</span>
+            🎁 Nhận suất 1-1<span className="hidden sm:inline"> miễn phí</span>
           </button>
         </div>
       </Container>

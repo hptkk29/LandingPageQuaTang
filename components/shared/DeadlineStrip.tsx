@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { getWeekDeadlineEnd } from "@/lib/utils/schedule";
 
 /**
- * Dải khẩn cấp đặt trong thẻ form: số suất mỗi cơ sở + đồng hồ đếm tới hạn
- * chốt đơn của đợt (hết Chủ nhật tuần này). Tự reset sang tuần kế tiếp.
+ * Dải khẩn cấp đặt trong thẻ form: số suất trải nghiệm 1-1 còn lại của đợt
+ * (tính chung cho cả 2 cơ sở) + đồng hồ đếm tới hạn chốt đơn (hết Chủ nhật
+ * tuần này). Tự reset sang tuần kế tiếp.
  *
  * Render "--" ở lần render đầu (server + hydrate) rồi mới tính giờ trong
  * useEffect — tránh hydration mismatch do lệch giờ server/client.
  */
-export function DeadlineStrip({ slots = 12 }: { slots?: number }) {
+export function DeadlineStrip({ slots = 29 }: { slots?: number }) {
   const [left, setLeft] = useState<string | null>(null);
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export function DeadlineStrip({ slots = 12 }: { slots?: number }) {
   return (
     <div className="deadline-strip">
       <span className="ds-slots">
-        🔥 Chỉ <b>{slots} suất</b>/cơ sở mỗi đợt
+        🔥 Chỉ <b>{slots} suất</b> trải nghiệm 1-1 mỗi đợt
       </span>
       <span className="ds-time">
         Chốt đơn sau <b suppressHydrationWarning>{left ?? "--:--:--"}</b>
