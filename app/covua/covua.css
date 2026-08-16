@@ -1,0 +1,196 @@
+/* ============================================================
+   Landing cờ vua (covua.quatang.edu.vn) — phần bổ sung RIÊNG cho /covua.
+   Trang bọc trong .v2-root nên toàn bộ biến + class của v2.css dùng lại
+   nguyên vẹn (.section, .sticker, .kicker, .btn, .field, .input, .select,
+   .faq-*, .badge-no, .form-card…). File này chỉ thêm: mô-típ ô cờ 8×8,
+   thẻ hai phần quà, và vài khối nhỏ không có sẵn trong v2.
+   ============================================================ */
+
+.covua-root {
+  /* --- Mô-típ ô cờ: hoa văn nền độ mờ thấp, không cạnh tranh nội dung --- */
+  .covua-board {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: conic-gradient(
+      var(--ink-900) 25%,
+      transparent 0 50%,
+      var(--ink-900) 0 75%,
+      transparent 0
+    );
+    background-size: 56px 56px;
+    opacity: 0.05;
+    -webkit-mask-image: linear-gradient(180deg, #000, transparent 78%);
+    mask-image: linear-gradient(180deg, #000, transparent 78%);
+  }
+
+  /* divider ô cờ mảnh giữa các section */
+  .covua-divider {
+    height: 14px;
+    background-image: conic-gradient(
+      var(--orange-500) 25%,
+      transparent 0 50%,
+      var(--orange-500) 0 75%,
+      transparent 0
+    );
+    background-size: 28px 28px;
+    opacity: 0.16;
+  }
+
+  /* --- Hero --- */
+  .covua-hero { text-align: center; }
+  .covua-hero .covua-logo {
+    height: 56px; width: auto; margin: 0 auto 22px; border-radius: 12px;
+    box-shadow: var(--sh-pop);
+  }
+  .covua-hero h1 { max-width: 21ch; margin-inline: auto; }
+  .covua-hero .lede {
+    max-width: 62ch; margin: 18px auto 28px;
+    font-size: clamp(1.02rem, 1.6vw, 1.18rem); color: var(--ink-600);
+  }
+  .covua-hero .covua-cta-row {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;
+  }
+  .btn--covua-ghost {
+    background: #fff; color: var(--red-600);
+    border: 2px solid var(--cream-2); box-shadow: 0 4px 0 var(--cream-2);
+  }
+  .btn--covua-ghost:hover { transform: translateY(-2px); border-color: var(--orange-400); }
+  .covua-trust {
+    max-width: 66ch; margin: 22px auto 0;
+    font-size: 0.88rem; color: var(--ink-500);
+  }
+
+  /* --- Hai phần quà: hai thẻ xếp như hai quân cờ cạnh nhau --- */
+  .gift-card {
+    position: relative; background: #fff; border-radius: var(--r-card);
+    box-shadow: var(--sh-card); padding: 30px 26px 26px;
+    display: flex; flex-direction: column; gap: 14px;
+    border-top: 6px solid var(--orange-500);
+    transition: transform 0.2s;
+  }
+  .gift-card:hover { transform: translateY(-6px); }
+  .gift-card--b { border-top-color: var(--blue); }
+  .gift-card .gift-badge {
+    position: absolute; top: -16px; left: 24px; white-space: nowrap;
+    background: var(--yellow); color: var(--red-700);
+    font-family: var(--fontd); font-weight: 800; font-size: 0.84rem;
+    padding: 8px 18px; border-radius: var(--r-pill);
+    box-shadow: 0 4px 0 var(--yellow-d);
+  }
+  .gift-card--b .gift-badge {
+    background: var(--blue); color: #fff; box-shadow: 0 4px 0 var(--blue-d);
+  }
+  .gift-card h3 { font-size: 1.3rem; color: var(--ink-900); margin-top: 6px; }
+  .gift-card .cond { color: var(--ink-500); font-size: 0.9rem; }
+  .gift-card ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  .gift-card ul li { display: flex; gap: 10px; align-items: flex-start; color: var(--ink-700); }
+  .gift-card ul li .tick {
+    flex: none; display: grid; place-items: center;
+    width: 23px; height: 23px; margin-top: 2px; border-radius: 50%;
+    background: var(--green); color: #fff;
+  }
+  .gift-card ul li .tick svg { width: 13px; height: 13px; }
+  .gift-card .hl-line {
+    margin-top: auto; background: var(--cream);
+    border: 1.5px dashed var(--orange-400); border-radius: 14px;
+    padding: 10px 14px; font-weight: 700; color: var(--red-600); font-size: 0.94rem;
+  }
+  .gift-card--b .hl-line { border-color: var(--blue); color: var(--blue-d); }
+
+  /* --- Con học được gì --- */
+  .covua-point {
+    background: #fff; border-radius: var(--r-card); box-shadow: var(--sh-card);
+    padding: 22px 24px; display: flex; gap: 14px; align-items: flex-start;
+  }
+  .covua-point .gear-chip { width: 46px; height: 46px; }
+  .covua-point h3 { font-size: 1.08rem; color: var(--ink-900); margin-bottom: 5px; }
+  .covua-point p { color: var(--ink-600); font-size: 0.94rem; }
+  .covua-intro {
+    text-align: center; max-width: 62ch; margin: -18px auto 34px;
+    color: var(--ink-600); position: relative; z-index: 2;
+  }
+
+  /* --- Form covua --- */
+  .covua-form-card { max-width: 640px; margin-inline: auto; }
+  .covua-form-grid2 { display: grid; gap: 0 14px; }
+  @media (min-width: 560px) {
+    .covua-form-grid2 { grid-template-columns: 1fr 1fr; }
+  }
+  .covua-hint {
+    background: var(--cream); border: 1.5px dashed var(--orange-400);
+    border-radius: 14px; padding: 11px 14px; margin-bottom: 14px;
+    font-size: 0.9rem; font-weight: 600; color: var(--red-600);
+  }
+  .covua-hint--info { border-color: var(--blue); color: var(--blue-d); }
+  .covua-field-note { font-size: 0.78rem; color: var(--ink-500); margin-top: 5px; }
+  .covua-radio-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .covua-radio {
+    position: relative; display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 18px; border-radius: 14px; cursor: pointer;
+    background: var(--cream); border: 2px solid var(--cream-2);
+    font-weight: 600; color: var(--ink-700); transition: all 0.18s;
+  }
+  .covua-radio input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
+  .covua-radio:has(input:checked) {
+    background: #fff; border-color: var(--red-500); color: var(--red-600);
+    box-shadow: 0 0 0 4px rgb(237 45 34 / 0.12);
+  }
+  .covua-radio:has(input:focus-visible) { outline: 2px solid var(--red-500); outline-offset: 2px; }
+  .covua-consent { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+  .covua-consent input {
+    flex: none; width: 20px; height: 20px; margin-top: 2px;
+    accent-color: var(--red-500); cursor: pointer;
+  }
+  .covua-consent span { font-size: 0.88rem; color: var(--ink-700); }
+  .covua-alert {
+    background: #fef2f2; border: 2px solid #fecaca; border-radius: 14px;
+    padding: 13px 15px; margin-bottom: 14px;
+    color: #b91c1c; font-size: 0.92rem;
+  }
+  .covua-alert a { font-weight: 700; text-decoration: underline; }
+
+  /* --- Màn xác nhận --- */
+  .covua-success-steps {
+    list-style: none; counter-reset: cs; padding: 0;
+    margin: 18px 0 22px; display: grid; gap: 12px; text-align: left;
+  }
+  .covua-success-steps li {
+    counter-increment: cs; display: flex; gap: 12px; align-items: flex-start;
+    color: var(--ink-700); font-size: 0.95rem;
+  }
+  .covua-success-steps li::before {
+    content: counter(cs); flex: none;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--red-500); color: #fff;
+    font-family: var(--fontd); font-weight: 800; font-size: 0.85rem;
+    display: grid; place-items: center;
+  }
+  .covua-success-gift {
+    background: var(--cream); border: 1.5px dashed var(--orange-400);
+    border-radius: 14px; padding: 12px 15px; margin: 6px 0 4px;
+    color: var(--ink-700); font-size: 0.95rem;
+  }
+  .covua-success-cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+
+  /* --- Các bước nhận quà --- */
+  .covua-step {
+    background: #fff; border-radius: var(--r-card); box-shadow: var(--sh-card);
+    padding: 28px 22px 24px; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 12px;
+  }
+  .covua-step h3 { font-size: 1.1rem; color: var(--ink-900); }
+  .covua-step p { color: var(--ink-600); font-size: 0.93rem; }
+
+  /* --- Footer covua --- */
+  .covua-footer {
+    background: var(--ink-900); color: rgb(255 255 255 / 0.85);
+    padding: 36px 0 26px; text-align: center; font-size: 0.9rem;
+  }
+  .covua-footer a { color: #fff; font-weight: 700; }
+  .covua-footer a:hover { color: var(--yellow); }
+  .covua-footer p { margin-bottom: 10px; }
+  .covua-footer .fine {
+    font-size: 0.78rem; color: rgb(255 255 255 / 0.55); margin-bottom: 0;
+  }
+}

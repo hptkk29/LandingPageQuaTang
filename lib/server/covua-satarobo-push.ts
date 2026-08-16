@@ -2,7 +2,7 @@ import 'server-only';
 
 import { createHmac, randomUUID } from 'node:crypto';
 import { getAchievementGroup } from '@/content/covua';
-import type { CovuaLead } from './covua-form-schema';
+import type { CovuaLead } from '@/lib/covua-form-schema';
 
 /**
  * Đẩy lead sang admin satarobo.vn.
