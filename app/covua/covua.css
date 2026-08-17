@@ -6,28 +6,25 @@
    thẻ hai phần quà, và vài khối nhỏ không có sẵn trong v2.
    ============================================================ */
 
-/* Footer dùng chung của quatang, nén lại trên mobile CHỈ ở trang covua
-   (wrapper nằm ngoài .covua-root nên khối này đứng riêng). Selector class +
-   element thắng utility của Tailwind về specificity. */
-@media (max-width: 767px) {
-  .covua-footer-wrap footer {
-    padding-top: 30px;
-    padding-bottom: 14px;
-  }
-  .covua-footer-wrap footer .grid {
-    gap: 22px;
-    margin-bottom: 22px;
-  }
-  /* ≥480px: 2 cột "Khoá học" + "Liên hệ" đứng cạnh nhau cho footer ngắn lại;
-     khối thương hiệu (logo + SĐT) chiếm trọn hàng đầu */
-  @media (min-width: 480px) {
-    .covua-footer-wrap footer .grid {
-      grid-template-columns: 1fr 1fr;
-    }
-    .covua-footer-wrap footer .grid > div:first-child {
-      grid-column: 1 / -1;
-    }
-  }
+/* Footer dùng chung của quatang, RÚT GỌN chỉ ở trang covua (wrapper nằm
+   ngoài .covua-root nên khối này đứng riêng). Selector class + element thắng
+   utility của Tailwind về specificity — file Footer gốc không đụng.
+   Giữ lại: logo + mô tả + SĐT/email (cột 1), địa chỉ 2 cơ sở (cột 3), thanh
+   công ty. Ẩn: cột "Khoá học" (link bán khóa) và khối mạng xã hội. */
+.covua-footer-wrap footer {
+  padding-top: 28px;
+  padding-bottom: 12px;
+}
+.covua-footer-wrap footer .grid {
+  gap: 20px;
+  margin-bottom: 16px;
+}
+.covua-footer-wrap footer .grid > div:nth-child(2) { display: none; }
+.covua-footer-wrap footer .grid > div:nth-child(3) .mt-5 { display: none; }
+.covua-footer-wrap footer .border-t { padding-top: 14px; }
+/* 2 cột thương hiệu + liên hệ từ 560px (mặc định md mới chia 3 cột) */
+@media (min-width: 560px) {
+  .covua-footer-wrap footer .grid { grid-template-columns: 1fr 1fr; }
 }
 
 .covua-root {
