@@ -11,6 +11,7 @@ import {
   TECH_INTEREST_OPTIONS,
   covuaConfig,
   covuaContent,
+  covuaHotlines,
   getAchievementGroup,
   isWinner,
 } from "@/content/covua";
@@ -48,8 +49,22 @@ function slugName(name: string): string {
     .replace(/[^a-z0-9]+/g, "-");
 }
 
-function hotlineDigits(): string {
-  return covuaConfig.hotline.replace(/\D/g, "");
+function hotlineDigits(hotline: string): string {
+  return hotline.replace(/\D/g, "");
+}
+
+/** Mỗi hotline một link tel: riêng, nối bằng " hoặc " khi có nhiều số. */
+function HotlineLinks() {
+  return (
+    <>
+      {covuaHotlines.map((h, i) => (
+        <span key={h}>
+          {i > 0 && " hoặc "}
+          <a href={`tel:${hotlineDigits(h)}`}>{h}</a>
+        </span>
+      ))}
+    </>
+  );
 }
 
 type FieldWrapProps = {
@@ -270,9 +285,18 @@ export function CovuaLeadForm() {
             >
               {S.zaloCta}
             </a>
-            <a className="btn btn--covua-ghost" href={`tel:${hotlineDigits()}`}>
-              Gọi {covuaConfig.hotline}
-            </a>
+            {covuaHotlines.map((h, i) => (
+              <a
+                key={h}
+                className="btn btn--covua-ghost"
+                href={`tel:${hotlineDigits(h)}`}
+              >
+                Gọi{" "}
+                {covuaHotlines.length === CAMPUSES.length
+                  ? `${CAMPUSES[i].shortLabel} — ${h}`
+                  : h}
+              </a>
+            ))}
           </div>
         </div>
       </div>
@@ -520,7 +544,7 @@ export function CovuaLeadForm() {
                 part
               ) : (
                 <span key={i}>
-                  <a href={`tel:${hotlineDigits()}`}>{covuaConfig.hotline}</a>
+                  <HotlineLinks />
                   {part}
                 </span>
               )

@@ -8,13 +8,24 @@
 export const COVUA_PROGRAM_CODE = 'COVUA' as const;
 
 export const covuaConfig = {
-  tenGiaiDau: '{{TEN_GIAI_DAU}}',
+  tenGiaiDau: 'Giải cờ vua chuyên nghiệp tranh Cúp Sở hữu trí tuệ lần thứ VIII năm 2026',
   hanDangKy: '{{HAN_DANG_KY}}', // ví dụ: '30/09/2026' — để trống thì ẩn dòng hạn đăng ký
   hotline: process.env.NEXT_PUBLIC_COVUA_HOTLINE ?? '{{HOTLINE}}',
   zaloUrl: process.env.NEXT_PUBLIC_COVUA_ZALO_URL ?? '#',
   canonicalUrl: 'https://covua.quatang.edu.vn',
   soSuatDoatGiai: 20,
 } as const;
+
+/**
+ * Env NEXT_PUBLIC_COVUA_HOTLINE nhận 1 hoặc nhiều số, cách nhau dấu phẩy —
+ * ví dụ '0818.823.720, 0702.193.933'. Khi số lượng khớp số cơ sở thì số thứ
+ * nhất là CS1, số thứ hai là CS2 (UI dựa vào thứ tự này để gắn nhãn).
+ * Link tel: chỉ quay được một số nên mỗi số phải là một link riêng.
+ */
+export const covuaHotlines: string[] = covuaConfig.hotline
+  .split(/[,;]/)
+  .map((s) => s.trim())
+  .filter(Boolean);
 
 /* ------------------------------------------------------------------ */
 /* Cơ sở                                                               */

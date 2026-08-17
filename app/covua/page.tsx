@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
-import { CAMPUSES, covuaConfig, covuaContent } from "@/content/covua";
+import { CAMPUSES, covuaConfig, covuaContent, covuaHotlines } from "@/content/covua";
 import { CovuaFaq } from "@/components/covua/CovuaFaq";
 import { CovuaLeadForm } from "@/components/covua/CovuaLeadForm";
 import { CovuaTracking } from "@/components/covua/CovuaTracking";
@@ -38,8 +38,8 @@ function renderBold(text: string): ReactNode[] {
     .map((part, i) => (i % 2 === 1 ? <b key={i}>{part}</b> : part));
 }
 
-function hotlineDigits(): string {
-  return covuaConfig.hotline.replace(/\D/g, "");
+function hotlineDigits(hotline: string): string {
+  return hotline.replace(/\D/g, "");
 }
 
 const TICK = (
@@ -215,7 +215,13 @@ export default function CovuaPage() {
         <div className="container">
           <p>
             Hotline{" "}
-            <a href={`tel:${hotlineDigits()}`}>{covuaConfig.hotline}</a>
+            {covuaHotlines.map((h, i) => (
+              <span key={h}>
+                {i > 0 && " / "}
+                {covuaHotlines.length === CAMPUSES.length && `${CAMPUSES[i].value} `}
+                <a href={`tel:${hotlineDigits(h)}`}>{h}</a>
+              </span>
+            ))}
             {" · "}
             <a href={covuaConfig.zaloUrl} target="_blank" rel="noopener noreferrer">
               Zalo OA Sata Robo
