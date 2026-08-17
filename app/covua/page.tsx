@@ -12,6 +12,7 @@ import {
   covuaVideoSection,
 } from "@/content/covua";
 import { CovuaFaq } from "@/components/covua/CovuaFaq";
+import { CovuaFloatingCta } from "@/components/covua/CovuaFloatingCta";
 import { CovuaLeadForm } from "@/components/covua/CovuaLeadForm";
 import { CovuaTracking } from "@/components/covua/CovuaTracking";
 import { Footer } from "@/components/sections/Footer";
@@ -294,6 +295,7 @@ export default function CovuaPage() {
         Thông tin đăng ký chỉ dùng để liên hệ trao quà và tư vấn khóa học,
         không chia sẻ cho bên thứ ba.
       </p>
+      <CovuaFloatingCta />
       </main>
       {/* Footer dùng chung với trang quatang — import, không sửa file gốc.
           Wrapper để covua.css nén khoảng cách trên mobile. */}
