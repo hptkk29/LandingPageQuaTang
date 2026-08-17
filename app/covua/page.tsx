@@ -295,8 +295,11 @@ export default function CovuaPage() {
         không chia sẻ cho bên thứ ba.
       </p>
       </main>
-      {/* Footer dùng chung với trang quatang — import, không sửa */}
-      <Footer />
+      {/* Footer dùng chung với trang quatang — import, không sửa file gốc.
+          Wrapper để covua.css nén khoảng cách trên mobile. */}
+      <div className="covua-footer-wrap">
+        <Footer />
+      </div>
     </>
   );
 }

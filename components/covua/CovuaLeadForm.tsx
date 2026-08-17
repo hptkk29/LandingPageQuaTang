@@ -8,7 +8,6 @@ import {
   ACHIEVEMENTS,
   CAMPUSES,
   STUDY_MODES,
-  TECH_INTEREST_OPTIONS,
   covuaConfig,
   covuaContent,
   covuaHotlines,
@@ -220,12 +219,11 @@ export function CovuaLeadForm() {
       // Đo lường không bao giờ được chặn màn xác nhận. Advanced Matching chỉ
       // gửi SĐT + email PHỤ HUYNH — không gửi dữ liệu trẻ em (chuẩn MetaPixel).
       try {
-        setMetaUserData({ phone: lead.parentPhone, email: lead.parentEmail });
+        setMetaUserData({ phone: lead.parentPhone });
         track("covua_lead_submit", {
           achievement_group: getAchievementGroup(lead.achievement),
           study_mode: lead.studyMode,
           campus: lead.campus ?? "",
-          tech_interest: lead.techInterest,
         });
       } catch {
         /* bỏ qua lỗi đo lường */
@@ -354,22 +352,6 @@ export function CovuaLeadForm() {
             />
           </FieldWrap>
 
-          <FieldWrap id="covua-parentEmail" label={F.labels.parentEmail} error={errMsg("parentEmail")}>
-            <input
-              id="covua-parentEmail"
-              className={`input ${errors.parentEmail ? "invalid" : ""}`}
-              type="email"
-              inputMode="email"
-              placeholder={F.placeholders.parentEmail}
-              autoComplete="email"
-              aria-invalid={!!errors.parentEmail}
-              aria-describedby={errors.parentEmail ? "covua-parentEmail-err" : undefined}
-              {...register("parentEmail")}
-            />
-          </FieldWrap>
-        </div>
-
-        <div className="covua-form-grid2">
           <FieldWrap id="covua-province" label={F.labels.province} required error={errMsg("province")}>
             <select
               id="covua-province"
@@ -384,19 +366,6 @@ export function CovuaLeadForm() {
                 </option>
               ))}
             </select>
-          </FieldWrap>
-
-          <FieldWrap id="covua-address" label={F.labels.address} required error={errMsg("address")}>
-            <input
-              id="covua-address"
-              className={`input ${errors.address ? "invalid" : ""}`}
-              type="text"
-              placeholder={F.placeholders.address}
-              autoComplete="street-address"
-              aria-invalid={!!errors.address}
-              aria-describedby={errors.address ? "covua-address-err" : undefined}
-              {...register("address")}
-            />
           </FieldWrap>
         </div>
 
@@ -476,66 +445,6 @@ export function CovuaLeadForm() {
             </select>
           </FieldWrap>
         )}
-
-        <div className="covua-form-grid2">
-          <FieldWrap id="covua-category" label={F.labels.category} error={errMsg("category")}>
-            <input
-              id="covua-category"
-              className="input"
-              type="text"
-              placeholder={F.placeholders.category}
-              autoComplete="off"
-              {...register("category")}
-            />
-          </FieldWrap>
-
-          <FieldWrap id="covua-registrationNumber" label={F.labels.registrationNumber} error={errMsg("registrationNumber")}>
-            <input
-              id="covua-registrationNumber"
-              className="input"
-              type="text"
-              placeholder={F.placeholders.registrationNumber}
-              autoComplete="off"
-              {...register("registrationNumber")}
-            />
-          </FieldWrap>
-        </div>
-
-        <FieldWrap
-          id="covua-techInterest"
-          label={F.labels.techInterest}
-          required
-          error={errMsg("techInterest")}
-          note={F.techInterestNote}
-        >
-          <div
-            className="covua-radio-row"
-            role="radiogroup"
-            aria-label={F.labels.techInterest}
-            id="covua-techInterest"
-          >
-            {TECH_INTEREST_OPTIONS.map((o) => (
-              <label key={o.value} className="covua-radio">
-                <input
-                  type="radio"
-                  value={o.value}
-                  {...register("techInterest")}
-                />
-                {o.label}
-              </label>
-            ))}
-          </div>
-        </FieldWrap>
-
-        <div className={`field ${errors.consent ? "show-err" : ""}`}>
-          <label className="covua-consent" htmlFor="covua-consent">
-            <input id="covua-consent" type="checkbox" {...register("consent")} />
-            <span>{F.labels.consent}</span>
-          </label>
-          <span className="err" role={errors.consent ? "alert" : undefined}>
-            {errMsg("consent") ?? ""}
-          </span>
-        </div>
 
         {serverError && (
           <div className="covua-alert" role="alert">

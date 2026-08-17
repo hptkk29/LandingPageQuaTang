@@ -29,7 +29,7 @@ export function buildSataroboPayload(
       phone: lead.parentPhone,
       email: lead.parentEmail || '',
     },
-    location: { province: lead.province, address: lead.address },
+    location: { province: lead.province, address: lead.address || '' },
 
     program: {
       achievement: lead.achievement,
@@ -39,7 +39,7 @@ export function buildSataroboPayload(
       registrationNumber: lead.registrationNumber || '',
       studyMode: lead.studyMode,
       campusCode: lead.campus ?? null,
-      techInterest: lead.techInterest,
+      techInterest: lead.techInterest ?? '',
     },
 
     attribution: {

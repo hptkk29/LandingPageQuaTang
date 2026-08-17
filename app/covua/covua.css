@@ -6,6 +6,30 @@
    thẻ hai phần quà, và vài khối nhỏ không có sẵn trong v2.
    ============================================================ */
 
+/* Footer dùng chung của quatang, nén lại trên mobile CHỈ ở trang covua
+   (wrapper nằm ngoài .covua-root nên khối này đứng riêng). Selector class +
+   element thắng utility của Tailwind về specificity. */
+@media (max-width: 767px) {
+  .covua-footer-wrap footer {
+    padding-top: 30px;
+    padding-bottom: 14px;
+  }
+  .covua-footer-wrap footer .grid {
+    gap: 22px;
+    margin-bottom: 22px;
+  }
+  /* ≥480px: 2 cột "Khoá học" + "Liên hệ" đứng cạnh nhau cho footer ngắn lại;
+     khối thương hiệu (logo + SĐT) chiếm trọn hàng đầu */
+  @media (min-width: 480px) {
+    .covua-footer-wrap footer .grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .covua-footer-wrap footer .grid > div:first-child {
+      grid-column: 1 / -1;
+    }
+  }
+}
+
 .covua-root {
   /* --- Mô-típ ô cờ: hoa văn nền độ mờ thấp, không cạnh tranh nội dung --- */
   .covua-board {
@@ -183,25 +207,6 @@
   }
   .covua-hint--info { border-color: var(--blue); color: var(--blue-d); }
   .covua-field-note { font-size: 0.78rem; color: var(--ink-500); margin-top: 5px; }
-  .covua-radio-row { display: flex; flex-wrap: wrap; gap: 10px; }
-  .covua-radio {
-    position: relative; display: inline-flex; align-items: center; gap: 8px;
-    padding: 11px 18px; border-radius: 14px; cursor: pointer;
-    background: var(--cream); border: 2px solid var(--cream-2);
-    font-weight: 600; color: var(--ink-700); transition: all 0.18s;
-  }
-  .covua-radio input { position: absolute; opacity: 0; inset: 0; cursor: pointer; }
-  .covua-radio:has(input:checked) {
-    background: #fff; border-color: var(--red-500); color: var(--red-600);
-    box-shadow: 0 0 0 4px rgb(237 45 34 / 0.12);
-  }
-  .covua-radio:has(input:focus-visible) { outline: 2px solid var(--red-500); outline-offset: 2px; }
-  .covua-consent { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
-  .covua-consent input {
-    flex: none; width: 20px; height: 20px; margin-top: 2px;
-    accent-color: var(--red-500); cursor: pointer;
-  }
-  .covua-consent span { font-size: 0.88rem; color: var(--ink-700); }
   .covua-alert {
     background: #fef2f2; border: 2px solid #fecaca; border-radius: 14px;
     padding: 13px 15px; margin-bottom: 14px;

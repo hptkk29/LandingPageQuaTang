@@ -65,7 +65,10 @@ export const covuaLeadSchema = z
 
     province: z.string().trim().min(1, 'Chọn tỉnh/thành phố.'),
 
-    address: z.string().trim().min(5, E.addressRequired).max(200),
+    // 17/08: rút gọn form theo yêu cầu — address/category/registrationNumber/
+    // techInterest không còn hiện trên UI, giữ trong schema (optional) để
+    // payload cũ/tương lai không gãy.
+    address: z.string().trim().max(200).optional().or(z.literal('')),
 
     achievement: z.enum(['NHAT', 'NHI', 'BA', 'KHUYEN_KHICH', 'THAM_GIA'], {
       message: E.achievementRequired,
@@ -74,12 +77,14 @@ export const covuaLeadSchema = z
     category: z.string().trim().max(80).optional().or(z.literal('')),
     registrationNumber: z.string().trim().max(30).optional().or(z.literal('')),
 
-    techInterest: z.enum(['CO', 'CHUA'], { message: E.techInterestRequired }),
+    techInterest: z.enum(['CO', 'CHUA']).optional(),
 
     studyMode: z.enum(['BOTH', 'ONLINE_ONLY']),
 
     campus: z.enum(['CS1', 'CS2']).nullable().optional(),
 
+    // Checkbox đồng ý đã bỏ khỏi UI (17/08) — thay bằng dòng cam kết bảo mật
+    // dưới nút gửi; client luôn gửi true qua defaults.
     consent: z.literal(true, { message: E.consentRequired }),
 
     // ẩn
@@ -125,10 +130,11 @@ export const covuaFormDefaults: CovuaLeadInput = {
   achievement: undefined as never, // buộc người dùng chọn
   category: '',
   registrationNumber: '',
-  techInterest: undefined as never,
+  techInterest: undefined,
   studyMode: 'BOTH',
   campus: null,
-  consent: false as never,
+  consent: true, // đồng ý ngầm định qua dòng bảo mật dưới nút gửi
+
   ref: '',
   utmSource: '',
   utmMedium: '',
