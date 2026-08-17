@@ -6,14 +6,15 @@ import type { ReactNode } from "react";
 
 import {
   CAMPUSES,
-  covuaConfig,
   covuaContent,
-  covuaGallery,
-  covuaHotlines,
+  covuaHeroPhoto,
+  covuaShots,
+  covuaVideoSection,
 } from "@/content/covua";
 import { CovuaFaq } from "@/components/covua/CovuaFaq";
 import { CovuaLeadForm } from "@/components/covua/CovuaLeadForm";
 import { CovuaTracking } from "@/components/covua/CovuaTracking";
+import { Footer } from "@/components/sections/Footer";
 
 const C = covuaContent;
 
@@ -44,10 +45,6 @@ function renderBold(text: string): ReactNode[] {
     .map((part, i) => (i % 2 === 1 ? <b key={i}>{part}</b> : part));
 }
 
-function hotlineDigits(hotline: string): string {
-  return hotline.replace(/\D/g, "");
-}
-
 const TICK = (
   <span className="tick" aria-hidden>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
@@ -56,33 +53,51 @@ const TICK = (
 
 export default function CovuaPage() {
   return (
-    <main className="v2-root covua-root">
+    <>
+      <main className="v2-root covua-root">
       <CovuaTracking />
 
-      {/* 1 — Hero: không countdown, không "còn X suất" (docs covua 02 §4) */}
+      {/* 1 — Hero: chữ + CTA bên trái, ảnh Sata Robo đồng hành cùng giải bên
+          phải. Không countdown, không "còn X suất" (docs covua 02 §4) */}
       <section className="section hero covua-hero">
         <div className="covua-board" aria-hidden />
-        <div className="container" style={{ position: "relative", zIndex: 2 }}>
-          <Image
-            src="/logo-satarobo.jpg"
-            alt="Sata Robo"
-            width={160}
-            height={56}
-            className="covua-logo"
-            priority
-          />
-          <span className="kicker kicker--onlight">{C.hero.eyebrow}</span>
-          <h1 className="sticker sticker--red">{C.hero.title}</h1>
-          <p className="lede">{C.hero.description}</p>
-          <div className="covua-cta-row">
-            <a className="btn btn--cta btn--lg" href="#dang-ky">
-              {C.hero.primaryCta}
-            </a>
-            <a className="btn btn--covua-ghost btn--lg" href="#phan-qua">
-              {C.hero.secondaryCta}
-            </a>
+        <div className="container covua-hero-grid">
+          <div className="covua-hero-copy">
+            <Image
+              src="/logo-satarobo.jpg"
+              alt="Sata Robo"
+              width={160}
+              height={56}
+              className="covua-logo"
+              priority
+            />
+            <span className="kicker kicker--onlight">{C.hero.eyebrow}</span>
+            <h1 className="sticker sticker--red">{C.hero.title}</h1>
+            <p className="lede">{C.hero.description}</p>
+            <div className="covua-cta-row">
+              <a className="btn btn--cta btn--lg" href="#dang-ky">
+                {C.hero.primaryCta}
+              </a>
+              <a className="btn btn--covua-ghost btn--lg" href="#phan-qua">
+                {C.hero.secondaryCta}
+              </a>
+            </div>
+            <p className="covua-trust">{C.hero.trustLine}</p>
           </div>
-          <p className="covua-trust">{C.hero.trustLine}</p>
+          <div>
+            <figure className="covua-hero-photo">
+              <Image
+                src={covuaHeroPhoto.src}
+                width={covuaHeroPhoto.width}
+                height={covuaHeroPhoto.height}
+                alt={covuaHeroPhoto.alt}
+                sizes="(min-width: 940px) 400px, 100vw"
+                priority
+              />
+              <figcaption className="flag">{covuaHeroPhoto.flag}</figcaption>
+            </figure>
+            <p className="covua-hero-caption">{covuaHeroPhoto.caption}</p>
+          </div>
         </div>
       </section>
 
@@ -118,45 +133,59 @@ export default function CovuaPage() {
         </div>
       </section>
 
-      {/* 2b — Hình ảnh tại giải: bằng chứng "đúng giải của con", ảnh nén sẵn
-          + khai width/height để không giật layout (giữ CLS) */}
-      <section className="section section--red">
+      {/* 2b — Hình ảnh tại giải: 1 ảnh lớn + 2 ảnh nhỏ có chú thích. Ảnh nén
+          sẵn + khai width/height để không giật layout (giữ CLS) */}
+      <section className="section section--white">
         <div className="container">
           <div className="head">
-            <h2 className="sticker sticker--light">{covuaGallery.title}</h2>
-            <p>{covuaGallery.intro}</p>
+            <h2 className="sticker sticker--red">{covuaShots.title}</h2>
+            <p>{covuaShots.intro}</p>
           </div>
-          <div className="covua-gallery">
-            {covuaGallery.photos.map((p) => (
-              <figure className="covua-photo" key={p.src}>
-                <Image
-                  src={p.src}
-                  width={p.width}
-                  height={p.height}
-                  alt={p.alt}
-                  sizes="(min-width: 620px) 50vw, 100vw"
-                />
-              </figure>
-            ))}
-          </div>
-          <div className="covua-media-row">
-            <figure className="covua-photo covua-photo--tall">
+          <div className="covua-shots">
+            <figure className="covua-shot">
               <Image
-                src={covuaGallery.standPhoto.src}
-                width={covuaGallery.standPhoto.width}
-                height={covuaGallery.standPhoto.height}
-                alt={covuaGallery.standPhoto.alt}
-                sizes="(min-width: 620px) 330px, 100vw"
+                src={covuaShots.featured.src}
+                width={covuaShots.featured.width}
+                height={covuaShots.featured.height}
+                alt={covuaShots.featured.alt}
+                sizes="(min-width: 1180px) 1132px, 100vw"
               />
+              <figcaption>{covuaShots.featured.caption}</figcaption>
             </figure>
-            {/* preload=metadata: chỉ tải khung hình đầu làm poster, bấm mới tải video */}
+            <div className="covua-shots-row">
+              {covuaShots.photos.map((p) => (
+                <figure className="covua-shot" key={p.src}>
+                  <Image
+                    src={p.src}
+                    width={p.width}
+                    height={p.height}
+                    alt={p.alt}
+                    sizes="(min-width: 620px) 50vw, 100vw"
+                  />
+                  <figcaption>{p.caption}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 2c — Video tại giải: video dọc 9:16, preload=metadata chỉ tải khung
+          hình đầu làm poster, bấm mới tải cả video */}
+      <section className="section section--cream">
+        <div className="container container--md">
+          <div className="head">
+            <h2 className="sticker sticker--red">{covuaVideoSection.title}</h2>
+            <p>{covuaVideoSection.intro}</p>
+          </div>
+          <div className="covua-video-wrap">
             <video
               className="covua-video"
-              src={covuaGallery.video.src}
+              src={covuaVideoSection.video.src}
               controls
               playsInline
               preload="metadata"
-              aria-label={covuaGallery.video.label}
+              aria-label={covuaVideoSection.video.label}
             />
           </div>
         </div>
@@ -260,33 +289,14 @@ export default function CovuaPage() {
         </div>
       </section>
 
-      {/* 8 — Footer (nội dung theo docs covua 03 §9) */}
-      <footer className="covua-footer">
-        <div className="container">
-          <p>
-            Hotline{" "}
-            {covuaHotlines.map((h, i) => (
-              <span key={h}>
-                {i > 0 && " / "}
-                {covuaHotlines.length === CAMPUSES.length && `${CAMPUSES[i].value} `}
-                <a href={`tel:${hotlineDigits(h)}`}>{h}</a>
-              </span>
-            ))}
-            {" · "}
-            <a href={covuaConfig.zaloUrl} target="_blank" rel="noopener noreferrer">
-              Zalo OA Sata Robo
-            </a>
-          </p>
-          <p>
-            {CAMPUSES.map((cs) => `${cs.value}: ${cs.address}`).join(" — ")}
-          </p>
-          <p>Công ty Cổ phần Công nghệ Giáo dục Sata Robo</p>
-          <p className="fine">
-            Thông tin đăng ký chỉ dùng để liên hệ trao quà và tư vấn khóa học,
-            không chia sẻ cho bên thứ ba.
-          </p>
-        </div>
-      </footer>
-    </main>
+      {/* Dòng bảo mật (docs covua 03 §9) — footer dùng chung của quatang */}
+      <p className="covua-privacy">
+        Thông tin đăng ký chỉ dùng để liên hệ trao quà và tư vấn khóa học,
+        không chia sẻ cho bên thứ ba.
+      </p>
+      </main>
+      {/* Footer dùng chung với trang quatang — import, không sửa */}
+      <Footer />
+    </>
   );
 }

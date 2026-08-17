@@ -28,48 +28,58 @@ export const covuaHotlines: string[] = covuaConfig.hotline
   .filter(Boolean);
 
 /* ------------------------------------------------------------------ */
-/* Hình ảnh + video tại giải (file gốc: covua-media/, đã nén vào       */
+/* Ảnh + video tại giải (file gốc: covua-media/, đã nén vào            */
 /* public/covua/ bằng sharp — thêm ảnh mới thì nén rồi khai vào đây)   */
 /* ------------------------------------------------------------------ */
 
-export const covuaGallery = {
+/** Ảnh trong hero — Sata Robo đồng hành cùng giải. */
+export const covuaHeroPhoto = {
+  src: '/covua/gian-hang-sata-robo.jpg',
+  width: 900,
+  height: 1200,
+  alt: 'Học viên Sata Robo giới thiệu robot tại gian trải nghiệm ở giải cờ vua',
+  flag: 'Sata Robo đồng hành cùng giải cờ vua',
+  caption:
+    'Gian trải nghiệm robot của Sata Robo ngay tại hội trường thi đấu — nơi nhiều kỳ thủ nhí lần đầu tự tay lập trình một chú robot.',
+} as const;
+
+/** Section hình ảnh cuộc thi: 1 ảnh lớn + 2 ảnh nhỏ, có chú thích. */
+export const covuaShots = {
   title: 'Hình ảnh tại giải',
-  intro: `Khoảnh khắc tại ${covuaConfig.tenGiaiDau} — nơi Sata Robo đồng hành cùng các kỳ thủ nhí.`,
+  intro: `Khoảnh khắc tại ${covuaConfig.tenGiaiDau}.`,
+  featured: {
+    src: '/covua/toan-canh-hoi-truong.jpg',
+    width: 1000,
+    height: 662,
+    alt: 'Toàn cảnh hội trường thi đấu với đông đảo kỳ thủ nhí',
+    caption: 'Toàn cảnh hội trường thi đấu',
+  },
   photos: [
     {
-      src: '/covua/toan-canh-hoi-truong.jpg',
+      src: '/covua/le-khai-mac.jpg',
       width: 1000,
       height: 662,
-      alt: 'Toàn cảnh hội trường thi đấu với đông đảo kỳ thủ nhí',
+      alt: 'Đại diện ban tổ chức phát biểu tại lễ khai mạc',
+      caption: 'Lễ khai mạc giải',
     },
     {
       src: '/covua/thi-sinh-thi-dau.jpg',
       width: 1000,
       height: 662,
       alt: 'Các kỳ thủ nhí bên bàn cờ trước giờ thi đấu',
-    },
-    {
-      src: '/covua/san-khau-khai-mac.jpg',
-      width: 1000,
-      height: 662,
-      alt: 'Sân khấu lễ khai mạc giải với linh vật và đội văn nghệ',
-    },
-    {
-      src: '/covua/le-khai-mac.jpg',
-      width: 1000,
-      height: 662,
-      alt: 'Đại diện ban tổ chức phát biểu tại lễ khai mạc',
+      caption: 'Các kỳ thủ nhí vào trận',
     },
   ],
-  standPhoto: {
-    src: '/covua/gian-hang-sata-robo.jpg',
-    width: 900,
-    height: 1200,
-    alt: 'Gian trải nghiệm robot của Sata Robo tại giải',
-  },
+} as const;
+
+/** Section video riêng. */
+export const covuaVideoSection = {
+  title: 'Không khí tại giải',
+  intro:
+    'Một phút tại hội trường những ngày diễn ra giải — biết đâu có con của anh/chị trong khung hình.',
   video: {
     src: '/covua/giai-co-vua.mp4',
-    label: 'Video không khí tại giải',
+    label: 'Video không khí tại giải cờ vua',
   },
 } as const;
 

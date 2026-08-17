@@ -37,7 +37,7 @@
     opacity: 0.16;
   }
 
-  /* --- Hero --- */
+  /* --- Hero: chữ bên trái, ảnh đồng hành bên phải (mobile: xếp dọc) --- */
   .covua-hero { text-align: center; }
   .covua-hero .covua-logo {
     height: 56px; width: auto; margin: 0 auto 22px; border-radius: 12px;
@@ -50,6 +50,35 @@
   }
   .covua-hero .covua-cta-row {
     display: flex; flex-wrap: wrap; justify-content: center; gap: 14px;
+  }
+  .covua-hero-grid {
+    display: grid; gap: 34px; align-items: center;
+    position: relative; z-index: 2;
+  }
+  .covua-hero-photo {
+    margin: 0; max-width: 400px; width: 100%; justify-self: center;
+    border-radius: 26px; overflow: hidden;
+    background: #fff; border: 4px solid #fff; box-shadow: var(--sh-card);
+  }
+  .covua-hero-photo img { display: block; width: 100%; height: auto; }
+  .covua-hero-photo .flag {
+    background: linear-gradient(90deg, var(--red-600), var(--orange-500));
+    color: #fff; text-align: center; line-height: 1.35;
+    font-family: var(--fontd); font-weight: 800; letter-spacing: .01em;
+    font-size: clamp(.82rem, 1.3vw, .98rem); padding: 11px 14px;
+  }
+  .covua-hero-caption {
+    max-width: 400px; margin: 12px auto 0;
+    font-size: .86rem; color: var(--ink-500); text-align: center;
+  }
+  @media (min-width: 940px) {
+    .covua-hero-grid { grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); }
+    .covua-hero-copy { text-align: left; }
+    .covua-hero-copy .covua-logo { margin: 0 0 22px; }
+    .covua-hero-copy h1 { margin-inline: 0; }
+    .covua-hero-copy .lede { margin-inline: 0; }
+    .covua-hero-copy .covua-cta-row { justify-content: flex-start; }
+    .covua-hero-copy .covua-trust { margin-inline: 0; text-align: left; }
   }
   .btn--covua-ghost {
     background: #fff; color: var(--red-600);
@@ -98,26 +127,31 @@
   }
   .gift-card--b .hl-line { border-color: var(--blue); color: var(--blue-d); }
 
-  /* --- Hình ảnh tại giải (section--red) --- */
-  .covua-gallery {
-    display: grid; gap: 16px; grid-template-columns: 1fr;
-    position: relative; z-index: 2;
-  }
+  /* --- Section hình ảnh tại giải: 1 ảnh lớn + 2 ảnh nhỏ, chú thích dạng pill --- */
+  .covua-shots { display: grid; gap: 18px; position: relative; z-index: 2; }
+  .covua-shots-row { display: grid; gap: 18px; }
   @media (min-width: 620px) {
-    .covua-gallery { grid-template-columns: 1fr 1fr; }
+    .covua-shots-row { grid-template-columns: 1fr 1fr; }
   }
-  .covua-photo {
-    margin: 0; border-radius: 22px; overflow: hidden;
+  .covua-shot {
+    position: relative; margin: 0; border-radius: 22px; overflow: hidden;
     background: #fff; border: 4px solid #fff; box-shadow: var(--sh-card);
   }
-  .covua-photo img { display: block; width: 100%; height: auto; }
-  .covua-media-row {
-    display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;
-    margin-top: 16px; position: relative; z-index: 2;
+  .covua-shot img { display: block; width: 100%; height: auto; }
+  .covua-shot figcaption {
+    position: absolute; left: 14px; bottom: 14px;
+    background: #fff; color: var(--red-600);
+    font-family: var(--fontd); font-weight: 700; font-size: .8rem;
+    padding: 7px 16px; border-radius: var(--r-pill); box-shadow: var(--sh-pop);
   }
-  .covua-media-row .covua-photo--tall { flex: 1 1 260px; max-width: 330px; }
+
+  /* --- Section video riêng --- */
+  .covua-video-wrap {
+    display: flex; justify-content: center;
+    position: relative; z-index: 2;
+  }
   .covua-video {
-    flex: 1 1 260px; max-width: 330px; width: 100%;
+    width: 100%; max-width: 340px;
     aspect-ratio: 9 / 16; object-fit: contain;
     border-radius: 22px; border: 4px solid #fff; box-shadow: var(--sh-card);
     background: #1d0d06;
@@ -207,15 +241,9 @@
   .covua-step h3 { font-size: 1.1rem; color: var(--ink-900); }
   .covua-step p { color: var(--ink-600); font-size: 0.93rem; }
 
-  /* --- Footer covua --- */
-  .covua-footer {
-    background: var(--ink-900); color: rgb(255 255 255 / 0.85);
-    padding: 36px 0 26px; text-align: center; font-size: 0.9rem;
-  }
-  .covua-footer a { color: #fff; font-weight: 700; }
-  .covua-footer a:hover { color: var(--yellow); }
-  .covua-footer p { margin-bottom: 10px; }
-  .covua-footer .fine {
-    font-size: 0.78rem; color: rgb(255 255 255 / 0.55); margin-bottom: 0;
+  /* --- Dòng bảo mật nhỏ ngay trên footer (footer dùng chung của quatang) --- */
+  .covua-privacy {
+    text-align: center; font-size: .82rem; color: var(--ink-500);
+    padding: 0 24px 30px; margin: 0;
   }
 }
