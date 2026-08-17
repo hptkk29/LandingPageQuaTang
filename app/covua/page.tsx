@@ -4,7 +4,13 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
-import { CAMPUSES, covuaConfig, covuaContent, covuaHotlines } from "@/content/covua";
+import {
+  CAMPUSES,
+  covuaConfig,
+  covuaContent,
+  covuaGallery,
+  covuaHotlines,
+} from "@/content/covua";
 import { CovuaFaq } from "@/components/covua/CovuaFaq";
 import { CovuaLeadForm } from "@/components/covua/CovuaLeadForm";
 import { CovuaTracking } from "@/components/covua/CovuaTracking";
@@ -26,8 +32,8 @@ export const metadata: Metadata = {
     siteName: "Sata Robo",
     locale: "vi_VN",
     type: "website",
-    // TODO trước go-live: thay bằng ảnh OG riêng cho giải (public/covua/og.jpg)
-    images: ["/logo-satarobo.jpg"],
+    // Ảnh toàn cảnh hội trường giải, crop 1200×630 (sinh từ covua-media/)
+    images: ["/covua/og.jpg"],
   },
 };
 
@@ -108,6 +114,50 @@ export default function CovuaPage() {
                 <p className="hl-line">{card.highlight}</p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 2b — Hình ảnh tại giải: bằng chứng "đúng giải của con", ảnh nén sẵn
+          + khai width/height để không giật layout (giữ CLS) */}
+      <section className="section section--red">
+        <div className="container">
+          <div className="head">
+            <h2 className="sticker sticker--light">{covuaGallery.title}</h2>
+            <p>{covuaGallery.intro}</p>
+          </div>
+          <div className="covua-gallery">
+            {covuaGallery.photos.map((p) => (
+              <figure className="covua-photo" key={p.src}>
+                <Image
+                  src={p.src}
+                  width={p.width}
+                  height={p.height}
+                  alt={p.alt}
+                  sizes="(min-width: 620px) 50vw, 100vw"
+                />
+              </figure>
+            ))}
+          </div>
+          <div className="covua-media-row">
+            <figure className="covua-photo covua-photo--tall">
+              <Image
+                src={covuaGallery.standPhoto.src}
+                width={covuaGallery.standPhoto.width}
+                height={covuaGallery.standPhoto.height}
+                alt={covuaGallery.standPhoto.alt}
+                sizes="(min-width: 620px) 330px, 100vw"
+              />
+            </figure>
+            {/* preload=metadata: chỉ tải khung hình đầu làm poster, bấm mới tải video */}
+            <video
+              className="covua-video"
+              src={covuaGallery.video.src}
+              controls
+              playsInline
+              preload="metadata"
+              aria-label={covuaGallery.video.label}
+            />
           </div>
         </div>
       </section>

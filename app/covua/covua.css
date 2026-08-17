@@ -98,6 +98,31 @@
   }
   .gift-card--b .hl-line { border-color: var(--blue); color: var(--blue-d); }
 
+  /* --- Hình ảnh tại giải (section--red) --- */
+  .covua-gallery {
+    display: grid; gap: 16px; grid-template-columns: 1fr;
+    position: relative; z-index: 2;
+  }
+  @media (min-width: 620px) {
+    .covua-gallery { grid-template-columns: 1fr 1fr; }
+  }
+  .covua-photo {
+    margin: 0; border-radius: 22px; overflow: hidden;
+    background: #fff; border: 4px solid #fff; box-shadow: var(--sh-card);
+  }
+  .covua-photo img { display: block; width: 100%; height: auto; }
+  .covua-media-row {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;
+    margin-top: 16px; position: relative; z-index: 2;
+  }
+  .covua-media-row .covua-photo--tall { flex: 1 1 260px; max-width: 330px; }
+  .covua-video {
+    flex: 1 1 260px; max-width: 330px; width: 100%;
+    aspect-ratio: 9 / 16; object-fit: contain;
+    border-radius: 22px; border: 4px solid #fff; box-shadow: var(--sh-card);
+    background: #1d0d06;
+  }
+
   /* --- Con học được gì --- */
   .covua-point {
     background: #fff; border-radius: var(--r-card); box-shadow: var(--sh-card);

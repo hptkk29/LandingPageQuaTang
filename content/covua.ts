@@ -28,6 +28,52 @@ export const covuaHotlines: string[] = covuaConfig.hotline
   .filter(Boolean);
 
 /* ------------------------------------------------------------------ */
+/* Hình ảnh + video tại giải (file gốc: covua-media/, đã nén vào       */
+/* public/covua/ bằng sharp — thêm ảnh mới thì nén rồi khai vào đây)   */
+/* ------------------------------------------------------------------ */
+
+export const covuaGallery = {
+  title: 'Hình ảnh tại giải',
+  intro: `Khoảnh khắc tại ${covuaConfig.tenGiaiDau} — nơi Sata Robo đồng hành cùng các kỳ thủ nhí.`,
+  photos: [
+    {
+      src: '/covua/toan-canh-hoi-truong.jpg',
+      width: 1000,
+      height: 662,
+      alt: 'Toàn cảnh hội trường thi đấu với đông đảo kỳ thủ nhí',
+    },
+    {
+      src: '/covua/thi-sinh-thi-dau.jpg',
+      width: 1000,
+      height: 662,
+      alt: 'Các kỳ thủ nhí bên bàn cờ trước giờ thi đấu',
+    },
+    {
+      src: '/covua/san-khau-khai-mac.jpg',
+      width: 1000,
+      height: 662,
+      alt: 'Sân khấu lễ khai mạc giải với linh vật và đội văn nghệ',
+    },
+    {
+      src: '/covua/le-khai-mac.jpg',
+      width: 1000,
+      height: 662,
+      alt: 'Đại diện ban tổ chức phát biểu tại lễ khai mạc',
+    },
+  ],
+  standPhoto: {
+    src: '/covua/gian-hang-sata-robo.jpg',
+    width: 900,
+    height: 1200,
+    alt: 'Gian trải nghiệm robot của Sata Robo tại giải',
+  },
+  video: {
+    src: '/covua/giai-co-vua.mp4',
+    label: 'Video không khí tại giải',
+  },
+} as const;
+
+/* ------------------------------------------------------------------ */
 /* Cơ sở                                                               */
 /* ------------------------------------------------------------------ */
 
