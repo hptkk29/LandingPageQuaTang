@@ -2,14 +2,14 @@
  * Nội dung và cấu hình landing page quà tặng giải cờ vua.
  * Bản duyệt cho người đọc: docs/03-noi-dung-trang.md
  *
- * TODO trước go-live: điền TEN_GIAI_DAU, HAN_DANG_KY, HOTLINE, ZALO_URL.
+ * HOTLINE, ZALO_URL lấy từ env (xem .env.example, mục covua).
  */
 
 export const COVUA_PROGRAM_CODE = 'COVUA' as const;
 
 export const covuaConfig = {
   tenGiaiDau: 'Giải cờ vua chuyên nghiệp tranh Cúp Sở hữu trí tuệ lần thứ VIII năm 2026',
-  hanDangKy: '{{HAN_DANG_KY}}', // ví dụ: '30/09/2026' — để trống thì ẩn dòng hạn đăng ký
+  hanDangKy: '', // giải đã bế mạc, không đặt hạn — để trống thì không hiện hạn đăng ký
   hotline: process.env.NEXT_PUBLIC_COVUA_HOTLINE ?? '{{HOTLINE}}',
   zaloUrl: process.env.NEXT_PUBLIC_COVUA_ZALO_URL ?? '#',
   canonicalUrl: 'https://covua.quatang.edu.vn',
