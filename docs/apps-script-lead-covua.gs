@@ -51,6 +51,9 @@ const COLUMNS = [
   { key: 'sataroboStatus',     header: 'Satarobo Status' },      // U
   { key: 'sataroboLeadId',     header: 'Satarobo Lead ID' },     // V
   { key: 'idempotencyKey',     header: 'Idempotency Key' },      // W
+  // v1.1 (17/08): thêm lại đường MISA — sent / failed / skipped.
+  // Sau khi paste bản này: chạy lại setupHeaders() rồi Deploy > New version.
+  { key: 'misaStatus',         header: 'MISA Status' },          // X
 ];
 
 function getSpreadsheet_() {

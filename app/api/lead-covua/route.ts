@@ -2,20 +2,23 @@ import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { covuaLeadSchema } from "@/lib/covua-form-schema";
 import { buildSheetRow } from "@/lib/covua-lead-mapping";
+import { submitCovuaLeadToMisa } from "@/lib/server/covua-misa";
 import { pushLeadToSatarobo } from "@/lib/server/covua-satarobo-push";
 import type { LeadApiResponse } from "@/lib/types/api";
 
-// Lead cờ vua đi 2 đường, cả hai đều ở đây (quyết định 16/08: không đẩy MISA):
-//   1. Google Sheet cờ vua (bản gốc đối soát) — env COVUA_SHEET_WEBHOOK_URL
-//   2. satarobo.vn ingest — env SATAROBO_*; thiếu env / satarobo chết thì chỉ
-//      ghi sataroboStatus=failed vào Sheet, KHÔNG BAO GIỜ làm hỏng phản hồi.
-// Báo thành công khi lead đã nằm ở ÍT NHẤT một nơi (tinh thần KT-03 của
-// /api/lead). Cả hai chết → 502, client giữ dữ liệu + idempotencyKey để gửi lại.
+// Lead cờ vua đi 3 đường, cả ba đều ở đây (17/08: thêm lại MISA theo yêu cầu):
+//   1. MISA CRM — WebForm savecollection, gọi từ server (đọc kết quả thật),
+//      dùng chung form + env MISA_* với trang quà tặng cũ
+//   2. Google Sheet cờ vua (bản gốc đối soát) — env COVUA_SHEET_WEBHOOK_URL
+//   3. satarobo.vn — POST /api/leads public có sẵn; env SATAROBO_*
+// Kênh nào chết chỉ ghi trạng thái vào cột tương ứng của Sheet, KHÔNG BAO GIỜ
+// làm hỏng phản hồi. Báo thành công khi lead nằm ở ÍT NHẤT một nơi (KT-03).
+// Cả ba chết → 502, client giữ dữ liệu + idempotencyKey để gửi lại.
 //
-// satarobo chạy TRƯỚC ghi Sheet (không song song) vì dòng Sheet phải chứa
-// sataroboStatus + sataroboLeadId — Apps Script chỉ append, không sửa dòng cũ.
-// Giá chờ: tối đa ~12s khi satarobo treo (5s + retry 2s + 5s), bình thường <1s;
-// env SATAROBO_* chưa cấu hình thì trả failed ngay lập tức, không chờ gì.
+// MISA + satarobo chạy SONG SONG trước, Sheet ghi sau cùng (không song song
+// với 2 kênh kia) vì dòng Sheet phải chứa misaStatus + sataroboStatus —
+// Apps Script chỉ append, không sửa dòng cũ. Giá chờ: max(6s MISA, ~12s
+// satarobo treo), bình thường ~1s; thiếu env thì kênh đó trả kết quả ngay.
 
 // Rate-limit theo SĐT (không theo IP — CGNAT nhà mạng VN), chỉ đóng dấu SAU
 // khi lead đã vào được ít nhất một kênh: thử lại sau thất bại không bị 429.
@@ -221,27 +224,39 @@ export async function POST(
       MAX_USER_AGENT_CHARS
     );
 
-    // Đường satarobo — pushLeadToSatarobo không bao giờ throw; thiếu env
-    // SATAROBO_* trả failed/MISSING_ENV ngay lập tức.
-    const satarobo = await pushLeadToSatarobo(lead, { idempotencyKey });
+    // MISA + satarobo song song — cả hai không bao giờ throw; thiếu env thì
+    // kênh đó trả skipped/failed ngay lập tức.
+    const [misa, satarobo] = await Promise.all([
+      submitCovuaLeadToMisa(lead),
+      pushLeadToSatarobo(lead, { idempotencyKey }),
+    ]);
     if (satarobo.status === "failed") {
       console.error("[/api/lead-covua] satarobo failed:", satarobo.reason);
     }
 
-    // Đường Google Sheet — dòng ghi kèm kết quả satarobo để cuối tuần lọc
-    // sataroboStatus=failed nhập bù (docs covua 07 §6).
+    // Đường Google Sheet — dòng ghi kèm kết quả 2 kênh kia: lọc failed để
+    // nhập bù MISA/satarobo (docs covua 04 §5 + 07 §6).
     const sheetRow: Record<string, string> = {
       ...buildSheetRow(lead, { userAgent }),
       sataroboStatus: satarobo.status,
       sataroboLeadId: satarobo.leadId ?? "",
+      misaStatus: misa.status,
       idempotencyKey,
     };
     const sheet = await submitToCovuaSheet(sheetRow);
 
     const sataroboOk =
       satarobo.status === "sent" || satarobo.status === "duplicated";
+    const misaOk = misa.status === "sent";
 
-    if (sheet.ok || sataroboOk) {
+    if (misaOk && !sheet.ok) {
+      console.error(
+        "[/api/lead-covua] Lead đã ở MISA nhưng Sheet fail:",
+        sheet.detail
+      );
+    }
+
+    if (sheet.ok || sataroboOk || misaOk) {
       markSubmitted(lead.parentPhone);
       if (!sheet.ok) {
         console.error(
@@ -259,8 +274,8 @@ export async function POST(
       );
     }
 
-    // Cả hai kênh chết — KHÔNG markSubmitted: khách bấm gửi lại ngay được
-    console.error("[/api/lead-covua] CẢ HAI kênh đều thất bại — lead bị mất!");
+    // Cả ba kênh chết — KHÔNG markSubmitted: khách bấm gửi lại ngay được
+    console.error("[/api/lead-covua] CẢ BA kênh đều thất bại — lead bị mất!");
     return NextResponse.json(
       {
         ok: false,
