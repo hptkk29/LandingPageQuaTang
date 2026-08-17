@@ -61,9 +61,18 @@ export function buildSataroboPayload(
     CS1: process.env.SATAROBO_CENTER_ID_CS1,
     CS2: process.env.SATAROBO_CENTER_ID_CS2,
   };
-  const centerId = lead.campus
-    ? centerIdByCampus[lead.campus] || undefined
-    : undefined;
+  const rawCenterId = lead.campus ? centerIdByCampus[lead.campus] : undefined;
+  // Chỉ nhận Center.id dạng cuid ("cm..." liền mạch). Env điền nhầm slug
+  // ("co-so-...") sẽ làm CRM lỗi khóa ngoại 500 và chết cả kênh — thà bỏ
+  // trống cơ sở (thông tin vẫn nằm trong note) còn hơn mất lead.
+  const centerId =
+    rawCenterId && /^c[a-z0-9]{15,}$/.test(rawCenterId) ? rawCenterId : undefined;
+  if (rawCenterId && !centerId) {
+    console.error(
+      '[covua-satarobo] SATAROBO_CENTER_ID_* không phải Center.id (cuid) — bỏ qua, không gắn cơ sở:',
+      rawCenterId
+    );
+  }
 
   return {
     parentName: lead.parentName,
