@@ -57,22 +57,16 @@ export function buildSataroboPayload(
   lead: CovuaLead,
   opts: { idempotencyKey?: string } = {},
 ) {
+  // Center.id trên satarobo là chuỗi TỰ ĐẶT trong seed (vd
+  // "co-so-nguyen-huu-tho"), KHÔNG phải cuid — gửi nguyên giá trị env.
+  // Phòng id sai: pushLeadToSatarobo tự retry KHÔNG kèm centerId khi 5xx.
   const centerIdByCampus: Record<string, string | undefined> = {
-    CS1: process.env.SATAROBO_CENTER_ID_CS1,
-    CS2: process.env.SATAROBO_CENTER_ID_CS2,
+    CS1: process.env.SATAROBO_CENTER_ID_CS1?.trim(),
+    CS2: process.env.SATAROBO_CENTER_ID_CS2?.trim(),
   };
-  const rawCenterId = lead.campus ? centerIdByCampus[lead.campus] : undefined;
-  // Chỉ nhận Center.id dạng cuid ("cm..." liền mạch). Env điền nhầm slug
-  // ("co-so-...") sẽ làm CRM lỗi khóa ngoại 500 và chết cả kênh — thà bỏ
-  // trống cơ sở (thông tin vẫn nằm trong note) còn hơn mất lead.
-  const centerId =
-    rawCenterId && /^c[a-z0-9]{15,}$/.test(rawCenterId) ? rawCenterId : undefined;
-  if (rawCenterId && !centerId) {
-    console.error(
-      '[covua-satarobo] SATAROBO_CENTER_ID_* không phải Center.id (cuid) — bỏ qua, không gắn cơ sở:',
-      rawCenterId
-    );
-  }
+  const centerId = lead.campus
+    ? centerIdByCampus[lead.campus] || undefined
+    : undefined;
 
   return {
     parentName: lead.parentName,
@@ -107,16 +101,18 @@ export async function pushLeadToSatarobo(
     return { status: 'failed', reason: 'MISSING_ENV' };
   }
 
-  const rawBody = JSON.stringify(buildSataroboPayload(lead, opts));
+  const payload = buildSataroboPayload(lead, opts);
 
-  const attempt = async (): Promise<
+  const attempt = async (
+    body: string
+  ): Promise<
     { status: SataroboIngestStatus; leadId?: string; reason?: string } | 'RETRY'
   > => {
     try {
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: rawBody,
+        body,
         signal: AbortSignal.timeout(5000),
       });
 
@@ -145,12 +141,23 @@ export async function pushLeadToSatarobo(
     }
   };
 
-  const first = await attempt();
+  const first = await attempt(JSON.stringify(payload));
   if (first !== 'RETRY') return first;
 
   await new Promise((r) => setTimeout(r, 2000));
 
-  const second = await attempt();
+  // Retry: nếu lần đầu có centerId thì bỏ đi — Center.id sai gây lỗi khóa
+  // ngoại 500; thà lead vào CRM không gắn cơ sở (cơ sở vẫn nằm trong note)
+  // còn hơn mất cả kênh.
+  const retryPayload = payload.centerId
+    ? { ...payload, centerId: undefined }
+    : payload;
+  if (payload.centerId) {
+    console.warn(
+      '[covua-satarobo] retry lần 2 KHÔNG kèm centerId (phòng Center.id sai gây 5xx)'
+    );
+  }
+  const second = await attempt(JSON.stringify(retryPayload));
   if (second !== 'RETRY') return second;
 
   return { status: 'failed', reason: 'UNAVAILABLE' };
