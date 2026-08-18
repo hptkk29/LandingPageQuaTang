@@ -147,9 +147,8 @@ async function submitToCovuaSheet(
   }
 }
 
-export async function POST(
-  req: NextRequest
-): Promise<NextResponse<LeadApiResponse>> {
+// Response mở rộng thêm `channels` so với LeadApiResponse (chỉ phần success)
+export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const contentLength = Number(req.headers.get("content-length"));
     if (Number.isFinite(contentLength) && contentLength > MAX_BODY_BYTES) {
@@ -269,6 +268,13 @@ export async function POST(
           ok: true,
           message:
             "Đã nhận đăng ký! Sata Robo sẽ liên hệ anh/chị trong 24–48 giờ làm việc.",
+          // Trạng thái từng kênh — phục vụ chẩn đoán vận hành (không chứa
+          // secret; client không dùng, chỉ đọc khi debug bằng DevTools/curl)
+          channels: {
+            misa: { status: misa.status, httpStatus: misa.httpStatus, reason: misa.reason },
+            satarobo: { status: satarobo.status, reason: satarobo.reason },
+            sheet: { ok: sheet.ok, detail: sheet.detail },
+          },
         },
         { status: 200 }
       );
