@@ -286,3 +286,13 @@ body {
 .animate-zoom-breathe {
   animation: zoom-breathe 1.8s ease-in-out infinite;
 }
+
+/* CTA nổi (z-60) và header dính (z-40) nằm ở gốc trang, còn popup "Thêm thông
+   tin" bị nhốt trong stacking context của .hero-grid — nên cả hai vẫn vẽ đè lên
+   popup phủ kín màn ở mobile và cướp mất cú chạm vào nút "Xong".
+   .hero-grid tự nâng z-index khi popup mở (app/v2.css); riêng CTA nổi thì ẩn
+   hẳn — nút này không có việc gì để làm khi đang có hộp thoại mở. */
+body:has(.more-pop:not([hidden])) .floating-cta {
+  opacity: 0;
+  pointer-events: none;
+}

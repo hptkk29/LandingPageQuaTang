@@ -2,7 +2,7 @@ import { CAMPAIGN } from "@/lib/constants/campaign";
 
 export function FinalCTA() {
   return (
-    <section className="section section--white">
+    <section id="cta-cuoi" className="section section--white" style={{ scrollMarginTop: 80 }}>
       <div className="container container--md">
         <div className="finalcta-card">
           <span className="kicker kicker--onlight" style={{ marginBottom: 14 }}>Sẵn sàng cho con bắt đầu?</span>

@@ -18,8 +18,11 @@ export function TrustBadges() {
           <h2 className="sticker sticker--red">Được phụ huynh &amp; đối tác<br />Đà Nẵng <span className="hl">tin tưởng</span></h2>
         </div>
         <Carousel className="md:grid-cols-4">
-          {STATS.map((s) => (
-            <div className="tb-stat" key={s.lbl}>
+          {STATS.map((s, i) => (
+            // data-i thay cho :nth-child — Carousel bọc mỗi thẻ trong một
+            // wrapper riêng nên thẻ nào cũng là con thứ 1 và bộ 4 màu viền dưới
+            // (cam/xanh dương/xanh lá/đỏ) không bao giờ được áp dụng.
+            <div className="tb-stat" data-i={i} key={s.lbl}>
               <div className="num">{s.num}</div>
               <div className="lbl">{s.lbl}</div>
             </div>

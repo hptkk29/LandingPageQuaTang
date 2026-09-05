@@ -87,10 +87,6 @@ export function Hero() {
             <div className="form-card form-card--hero">
               <span className="ribbon">🎁 TRẢI NGHIỆM 1-1 MIỄN PHÍ</span>
               <h2>Đăng ký suất trải nghiệm 1-1</h2>
-              <p className="sub">
-                Điền 3 thông tin — Sata Robo gọi lại xếp lịch học cho con tại{" "}
-                <strong style={{ color: "var(--red-500)" }}>2 cơ sở Đà Nẵng</strong>
-              </p>
 
               <DeadlineStrip slots={CAMPAIGN.totalSlots} />
 

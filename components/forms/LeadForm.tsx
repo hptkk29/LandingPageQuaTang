@@ -79,16 +79,56 @@ export function LeadForm({
   // compact: khối 5 trường phụ mặc định đóng
   const [showMore, setShowMore] = useState(false);
   const popRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
-  // Mở khối phụ: focus ô đầu tiên + đóng bằng phím Esc
+  // Mở khối phụ: focus ô đầu tiên, đóng bằng Esc, GIỮ tab trong panel và trả
+  // focus về nút mở khi đóng.
+  //
+  // Vì sao cần bẫy tab: panel khai role="dialog" aria-modal="true" nhưng nút
+  // Submit của form vẫn nằm ngay sau nó trong tab order — trước đây nhấn Tab từ
+  // nút "Xong" là focus rơi ra nút gửi đang nằm SAU lớp phủ tối, người dùng bàn
+  // phím có thể gửi form khi popup còn mở.
   useEffect(() => {
     if (!showMore) return;
+    const panel = popRef.current?.querySelector<HTMLElement>(".more-pop__panel");
+    if (!panel) return;
+    // Giữ lại nút đã mở popup ngay lúc này để cleanup trả focus đúng chỗ.
+    const opener = toggleRef.current;
+
+    const focusables = () =>
+      Array.from(
+        panel.querySelectorAll<HTMLElement>(
+          'input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])'
+        )
+      ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null);
+
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setShowMore(false);
+      if (e.key === "Escape") {
+        setShowMore(false);
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const list = focusables();
+      if (list.length === 0) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && (active === first || !panel.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !panel.contains(active))) {
+        e.preventDefault();
+        first.focus();
+      }
     };
+
     document.addEventListener("keydown", onKey);
-    popRef.current?.querySelector<HTMLInputElement>("input, select")?.focus();
-    return () => document.removeEventListener("keydown", onKey);
+    panel.querySelector<HTMLInputElement>("input, select")?.focus();
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      // Trả focus về đúng nút đã mở popup, không để rơi về <body>.
+      opener?.focus();
+    };
   }, [showMore]);
 
   const {
@@ -358,8 +398,10 @@ export function LeadForm({
             {...register("co_so")}
           >
             {BRANCHES.map((b) => (
+              // b.short (không phải b.label): nhãn đầy đủ dài hơn ô select nên bị
+              // xén giữa nét chữ. Dữ liệu gửi đi vẫn là b.value nên không đổi gì.
               <option key={b.value} value={b.value}>
-                {b.label}
+                {b.short}
               </option>
             ))}
           </select>
@@ -370,23 +412,32 @@ export function LeadForm({
         <>
           <button
             type="button"
+            ref={toggleRef}
             className="more-toggle"
             onClick={() => setShowMore(true)}
             aria-expanded={showMore}
             aria-controls={`more-${source}`}
           >
             <span className="sign" aria-hidden>+</span>
-            Thêm thông tin để xếp lớp nhanh hơn
-            <small>(không bắt buộc)</small>
+            {/* Nhãn và "(không bắt buộc)" phải nằm trong CÙNG một dòng chữ.
+                Tách ra hai cụm rồi đẩy bằng margin-left:auto khiến ở cột hẹp
+                mỗi cụm tự vỡ dòng riêng → khối cao tới 3+3 dòng. */}
+            <span className="more-toggle__txt">
+              Thêm thông tin để xếp lớp nhanh hơn <small>(không bắt buộc)</small>
+            </span>
           </button>
 
           {/* Khối phụ NỔI ĐÈ lên thẻ form (position:absolute, inset:0) — mở ra
               không làm thẻ form cao thêm nên chiều cao section giữ nguyên.
               Luôn nằm trong DOM để giữ giá trị + gửi kèm; chỉ ẩn bằng CSS. */}
+          {/* `hidden` thay cho style display:none — CSS cần một cái móc để biết
+              popup đang mở: .hero-grid:has(.more-pop:not([hidden])) nâng cả thẻ
+              hero lên trên header sticky và CTA nổi, nếu không hai lớp đó vẫn vẽ
+              đè lên popup phủ kín màn ở mobile (và bấm xuyên qua được). */}
           <div
             id={`more-${source}`}
             className="more-pop"
-            style={showMore ? undefined : { display: "none" }}
+            hidden={!showMore}
           >
             <div
               className="more-pop__backdrop"

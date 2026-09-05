@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "app/v2.css"
+        ],
+        "createdAt": "2026-09-05T12:31:26.128Z",
+        "reason": "Thanh accent mau tren the la ban sac 'infographic sticker' cua Sata Robo (.commit/.tb-stat/.tcard), co truoc lan ra soat nay va khong bi thay doi — git diff chi them height:100% / width:min(). Bo 4 mau vien cua .tb-stat con la tinh nang vua duoc sua cho hoat dong tro lai. Chi tat trong app/v2.css."
+      }
+    ]
+  }
+}

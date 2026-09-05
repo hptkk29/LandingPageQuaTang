@@ -3,9 +3,23 @@
 // (đọc từ env MISA_* — không còn nằm trong bundle client).
 
 // Cơ sở — value là giá trị MISA CustomField17 ("1" / "2")
+//
+// label  = chuỗi ĐI VÀO DỮ LIỆU: branchLabel() ghi thẳng vào cột `co_so` của
+//          Google Sheet (app/api/lead/route.ts). ĐỪNG rút gọn — sale đang đọc.
+// short  = chuỗi CHỈ ĐỂ HIỂN THỊ trong <option>. Nhãn đầy đủ rộng 302px trong
+//          khi ô select chỉ có 178-251px nên bị xén giữa nét chữ; cả hai cơ sở
+//          đều kết thúc bằng "Đà Nẵng" — phần lặp lại đó là phần bỏ đi được.
 export const BRANCHES = [
-  { value: "1", label: "Cơ sở 1 - 211 Nguyễn Hữu Thọ, Đà Nẵng" },
-  { value: "2", label: "Cơ sở 2 - 114 Hoàng Diệu, Đà Nẵng" },
+  {
+    value: "1",
+    label: "Cơ sở 1 - 211 Nguyễn Hữu Thọ, Đà Nẵng",
+    short: "Cơ sở 1 · 211 Nguyễn Hữu Thọ",
+  },
+  {
+    value: "2",
+    label: "Cơ sở 2 - 114 Hoàng Diệu, Đà Nẵng",
+    short: "Cơ sở 2 · 114 Hoàng Diệu",
+  },
 ] as const;
 
 export const DEFAULT_BRANCH_VALUE = "1";

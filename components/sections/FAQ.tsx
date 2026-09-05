@@ -30,12 +30,29 @@ export function FAQ() {
             const isOpen = open === i;
             return (
               <div className={`faq-item ${isOpen ? "open" : ""}`} key={i}>
-                <button type="button" className="faq-q" onClick={() => setOpen(isOpen ? null : i)} aria-expanded={isOpen}>
+                <button
+                  type="button"
+                  className="faq-q"
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  aria-controls={`faq-a-${i}`}
+                  id={`faq-q-${i}`}
+                >
                   <span className="qmark">?</span>
                   <span>{f.q}</span>
                   <svg className="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" width="18" height="18"><path d="m6 9 6 6 6-6" /></svg>
                 </button>
-                <div className="faq-a" style={{ maxHeight: isOpen ? 600 : 0 }}>
+                {/* Chiều cao do CSS lo (grid-template-rows 0fr→1fr) chứ không
+                    còn max-height cứng 600px — con số đó cắt mất chữ khi người
+                    dùng phóng to text. inert giữ 9 câu trả lời đang đóng ra
+                    khỏi cây trợ năng và khỏi tab order. */}
+                <div
+                  className="faq-a"
+                  id={`faq-a-${i}`}
+                  role="region"
+                  aria-labelledby={`faq-q-${i}`}
+                  inert={!isOpen}
+                >
                   <div className="inner">{f.a}</div>
                 </div>
               </div>

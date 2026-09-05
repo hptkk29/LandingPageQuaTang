@@ -73,7 +73,7 @@ export function Header() {
           <button
             type="button"
             onClick={scrollToForm}
-            className="relative bg-cta-500 hover:bg-cta-600 text-white font-display font-bold text-xs md:text-sm px-4 md:px-6 py-2 md:py-2.5 rounded-button shadow-md hover:shadow-cta transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
+            className="relative min-h-11 bg-cta-500 hover:bg-cta-600 text-white font-display font-bold text-xs md:text-sm px-4 md:px-6 py-2 md:py-2.5 rounded-button shadow-md hover:shadow-cta transition-all hover:-translate-y-0.5 cursor-pointer whitespace-nowrap"
           >
             🎁 Nhận suất 1-1<span className="hidden sm:inline"> miễn phí</span>
           </button>

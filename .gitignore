@@ -70,3 +70,12 @@ __pycache__/
 
 
 .vercel
+
+# Impeccable (design linter, cài bằng `npx impeccable install`).
+# Binary theo nền tảng nặng ~17MB và chỉ chạy được trên windows-x64 —
+# tải lại bằng `npx impeccable update`, không commit.
+.claude/skills/impeccable/scripts/bin/
+# Cache của hook thì bỏ qua, nhưng config.json là quyết định CHUNG của team
+# (rule nào được tắt và vì sao) — phải đi theo repo.
+.impeccable/*
+!.impeccable/config.json

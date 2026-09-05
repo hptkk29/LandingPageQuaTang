@@ -13,7 +13,7 @@ export function MidCTA() {
       <div className="container container--xl">
         <div className="grid">
           <div>
-            <h2>Đừng để con bỏ lỡ suất trải nghiệm 1-1 miễn phí</h2>
+            <h2 className="midcta__title">Đừng để con bỏ lỡ suất trải nghiệm 1-1 miễn phí</h2>
             <p className="lede">Đợt này chỉ có {CAMPAIGN.totalSlots} suất. Đăng ký ngay để giữ chỗ buổi trải nghiệm 1 kèm 1 cho con và nhận tư vấn lộ trình miễn phí.</p>
             <ul>
               {BULLETS.map((b) => (

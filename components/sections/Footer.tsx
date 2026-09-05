@@ -58,7 +58,7 @@ export function Footer() {
                 <a
                   key={loc.key}
                   href={`tel:${loc.phoneDigits}`}
-                  className="flex items-center gap-2 text-gray-300 hover:text-cta-400 transition-colors"
+                  className="flex items-center gap-2 py-1.5 text-gray-300 hover:text-cta-400 transition-colors"
                 >
                   <span>📞</span>
                   <span className="font-semibold">{loc.name}: {loc.phone}</span>
@@ -66,7 +66,7 @@ export function Footer() {
               ))}
               <a
                 href="mailto:info@satarobo.vn"
-                className="flex items-center gap-2 text-gray-300 hover:text-cta-400 transition-colors"
+                className="flex items-center gap-2 py-1.5 text-gray-300 hover:text-cta-400 transition-colors"
               >
                 <span>✉️</span>
                 <span>info@satarobo.vn</span>
@@ -85,7 +85,7 @@ export function Footer() {
                   href="https://satarobo.vn/khoa-hoc/laptrinhrobot"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-cta-400 transition-colors"
+                  className="inline-block py-1.5 text-gray-400 hover:text-cta-400 transition-colors"
                 >
                   Lập trình Robot (offline)
                 </a>
@@ -95,7 +95,7 @@ export function Footer() {
                   href="https://satarobo.vn/khoa-hoc/luyenthirobosim"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-cta-400 transition-colors"
+                  className="inline-block py-1.5 text-gray-400 hover:text-cta-400 transition-colors"
                 >
                   Luyện thi RoboSim (online)
                 </a>
@@ -105,7 +105,7 @@ export function Footer() {
                   href="https://satarobo.vn/khoa-hoc"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-cta-400 transition-colors"
+                  className="inline-block py-1.5 text-gray-400 hover:text-cta-400 transition-colors"
                 >
                   Tất cả khoá học
                 </a>
@@ -115,7 +115,7 @@ export function Footer() {
                   href="https://satarobo.vn/hoc-cu"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-cta-400 transition-colors"
+                  className="inline-block py-1.5 text-gray-400 hover:text-cta-400 transition-colors"
                 >
                   Học cụ STEM
                 </a>
@@ -137,7 +137,7 @@ export function Footer() {
                     <br />
                     {loc.district}, {loc.city}
                     <br />
-                    <a href={`tel:${loc.phoneDigits}`} className="text-gray-300 hover:text-cta-400 transition-colors">
+                    <a href={`tel:${loc.phoneDigits}`} className="inline-block py-1.5 text-gray-300 hover:text-cta-400 transition-colors">
                       📞 {loc.phone}
                     </a>
                   </span>
