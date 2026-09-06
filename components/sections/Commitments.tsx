@@ -41,7 +41,7 @@ export function Commitments() {
           <span className="kicker kicker--onlight">Cam kết của Sata Robo</span>
           <h2 className="sticker sticker--red">6 cam kết cho hành trình<br />học của <span className="hl">con</span></h2>
         </div>
-        <Carousel className="md:grid-cols-3">
+        <Carousel label="6 cam kết của Sata Robo" className="md:grid-cols-3">
           {COMMITMENTS.map((c, i) => (
             <article className="commit" key={c.title}>
               <div className="top"><span className="no">{i + 1}</span><span className="gear-chip">{c.icon}</span></div>

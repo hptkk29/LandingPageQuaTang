@@ -34,7 +34,9 @@ export function Hero() {
               alt="Lập trình Robot RoboSim cơ bản cho trẻ 6–13 tuổi — Sata Robo"
               priority
               fetchPriority="high"
-              sizes="(max-width: 1023px) 100vw, 68vw"
+              // khung banner thật không bao giờ vượt 839px (cột 70% của
+              // container 1280) — khai 68vw làm trình duyệt tải dư ảnh ở màn lớn
+              sizes="(max-width: 1023px) 100vw, 840px"
               className="hero-banner__img"
             />
             <p className="hero-banner__flag">
@@ -93,7 +95,7 @@ export function Hero() {
               <LeadForm
                 source="hero"
                 compact
-                submitLabel="Nhận suất trải nghiệm miễn phí →"
+                submitLabel="Nhận suất trải nghiệm miễn phí →"
               />
             </div>
           </aside>

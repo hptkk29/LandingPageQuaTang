@@ -37,14 +37,20 @@ export function Locations() {
                     <p className="dist">{l.dist}</p>
                   </div>
                 </div>
-                <a className="maps" href={`tel:${l.phoneDigits}`} style={{ display: "inline-flex", alignItems: "center", gap: 7, marginBottom: 6 }}>
-                  <span style={{ width: 17, height: 17, display: "inline-grid", placeItems: "center" }}><PhoneIcon /></span>
-                  {l.phone}
-                </a>
-                <br />
-                <a className="maps" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.q)}`} target="_blank" rel="noopener noreferrer">
-                  Xem trên Google Maps <span aria-hidden="true">→</span>
-                </a>
+                {/* Trước đây hai link dùng <br/> + marginBottom trên phần tử
+                    inline-flex (margin dọc không có tác dụng) — đổi sang xếp
+                    khối cho khoảng cách thật sự tồn tại. */}
+                <div className="loc-links">
+                  <a className="maps" href={`tel:${l.phoneDigits}`}>
+                    <span style={{ width: 17, height: 17, display: "inline-grid", placeItems: "center" }}><PhoneIcon /></span>
+                    Gọi {l.n}: <span style={{ whiteSpace: "nowrap" }}>{l.phone}</span>
+                  </a>
+                  {/* Kèm tên cơ sở: hai link Maps trước đây trùng tên y hệt nhau
+                      dù trỏ hai địa chỉ khác nhau. */}
+                  <a className="maps" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(l.q)}`} target="_blank" rel="noopener noreferrer">
+                    Xem {l.n} trên Google Maps <span aria-hidden="true">→</span>
+                  </a>
+                </div>
               </div>
             </article>
           ))}

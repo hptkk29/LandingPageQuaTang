@@ -122,10 +122,18 @@ export function LeadForm({
       }
     };
 
+    // Popup phủ kín màn ở <=700px thì phải khoá cuộn nền, nếu không trang phía
+    // sau vẫn trôi tự do dưới lớp phủ. Trên desktop popup nằm gọn trong thẻ
+    // form nên không cần.
+    const fullscreen = window.matchMedia("(max-width: 700px)").matches;
+    const prevOverflow = document.body.style.overflow;
+    if (fullscreen) document.body.style.overflow = "hidden";
+
     document.addEventListener("keydown", onKey);
     panel.querySelector<HTMLInputElement>("input, select")?.focus();
     return () => {
       document.removeEventListener("keydown", onKey);
+      if (fullscreen) document.body.style.overflow = prevOverflow;
       // Trả focus về đúng nút đã mở popup, không để rơi về <body>.
       opener?.focus();
     };
@@ -414,7 +422,7 @@ export function LeadForm({
             type="button"
             ref={toggleRef}
             className="more-toggle"
-            onClick={() => setShowMore(true)}
+            onClick={() => setShowMore((v) => !v)}
             aria-expanded={showMore}
             aria-controls={`more-${source}`}
           >

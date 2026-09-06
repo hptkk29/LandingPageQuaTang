@@ -75,7 +75,9 @@
   .section--red::after { width: 520px; height: 520px; bottom: -240px; right: -160px; }
 
   /* sticker headings */
-  .sticker { font-family: var(--fontd); font-weight: 800; font-size: clamp(1.8rem, 4.4vw, 3.1rem); line-height: 1.08; text-align: center; letter-spacing: .005em; }
+  /* san 1.8rem (28.8px) qua lon cho hop noi dung 272px o man 320px — ha san
+     xuong, phan tren cua thang khong doi. */
+  .sticker { font-family: var(--fontd); font-weight: 800; font-size: clamp(1.5rem, 4.4vw, 3.1rem); line-height: 1.1; text-align: center; letter-spacing: .005em; }
   .sticker--light { color: #fff; text-shadow: 0 4px 0 rgb(120 20 10 / .35), 0 2px 1px rgb(0 0 0 / .2); }
   .sticker--red { color: var(--red-600); text-shadow: 0 3px 0 rgb(213 26 22 / .14); }
   .sticker .hl { color: var(--yellow); }
@@ -117,7 +119,9 @@
   .badge-no.b-yellow { background: var(--yellow); color: var(--red-700); box-shadow: 0 0 0 5px #fff, 0 0 0 8px var(--yellow), var(--sh-pop); }
 
   .pill-head { display: flex; align-items: center; gap: 18px; margin-bottom: 22px; }
-  .pill-head .label { font-family: var(--fontd); font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: .04em; font-size: clamp(1rem, 2vw, 1.45rem); line-height: 1.15; padding: 14px 30px; border-radius: var(--r-pill); box-shadow: var(--sh-pop); flex: 1; }
+  /* text-wrap:balance: nhan viet hoa dai o cot hep de bo lai mot tu dung le
+     o dong cuoi ("TAO") — can lai cho cac dong deu nhau. */
+  .pill-head .label { font-family: var(--fontd); font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: .04em; font-size: clamp(1rem, 2vw, 1.45rem); line-height: 1.15; text-wrap: balance; padding: 14px 30px; border-radius: var(--r-pill); box-shadow: var(--sh-pop); flex: 1; }
   .pill-head .label.p-blue { background: var(--blue); }
   .pill-head .label.p-orange { background: var(--orange-500); }
   .pill-head .label.p-green { background: var(--green); }
@@ -488,7 +492,23 @@
      trọn) — đổi sang px để vùng mờ luôn đúng một dải hẹp. */
   .marquee-wrap { position: relative; -webkit-mask-image: linear-gradient(90deg, transparent, #000 48px, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(90deg, transparent, #000 48px, #000 calc(100% - 48px), transparent); }
   .marquee { --marquee-gap: 22px; display: flex; width: max-content; gap: var(--marquee-gap); animation: v2-marquee 56s linear infinite; }
-  .marquee-wrap:hover .marquee { animation-play-state: paused; }
+  .marquee-wrap:hover .marquee,
+  .marquee-wrap:focus-within .marquee,
+  .marquee-wrap.is-paused .marquee { animation-play-state: paused; }
+  /* Khi dừng thì cho cuộn tay/bàn phím — nếu không, dừng lại đồng nghĩa với
+     việc không bao giờ đọc được những thẻ chưa kịp chạy tới. */
+  .marquee-scroll { overflow-x: hidden; }
+  .marquee-wrap.is-paused .marquee-scroll { overflow-x: auto; scrollbar-width: thin; }
+  .marquee-scroll:focus-visible { outline: 3px solid var(--red-500); outline-offset: -3px; border-radius: 12px; }
+  .marquee-ctrl { display: flex; justify-content: center; margin-top: 22px; position: relative; z-index: 2; }
+  .marquee-btn {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
+    padding: 10px 20px; border: 2px solid var(--cream-2); border-radius: var(--r-pill);
+    background: var(--cream); color: var(--ink-700);
+    font-family: var(--fontd); font-weight: 700; font-size: .88rem;
+    transition: border-color .2s, color .2s, background .2s;
+  }
+  .marquee-btn:hover { border-color: var(--orange-400); color: var(--red-600); background: #fff; }
   .tcard { width: min(340px, calc(100vw - 56px)); flex: none; background: #fff; border-radius: var(--r-card); box-shadow: var(--sh-card); padding: 26px; display: flex; flex-direction: column; border-bottom: 5px solid var(--yellow); }
   .tcard .stars { color: var(--yellow); letter-spacing: 2px; margin-bottom: 12px; font-size: 1.05rem; }
   .tcard .quote { color: var(--ink-700); font-style: italic; margin-bottom: 18px; flex: 1; }
@@ -522,6 +542,7 @@
      điện thoại. min-height nới vùng bấm mà không đổi cỡ chữ. */
   .loc .maps { display: inline-flex; align-items: center; min-height: 44px; gap: 7px; font-family: var(--fontd); font-weight: 700; color: var(--red-600); }
   .loc .maps svg { width: 17px; height: 17px; }
+  .loc-links { display: flex; flex-direction: column; align-items: flex-start; }
   .loc-help { text-align: center; margin-top: 40px; color: var(--ink-600); position: relative; z-index: 2; }
   .loc-help a { font-family: var(--fontd); font-weight: 700; color: var(--red-600); }
 
@@ -548,7 +569,7 @@
   @media (max-width: 620px) { .faq-a > .inner { padding-left: 14px; } }
 
   /* final cta */
-  .finalcta-card { max-width: 760px; margin: 0 auto; text-align: center; background: #fff; border-radius: var(--r-card); box-shadow: var(--sh-card); padding: clamp(38px, 5vw, 60px); position: relative; z-index: 2; border: 3px solid var(--cream-2); }
+  .finalcta-card { max-width: 760px; margin: 0 auto; text-align: center; background: #fff; border-radius: var(--r-card); box-shadow: var(--sh-card); padding: clamp(24px, 5vw, 60px); position: relative; z-index: 2; border: 3px solid var(--cream-2); }
   .finalcta-card h2 { font-size: clamp(1.8rem, 3.4vw, 2.7rem); color: var(--red-600); margin-bottom: 14px; }
   .finalcta-card > p { color: var(--ink-600); font-size: 1.08rem; margin-bottom: 30px; }
   .finalcta-card .phone-note { margin-top: 22px; color: var(--ink-600); }
@@ -565,7 +586,11 @@
 
   /* Form MidCTA 2 cột để thu gọn chiều cao cho cân với section.
      Form hero (.lead-form--compact) LUÔN 1 cột vì nằm trong cột hẹp 30%. */
-  @media (min-width: 640px) {
+  /* Form MidCTA bật 2 cột từ 640px trong khi .midcta .grid chỉ chia đôi từ
+     881px — ở dải 881-1150px mỗi ô chỉ còn ~193px, cắt cả placeholder lẫn tên
+     cơ sở. Cho 2 cột khi form còn CHIẾM CẢ HÀNG (<=880px) hoặc khi cột phải đã
+     đủ rộng lại (>=1151px). */
+  @media (min-width: 640px) and (max-width: 880px), (min-width: 1151px) {
     .lead-form[data-source="mid-cta"] {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -583,6 +608,11 @@
   /* Màn hình rất hẹp: nhãn nút CTA dài (vd "Nhận 4 buổi miễn phí →") phải được
      xuống dòng thay vì tràn khỏi bo góc. */
   @media (max-width: 420px) {
+    /* badge 56 + gap 18 + padding pill 60 = 134px cung, chi con 122px cho
+       nhan -> "BIEN THOI GIAN MAN HINH THANH SANG TAO" vo 3 dong. */
+    .pill-head { gap: 10px; }
+    .pill-head .label { padding: 11px 16px; }
+    .badge-no { width: 44px; height: 44px; font-size: 1.25rem; box-shadow: 0 0 0 4px #fff, 0 0 0 6px var(--red-500), var(--sh-pop); }
     .btn { white-space: normal; }
     .btn--lg { font-size: 1.05rem; padding: 16px 20px; line-height: 1.25; }
     .hero-banner__flag { padding: 9px 12px; font-size: .74rem; }

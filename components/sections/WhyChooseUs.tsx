@@ -53,7 +53,9 @@ export function WhyChooseUs() {
           <div className="why-row" key={r.no}>
             <div className="pill-head">
               <span className={`badge-no b-${r.color}`}>{r.no}</span>
-              <span className={`label p-${r.color}`}>{r.label}</span>
+              {/* h3 chứ không phải span: đây là 3 tiêu đề lớn của section dài
+                  nhất trang, trước đây không có heading nào để nhảy tới. */}
+              <h3 className={`label p-${r.color}`}>{r.label}</h3>
             </div>
             <div className="body">
               <div className="txt">

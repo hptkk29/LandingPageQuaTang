@@ -65,10 +65,10 @@ export default function CovuaPage() {
         <div className="container covua-hero-grid">
           <div className="covua-hero-copy">
             <Image
-              src="/logo-satarobo.jpg"
+              src="/logo-satarobo.png"
               alt="Sata Robo"
-              width={160}
-              height={56}
+              width={644}
+              height={380}
               className="covua-logo"
               priority
             />

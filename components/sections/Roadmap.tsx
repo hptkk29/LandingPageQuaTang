@@ -53,13 +53,28 @@ export function Roadmap() {
           <p>Chương trình được thiết kế phù hợp với từng giai đoạn phát triển của con.</p>
         </div>
 
-        <div className="level-tabs">
-          {(Object.keys(LEVELS) as LevelKey[]).map((k) => (
+        {/* role=tablist + mũi tên trái/phải: trước đây chỉ là 3 <button> thường
+            nên đổi tab không báo gì cho trình đọc màn hình. */}
+        <div className="level-tabs" role="tablist" aria-label="Cấp độ lộ trình">
+          {(Object.keys(LEVELS) as LevelKey[]).map((k, i, arr) => (
             <button
               key={k}
               type="button"
+              role="tab"
+              id={`tab-${k}`}
+              aria-selected={active === k}
+              aria-controls={`panel-${k}`}
+              tabIndex={active === k ? 0 : -1}
               className={`level-tab ${active === k ? "active" : ""}`}
               onClick={() => setActive(k)}
+              onKeyDown={(e) => {
+                const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+                if (!d) return;
+                e.preventDefault();
+                const next = arr[(i + d + arr.length) % arr.length];
+                setActive(next);
+                document.getElementById(`tab-${next}`)?.focus();
+              }}
             >
               {LEVELS[k].label}
               <small>{LEVELS[k].age}</small>
@@ -67,7 +82,14 @@ export function Roadmap() {
           ))}
         </div>
 
-        <div className="level-panel swap" key={active}>
+        <div
+          className="level-panel swap"
+          key={active}
+          role="tabpanel"
+          id={`panel-${active}`}
+          aria-labelledby={`tab-${active}`}
+          tabIndex={0}
+        >
           <h3>{lv.title} <span className="age">· {lv.age}</span></h3>
           <ul className="level-list">
             {lv.items.map((it, i) => (

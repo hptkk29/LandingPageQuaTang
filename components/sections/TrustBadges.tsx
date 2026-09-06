@@ -15,9 +15,9 @@ export function TrustBadges() {
       <div className="container container--xl">
         <div className="head">
           <span className="kicker kicker--onlight">Niềm tin từ cộng đồng</span>
-          <h2 className="sticker sticker--red">Được phụ huynh &amp; đối tác<br />Đà Nẵng <span className="hl">tin tưởng</span></h2>
+          <h2 className="sticker sticker--red">Được phụ huynh &amp; đối tác Đà Nẵng <span className="hl">tin tưởng</span></h2>
         </div>
-        <Carousel className="md:grid-cols-4">
+        <Carousel label="Số liệu tin cậy" className="md:grid-cols-4">
           {STATS.map((s, i) => (
             // data-i thay cho :nth-child — Carousel bọc mỗi thẻ trong một
             // wrapper riêng nên thẻ nào cũng là con thứ 1 và bộ 4 màu viền dưới

@@ -15,7 +15,12 @@ const FAQS = [
 ];
 
 export function FAQ() {
-  const [open, setOpen] = useState<number | null>(0);
+  // Cho phép mở NHIỀU mục. Trước đây chỉ mở được một: bấm mục ở cuối thì mục
+  // đang mở phía trên đóng lại và cả danh sách nhảy lên ~300px, người dùng mất
+  // dấu chỗ vừa bấm.
+  const [open, setOpen] = useState<number[]>([0]);
+  const toggle = (i: number) =>
+    setOpen((prev) => (prev.includes(i) ? prev.filter((x) => x !== i) : [...prev, i]));
 
   return (
     <section id="cau-hoi" className="section section--cream" style={{ scrollMarginTop: 80 }}>
@@ -27,13 +32,13 @@ export function FAQ() {
 
         <div className="faq-wrap">
           {FAQS.map((f, i) => {
-            const isOpen = open === i;
+            const isOpen = open.includes(i);
             return (
               <div className={`faq-item ${isOpen ? "open" : ""}`} key={i}>
                 <button
                   type="button"
                   className="faq-q"
-                  onClick={() => setOpen(isOpen ? null : i)}
+                  onClick={() => toggle(i)}
                   aria-expanded={isOpen}
                   aria-controls={`faq-a-${i}`}
                   id={`faq-q-${i}`}

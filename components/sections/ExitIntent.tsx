@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LeadForm } from "@/components/forms/LeadForm";
 
@@ -8,6 +8,8 @@ const STORAGE_KEY = "quatang-exit-intent-shown";
 
 export function ExitIntent() {
   const [show, setShow] = useState(false);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const titleId = useId();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -52,6 +54,56 @@ export function ExitIntent() {
     setShow(false);
   }
 
+  // Modal chứa nguyên form đăng ký nhưng trước đây không có ngữ nghĩa hộp
+  // thoại: không Esc, không bẫy Tab, không khoá cuộn nền, không đưa focus vào
+  // trong. Người dùng bàn phím Tab thẳng ra trang phía sau lớp phủ.
+  useEffect(() => {
+    if (!show) return;
+    const panel = panelRef.current;
+    const restoreTo = document.activeElement as HTMLElement | null;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const focusables = () =>
+      panel
+        ? Array.from(
+            panel.querySelectorAll<HTMLElement>(
+              'input, select, textarea, button, a[href], [tabindex]:not([tabindex="-1"])'
+            )
+          ).filter((el) => !el.hasAttribute("disabled") && el.offsetParent !== null)
+        : [];
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setShow(false);
+        return;
+      }
+      if (e.key !== "Tab" || !panel) return;
+      const list = focusables();
+      if (!list.length) return;
+      const first = list[0];
+      const last = list[list.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+      if (e.shiftKey && (active === first || !panel.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && (active === last || !panel.contains(active))) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", onKey);
+    // focus vào tiêu đề chứ không phải ô nhập: bàn phím ảo bật lên ngay khi
+    // popup vừa hiện là khó chịu trên điện thoại.
+    window.setTimeout(() => panel?.querySelector<HTMLElement>("h3")?.focus(), 60);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+      restoreTo?.focus?.();
+    };
+  }, [show]);
+
   return (
     <AnimatePresence>
       {show && (
@@ -68,6 +120,10 @@ export function ExitIntent() {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 30 }}
             transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
             className="v2-root relative bg-white rounded-card shadow-2xl border border-[#F5C49A] max-w-md w-full max-h-[90vh] overflow-y-auto p-5 md:p-7"
             onClick={(e) => e.stopPropagation()}
           >
@@ -75,14 +131,14 @@ export function ExitIntent() {
               type="button"
               onClick={close}
               aria-label="Đóng"
-              className="absolute top-3 right-3 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 flex items-center justify-center text-xl transition-colors z-10 cursor-pointer"
+              className="absolute top-3 right-3 w-11 h-11 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 flex items-center justify-center text-xl transition-colors z-10 cursor-pointer"
             >
               ×
             </button>
 
             <div className="text-center mb-5">
               <div className="text-4xl mb-2">🎁</div>
-              <h3 className="font-display text-xl md:text-2xl font-extrabold text-gray-900 leading-tight">
+              <h3 id={titleId} tabIndex={-1} className="font-display text-xl md:text-2xl font-extrabold text-gray-900 leading-tight outline-none">
                 Khoan đã, ba mẹ ơi!
               </h3>
               <p className="text-gray-600 text-sm md:text-base mt-1">
