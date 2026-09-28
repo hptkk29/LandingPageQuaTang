@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ipAddress, waitUntil } from "@vercel/functions";
+import { ipAddress } from "@vercel/functions";
 import { leadSchema } from "@/lib/schemas/lead";
 import { branchLabel, provinceName } from "@/lib/constants/misa";
-import { submitToMisaServer } from "@/lib/server/misa";
+import { pushQuatangLeadToSatarobo } from "@/lib/server/satarobo-quatang-push";
 import {
   AFF_COOKIE_FIRST,
   AFF_COOKIE_LAST,
@@ -15,7 +15,8 @@ import {
 import { resolveAffCode } from "@/lib/server/aff-store";
 import type { LeadApiResponse } from "@/lib/types/api";
 
-// /api/lead giờ là đường DUY NHẤT vào cả MISA lẫn Sheet nên rate-limit phải:
+// /api/lead là đường DUY NHẤT đưa lead vào CRM satarobo (28/09/2026: bỏ MISA +
+// Google Sheet — xem lib/server/satarobo-quatang-push.ts) nên rate-limit phải:
 // (1) key theo SĐT chứ không theo IP — nhà mạng VN dùng CGNAT nặng, hai phụ
 //     huynh sau cùng một IP công cộng không được chặn nhau;
 // (2) chỉ "đóng dấu" SAU khi lead đã vào được ít nhất một kênh — submit thất
@@ -38,7 +39,7 @@ function markSubmitted(key: string): void {
   }
 }
 
-// Vercel: cho phép chờ hết đường lui (MISA 6s + Sheet 15s) + Sheet chạy nền
+// Chờ satarobo tối đa 15s (AbortSignal.timeout trong push)
 export const maxDuration = 60;
 
 // App Router KHÔNG có bodyParser.sizeLimit (đó là khái niệm Pages Router) nên
@@ -122,49 +123,6 @@ function getClientIp(req: NextRequest): string {
   const real = req.headers.get("x-real-ip");
   if (real) return real;
   return "unknown";
-}
-
-type SheetResult = { ok: boolean; detail?: string };
-
-// Kênh backup: Google Sheet qua Apps Script Web App. URL là server-only —
-// fallback NEXT_PUBLIC_GOOGLE_SCRIPT_URL đã bỏ (env đó cũng đã xoá khỏi Vercel):
-// đặt tên NEXT_PUBLIC_ cho URL server-only là quả mìn, chỉ cần một client
-// component lỡ tham chiếu là Next inline thẳng vào bundle trình duyệt.
-async function submitToSheet(
-  payload: Record<string, string>
-): Promise<SheetResult> {
-  const scriptUrl = process.env.GOOGLE_SCRIPT_URL;
-  const secret = process.env.GOOGLE_SCRIPT_SECRET;
-
-  if (!scriptUrl || !secret) {
-    console.error("[/api/lead] Sheet SKIPPED_CONFIG — thiếu env Apps Script");
-    return { ok: false, detail: "SKIPPED_CONFIG" };
-  }
-
-  try {
-    const res = await fetch(scriptUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ secret, ...payload }),
-      signal: AbortSignal.timeout(15000),
-    });
-
-    if (!res.ok) {
-      console.error("[/api/lead] Apps Script HTTP error:", res.status);
-      return { ok: false, detail: `HTTP_${res.status}` };
-    }
-
-    const json = await res.json().catch(() => null);
-    if (!json || json.ok !== true) {
-      console.error("[/api/lead] Apps Script error response:", json);
-      return { ok: false, detail: "UPSTREAM_ERROR" };
-    }
-
-    return { ok: true };
-  } catch (err) {
-    console.error("[/api/lead] Apps Script network/timeout:", err);
-    return { ok: false, detail: "NETWORK" };
-  }
 }
 
 export async function POST(
@@ -297,17 +255,9 @@ export async function POST(
       console.error("[/api/lead] aff attribution error (bỏ qua):", err);
     }
 
-    // Kênh chính: MISA CRM — gửi từ server, đọc response thật (P0-03).
-    // Chạy trước để row Sheet ghi được misa_status (soi thất bại, không im lặng).
-    // FR-B08: không có mã giới thiệu → không truyền aff → field bị omit hoàn toàn.
-    const misaResult = await submitToMisaServer(
-      data,
-      affEmployeeCode ? { employeeCode: affEmployeeCode } : undefined
-    );
-
-    // Giữ nguyên các key cũ của Google Sheet để không lệch cột; key mới
-    // (misa_status...) Apps Script bỏ qua nếu chưa có cột tương ứng.
-    const sheetPayload: Record<string, string> = {
+    // Giữ nguyên tên trường như bản gửi Sheet cũ — cổng webhook/quatang bên
+    // satarobo map đúng bộ key này (lib/lead/intake/map-quatang.ts bên đó).
+    const leadPayload: Record<string, string> = {
       ho_ten: data.ho_ten_ph ?? "", // họ tên phụ huynh
       ho_ten_con: data.ho_ten_con, // họ tên con
       sdt: data.sdt,
@@ -319,33 +269,14 @@ export async function POST(
       source: "quatang.edu.vn",
       ip,
       user_agent: userAgent,
-      // Cột attribution (Apps Script v2.2 — cột O–U; script cũ bỏ qua key lạ)
       ...affSheetFields,
       aff_ma_nv: affEmployeeCode,
-      misa_status:
-        misaResult.status === "OK"
-          ? "OK"
-          : `${misaResult.status}${
-              "httpStatus" in misaResult && misaResult.httpStatus
-                ? `_${misaResult.httpStatus}`
-                : ""
-            }`,
     };
 
-    // MISA đã OK → lead an toàn (KT-03), trả thành công NGAY; Sheet backup
-    // ghi nền qua waitUntil — khách không phải chờ thêm 1-15s của Apps Script.
-    if (misaResult.status === "OK") {
+    // Kênh DUY NHẤT: phải chờ satarobo nhận xong mới dám báo thành công.
+    const pushed = await pushQuatangLeadToSatarobo(leadPayload);
+    if (pushed.ok) {
       markSubmitted(data.sdt);
-      waitUntil(
-        submitToSheet(sheetPayload).then((r) => {
-          if (!r.ok) {
-            console.error(
-              "[/api/lead] Sheet backup fail (lead đã ở MISA):",
-              r.detail
-            );
-          }
-        })
-      );
       return NextResponse.json(
         {
           ok: true,
@@ -356,27 +287,8 @@ export async function POST(
       );
     }
 
-    // MISA fail → Sheet là kênh duy nhất còn lại, PHẢI chờ ghi xong mới dám
-    // báo thành công (KT-03: ≥1 nơi giữ được lead)
-    const sheetResult = await submitToSheet(sheetPayload);
-    if (sheetResult.ok) {
-      markSubmitted(data.sdt);
-      console.error(
-        "[MISA-FAIL] Lead chỉ vào Sheet — cần đối soát nhập lại MISA:",
-        data.sdt.slice(0, 4) + "***"
-      );
-      return NextResponse.json(
-        {
-          ok: true,
-          message:
-            "Đăng ký thành công! Sata Robo sẽ liên hệ ba mẹ trong 24 giờ.",
-        },
-        { status: 200 }
-      );
-    }
-
-    // Cả hai kênh chết — KHÔNG markSubmitted: khách bấm thử lại ngay được
-    console.error("[/api/lead] CẢ HAI kênh đều thất bại — lead bị mất!");
+    // satarobo không nhận — KHÔNG markSubmitted: khách bấm thử lại ngay được.
+    console.error("[/api/lead] satarobo thất bại — lead CHƯA vào CRM:", pushed.detail, data.sdt.slice(0, 4) + "***");
     return NextResponse.json(
       {
         ok: false,
@@ -402,7 +314,7 @@ export async function GET() {
   return NextResponse.json({
     ok: true,
     service: "/api/lead",
-    version: "2.0.0",
+    version: "3.0.0", // 28/09/2026: chỉ đẩy satarobo, bỏ MISA + Sheet
     timestamp: new Date().toISOString(),
   });
 }
