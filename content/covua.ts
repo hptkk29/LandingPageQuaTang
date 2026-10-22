@@ -292,6 +292,11 @@ export const covuaContent = {
     submitting: 'Đang gửi đăng ký...',
     privacyNote:
       'Sata Robo chỉ dùng thông tin này để liên hệ trao quà và tư vấn, không chia sẻ cho bên thứ ba.',
+    // Ô tích THẬT (không tích sẵn): satarobo.vn từ 22/09 từ chối lead thiếu
+    // `dongYChinhSachBaoMat: true` — xem lib/server/covua-satarobo-push.ts.
+    consentLabel: 'Tôi đã đọc và đồng ý với',
+    consentLinkText: 'Chính sách bảo mật',
+    consentLinkHref: 'https://satarobo.vn/chinh-sach-bao-mat',
     dynamicHints: {
       groupA:
         'Con nhận 2 phần quà: học bổng trải nghiệm 1 tháng tại lớp và khóa lập trình Robot online.',

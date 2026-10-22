@@ -83,8 +83,8 @@ export const covuaLeadSchema = z
 
     campus: z.enum(['CS1', 'CS2']).nullable().optional(),
 
-    // Checkbox đồng ý đã bỏ khỏi UI (17/08) — thay bằng dòng cam kết bảo mật
-    // dưới nút gửi; client luôn gửi true qua defaults.
+    // Ô tích đồng ý Chính sách bảo mật — KHÔNG tích sẵn (satarobo.vn đòi
+    // `dongYChinhSachBaoMat: true` do người dùng tự tích; xem covua-satarobo-push.ts).
     consent: z.literal(true, { message: E.consentRequired }),
 
     // ẩn
@@ -133,7 +133,7 @@ export const covuaFormDefaults: CovuaLeadInput = {
   techInterest: undefined,
   studyMode: 'BOTH',
   campus: null,
-  consent: true, // đồng ý ngầm định qua dòng bảo mật dưới nút gửi
+  consent: undefined as never, // buộc người dùng tự tích ô đồng ý
 
   ref: '',
   utmSource: '',

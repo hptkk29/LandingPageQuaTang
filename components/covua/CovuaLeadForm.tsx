@@ -461,6 +461,29 @@ export function CovuaLeadForm() {
           </div>
         )}
 
+        <div className={`field ${errors.consent ? "show-err" : ""}`}>
+          <label htmlFor="covua-consent" style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
+            <input
+              id="covua-consent"
+              type="checkbox"
+              aria-invalid={!!errors.consent}
+              aria-describedby={errors.consent ? "covua-consent-err" : undefined}
+              style={{ marginTop: 3 }}
+              {...register("consent")}
+            />
+            <span>
+              {F.consentLabel}{" "}
+              <a href={F.consentLinkHref} target="_blank" rel="noopener noreferrer">
+                {F.consentLinkText}
+              </a>{" "}
+              <span className="req">*</span>
+            </span>
+          </label>
+          <span className="err" id="covua-consent-err" role={errors.consent ? "alert" : undefined}>
+            {errMsg("consent") ?? ""}
+          </span>
+        </div>
+
         <button
           className="btn btn--cta btn--lg"
           type="submit"
