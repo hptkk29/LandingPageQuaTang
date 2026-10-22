@@ -82,6 +82,9 @@ export function buildSataroboPayload(
     // Mã giới thiệu → Affiliate.code trên satarobo; mã sai vẫn tạo lead
     ref: lead.ref ? lead.ref.slice(0, 32) : undefined,
     eventId: opts.idempotencyKey ?? randomUUID(),
+    // satarobo.vn (từ 22/09) đòi người dùng TỰ TÍCH đồng ý Chính sách bảo mật;
+    // giá trị đi thẳng từ ô tích trên form (lead.consent), KHÔNG đặt cứng true.
+    dongYChinhSachBaoMat: lead.consent,
     consentMarketing: true,
     note: buildNote(lead),
   };
@@ -117,18 +120,13 @@ export async function pushLeadToSatarobo(
       });
 
       if (res.ok) {
-        const data = (await res.json().catch(() => ({}))) as {
-          ok?: boolean;
-          leadId?: string;
-          duplicate?: boolean;
-        };
+        // satarobo.vn (#816) chỉ còn trả `{ ok: true }`: KHÔNG còn `leadId` /
+        // `duplicate` (chống dò SĐT) — đừng đọc lại. Trùng lead do satarobo tự gộp.
+        const data = (await res.json().catch(() => ({}))) as { ok?: boolean };
         if (data.ok === false) {
           return { status: 'failed', reason: 'UPSTREAM_ERROR' };
         }
-        return {
-          status: data.duplicate ? 'duplicated' : 'sent',
-          leadId: data.leadId,
-        };
+        return { status: 'sent' };
       }
 
       // 400/401/403: payload sai — retry cũng vô ích
