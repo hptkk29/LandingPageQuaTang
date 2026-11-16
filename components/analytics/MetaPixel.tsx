@@ -4,7 +4,13 @@ import Script from "next/script";
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 
-const PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
+/* Hỗ trợ nhiều pixel: NEXT_PUBLIC_META_PIXEL_ID="id1,id2". Mọi lời gọi
+   fbq("track"/"trackCustom") sau khi init đều được bắn tới TẤT CẢ pixel đã init. */
+const PIXEL_IDS = (process.env.NEXT_PUBLIC_META_PIXEL_ID ?? "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+const PIXEL_ID = PIXEL_IDS[0];
 
 /* Stub `fbq` chuẩn của Meta: xếp mọi lời gọi vào `queue` cho tới khi
    fbevents.js nạp xong và gán `callMethod`. */
@@ -76,10 +82,10 @@ function taoStubFbq(): void {
 
      Muốn giữ tỷ lệ khớp cho quảng cáo thì dùng setMetaUserData() bên dưới —
      gửi ĐÚNG thứ mình chọn, thay vì để pixel tự vét. */
-  n("set", "autoConfig", false, PIXEL_ID);
+  for (const id of PIXEL_IDS) n("set", "autoConfig", false, id);
 
   /* init phải đứng trước mọi track/trackCustom — xếp hàng ngay tại đây */
-  n("init", PIXEL_ID);
+  for (const id of PIXEL_IDS) n("init", id);
 }
 
 taoStubFbq();
@@ -108,14 +114,17 @@ export function MetaPixel() {
         src="https://connect.facebook.net/en_US/fbevents.js"
       />
       <noscript>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          height="1"
-          width="1"
-          style={{ display: "none" }}
-          alt=""
-          src={`https://www.facebook.com/tr?id=${PIXEL_ID}&ev=PageView&noscript=1`}
-        />
+        {PIXEL_IDS.map((id) => (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            key={id}
+            height="1"
+            width="1"
+            style={{ display: "none" }}
+            alt=""
+            src={`https://www.facebook.com/tr?id=${id}&ev=PageView&noscript=1`}
+          />
+        ))}
       </noscript>
     </>
   );
@@ -149,7 +158,7 @@ export function trackMetaEvent(
  *   - email: viết thường, bỏ khoảng trắng
  */
 export function setMetaUserData(user: { phone?: string; email?: string }): void {
-  if (typeof window === "undefined" || !window.fbq || !PIXEL_ID) return;
+  if (typeof window === "undefined" || !window.fbq || PIXEL_IDS.length === 0) return;
 
   const userData: Record<string, string> = {};
 
@@ -168,7 +177,7 @@ export function setMetaUserData(user: { phone?: string; email?: string }): void 
 
   try {
     // init lại cùng pixel ID = cập nhật user data cho các sự kiện sau đó
-    window.fbq("init", PIXEL_ID, userData);
+    for (const id of PIXEL_IDS) window.fbq("init", id, userData);
   } catch {
     /* đo lường không bao giờ được làm hỏng luồng đăng ký */
   }
